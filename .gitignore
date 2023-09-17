@@ -1,5 +1,10 @@
 .vscode
 *.db
 __pycache__
-app_config_debug.txt
 teste.py
+*.csv
+*.txt
+*.xsls
+
+
+!app_config.txt
