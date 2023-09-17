@@ -1,0 +1,3 @@
+tema = darkly
+ultima_tabela = 
+tabela_caminho = 

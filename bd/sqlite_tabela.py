@@ -1,14 +1,17 @@
 import sqlite3
+from criar_diretorio_tabela import *
 
 #TODO: funções para criar tabelas análise de PARETO
 #Integrar funções na tela inicial
 
 def criar_bd(nome_tabela):
-    # global tabela, cursor
-    tabela = sqlite3.connect(nome_tabela+'.db')
+    caminho_bd = criar_diretorio_tabela(nome_tabela)
+    
+    tabela_existente = os.path.exists(caminho_bd)
+
+    tabela = sqlite3.connect(caminho_bd)
     cursor = tabela.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (nome_tabela,))
-    tabela_existente = cursor.fetchone()
+    
     if tabela_existente:
         return "tabela_existe"
     else:
