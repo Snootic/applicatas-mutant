@@ -7,6 +7,7 @@ from tkinter import scrolledtext
 # tela para visualização de tabelas
 # tela para visualização de gráficos
 # botoes/menus para importação de arquivos csv e xsls
+# Integrar funções de tabela
 
 home = tkb.Window()
 home.geometry('600x400')
