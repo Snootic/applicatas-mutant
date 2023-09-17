@@ -2,3 +2,4 @@
 *.db
 __pycache__
 app_config_debug.txt
+teste.py
