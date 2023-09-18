@@ -2,8 +2,8 @@ import sqlite3
 from pandas import *
 import os
 import sys
-caminho_projeto = os.getcwd()
-sys.path.insert(0, caminho_projeto)
+CAMINHO_PROJETO = os.getcwd()
+sys.path.insert(0, CAMINHO_PROJETO)
 from data.edit_config import * #ler_configuracao
 
 #TODO: melhorar a semantica do sqlite + estudar uma forma mais otimizada de executar o código
@@ -13,7 +13,7 @@ from data.edit_config import * #ler_configuracao
 class pareto:
 
     def sqlite(*args):
-        caminho_config, itens, linhas, dir_tabela = ler_configuracao()
+        caminho_config, itens, linhas, dir_tabela = LerConfig()
         
         tabela = sqlite3.connect(dir_tabela)
         cursor = tabela.cursor()

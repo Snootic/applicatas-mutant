@@ -1,12 +1,12 @@
 import os
 import sys
-caminho_projeto = os.getcwd()
-sys.path.insert(0, caminho_projeto)
+CAMINHO_PROJETO = os.getcwd()
+sys.path.insert(0, CAMINHO_PROJETO)
 from bd.tabela_sqlite import *
 
 #mudar caminho para app_config.txt
 
-def ler_configuracao():
+def LerConfig():
     caminho_config = (os.path.abspath('data/app_config_debug.txt'))
 
     with open(caminho_config, 'r', encoding='utf-8') as configuracoes:
@@ -23,10 +23,10 @@ def ler_configuracao():
     return caminho_config, itens, linhas, dir_tabela
 
 
-def editar_tabela(nome_tabela):
+def EditarTabela(nome_tabela):
     tabela1 = tabela()
-    caminho_tabela = tabela1.criar_diretorio_tabela(nome_tabela)
-    caminho_config, itens, linhas, dir_tabela = ler_configuracao()
+    CAMINHO_TABELA = tabela1.CriarDirTabela(nome_tabela)
+    caminho_config, itens, linhas, dir_tabela = LerConfig()
 
     with open(caminho_config, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
@@ -34,6 +34,9 @@ def editar_tabela(nome_tabela):
                 linhas[i] = 'ultima_tabela = '+nome_tabela+'.db\n'
                 
             if itens[i][0] == 'tabela_caminho':
-                linhas[i] = 'tabela_caminho = '+caminho_tabela+'\n'
+                linhas[i] = 'tabela_caminho = '+CAMINHO_TABELA+'\n'
 
         configuracoes.writelines(linhas)
+        
+    def getUser():
+        

@@ -2,8 +2,8 @@
 
 import os
 import sys
-caminho_projeto = os.getcwd()
-sys.path.insert(0, caminho_projeto)
+CAMINHO_PROJETO = os.getcwd()
+sys.path.insert(0, CAMINHO_PROJETO)
 from tabela_sqlite import *
 from data.edit_config import *
 
@@ -11,7 +11,7 @@ nome_bd = input('Digite o nome do banco: ')
 
 tabela_sqlite = tabela()
 
-criar_tabela = tabela_sqlite.criar_bd(nome_bd)
+criar_tabela = tabela_sqlite.CriarBD(nome_bd)
 if criar_tabela == 'tabela_existe':
     print('Tabela já existe')
 else:
@@ -22,5 +22,5 @@ while True:
     if ocorrencia == 'wq':
         break
     else:
-        tabela_sqlite.adicionar_valor(nome_bd, ocorrencia)
-editar_tabela(nome_bd)
+        tabela_sqlite.addValor(nome_bd, ocorrencia)
+EditarTabela(nome_bd)
