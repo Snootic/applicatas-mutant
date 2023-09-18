@@ -1,7 +1,6 @@
-import tkinter as tk
-import ttkbootstrap as tkb
-from tkinter import ttk
-from tkinter import scrolledtext
+from tkinter import *
+import ttkbootstrap as ttk
+import customtkinter as ctk
 
 #TODO: Tela inicial contendo fields para inserção de dados
 # tela para visualização de tabelas
@@ -12,19 +11,26 @@ from tkinter import scrolledtext
 
 class inicio:
     def __init__(self) -> None:
-        home = tkb.Window()
+        home = ttk.Window(themename='darkly')
         home.geometry('600x400')
         home.title("Peraeque - HOME")
 
         #menu
-        menu = tk.Menu(home)
-        importar_menu = tk.Menu(menu, tearoff=False)
+        menu = ttk.Menu(home)
+        importar_menu = ttk.Menu(menu, tearoff=False)
         importar_menu.add_command(label = 'Importar CSV', command = lambda: print('alo'))
         importar_menu.add_command(label = 'Importar XSLS', command = lambda: print('yes'))
         menu.add_cascade(label='Importar', menu = importar_menu)
 
+        botao1 = ctk.CTkButton(home, text='Botao')
+        botao2 = ttk.Button(home, text='Botao1',)
+        botao3 = Button(home, text='Botao2')
+        botao1.pack()
+        botao2.pack()
+        botao3.pack()
+        
         #Abas
-        notebook = tkb.Notebook(home)
+        notebook = ttk.Notebook(home)
 
 
         #configurações tela
@@ -32,3 +38,5 @@ class inicio:
 
         #rodar tela
         home.mainloop()
+        
+tela = inicio()
