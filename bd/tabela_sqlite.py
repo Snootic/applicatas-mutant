@@ -2,9 +2,8 @@ import os
 import sqlite3
 
 class tabela:
-    def criar_diretorio_tabela(self,nome_tabela): 
-        diretorio_script = os.path.dirname(os.path.abspath(__file__))
-        caminho_pasta_bd = os.path.join(diretorio_script,'tabelas')
+    def criar_diretorio_tabela(self,nome_tabela):
+        caminho_pasta_bd = os.path.join(os.getcwd(),'data/sqlite_databases')
         
         if not os.path.exists(caminho_pasta_bd):
             os.mkdir(caminho_pasta_bd)
