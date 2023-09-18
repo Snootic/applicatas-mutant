@@ -33,8 +33,7 @@ class pareto:
             ocorrencias = [item[0] for item in ocorrencias]
             numero_ocorrencias = [item[0] for item in numero_ocorrencias]
             
-            ocorrencias_ordenadas = {'Ocorrências': ocorrencias, 'Número Ocorrências': numero_ocorrencias}
-            items = list(zip(ocorrencias_ordenadas['Ocorrências'], ocorrencias_ordenadas['Número Ocorrências']))
+            items = list(zip(ocorrencias,numero_ocorrencias))
             
             items_ordenados = sorted(items, key=lambda item_maior: item_maior[1], reverse=True)
             items_ordenados.append(('Total',total_ocorrencias))
