@@ -5,7 +5,7 @@ import sys
 CAMINHO_PROJETO = os.getcwd()
 sys.path.insert(0, CAMINHO_PROJETO)
 from tabela_sqlite import *
-from data.edit_config import *
+from data.edit_config import EditarTabela
 
 nome_bd = input('Digite o nome do banco: ')
 

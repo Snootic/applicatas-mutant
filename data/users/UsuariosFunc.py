@@ -14,12 +14,14 @@ def alterarUser(usuario):
         return user
     else:
         cursor.execute(f'UPDATE credenciais SET usuario="{usuario}"')
+        
 def alterarEmail(email):
     Email = verificarusuario.usuario(email, '', '')
     if Email != None:
         return Email
     else:
         cursor.execute(f'UPDATE credenciais SET email="{email}"')
+        
 def alterarSenha(senha):
     password = verificarusuario.usuario(senha, '', '')
     if password != None:
