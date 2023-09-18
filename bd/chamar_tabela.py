@@ -17,10 +17,10 @@ if criar_tabela == 'tabela_existe':
 else:
     pass
 
-ocorrencia = input('Digite a ocorrencia: ')
-numero_ocorrencias = int(input('Digite a quantidade da ocorrencia: '))
-
-for i in range(numero_ocorrencias):
-    tabela_sqlite.adicionar_valor(nome_bd, ocorrencia)
-    
+while True:
+    ocorrencia = input('Digite a ocorrencia ("wq" para sair): ')
+    if ocorrencia == 'wq':
+        break
+    else:
+        tabela_sqlite.adicionar_valor(nome_bd, ocorrencia)
 editar_tabela(nome_bd)
