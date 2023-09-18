@@ -62,7 +62,3 @@ class pareto:
 
     def xsls():
         pass
-    
-tabel_sqlite = pareto()
-
-tabel_sqlite.sqlite()
