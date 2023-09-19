@@ -85,4 +85,10 @@ def getUser():
             usuario = itens[i][1]
             return usuario
 
-            
+def getTema():
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'tema':
+            tema = itens[i][1]
+            return tema
+    
