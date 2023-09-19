@@ -1,6 +1,5 @@
 from tkinter import *
 import ttkbootstrap as ttk
-import customtkinter as ctk
 
 #TODO: Tela inicial contendo fields para inserção de dados
 # tela para visualização de tabelas
@@ -22,10 +21,8 @@ class inicio:
         importar_menu.add_command(label = 'Importar XSLS', command = lambda: print('yes'))
         menu.add_cascade(label='Importar', menu = importar_menu)
 
-        botao1 = ctk.CTkButton(home, text='Botao')
         botao2 = ttk.Button(home, text='Botao1',)
         botao3 = Button(home, text='Botao2')
-        botao1.pack()
         botao2.pack()
         botao3.pack()
         
