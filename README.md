@@ -8,12 +8,12 @@ Projeto de estátisca aplicada, feito para inserir, atualizar e deletar dados pa
 - pandas
 - sqlite3
 
-Para Rodar o código clone o repositório e instale as dependencias que estão no arquivo requirements.txt
+Para Rodar o código, clone o repositório e instale as dependências que estão no arquivo requirements.txt
 
 ### Windows
 Rode no Powershell / Terminal: 
 
-        python -m pip install -r requirements.txt
+        py -m pip install -r requirements.txt
 
 ### Linux
 Rodando o seguinte comando deve funcionar:
@@ -28,6 +28,6 @@ tente trocar pip3 por pip caso nenhum dos dois funcione.
 
 ## Bug report
 
-Caso encontre algum bug no programa, por favor crie uma "Issue", faremos o que pudermos para resolver o mais rápido possível.
+Caso encontre algum bug no programa, por favor crie uma "Issue". Faremos o que pudermos para resolver o mais rápido possível.
 
 Você também pode resolver por si e abrir uma Pull Request. Analisaremos o código e o implementaremos, obrigado!
