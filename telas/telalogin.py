@@ -39,13 +39,13 @@ class telalogin:
                                textvariable=user_var,
                                width=39,
                                font=self.estilo.fonte)
-        user_entry.place(relx=0.2,rely=0.3, height=60)
+        user_entry.place(x=300,y=200,anchor='center', height=60)
         user_entry.bind('<ButtonRelease>',lambda event: (user_var.set(value=''),
                                                          user_entry.unbind('<ButtonRelease>')))
         
         senha_var = StringVar(value='Senha')
         senha_entry = ttk.Entry(self.login, textvariable=senha_var, width=39, font=self.estilo.fonte)
-        senha_entry.place(relx=0.2,rely=0.45, height=60)
+        senha_entry.place(x=300,y=280,anchor='center', height=60)
         senha_entry.bind('<ButtonRelease>',lambda event: (senha_var.set(value=''),
                                                           senha_entry.unbind('<ButtonRelease>'),
                                                           senha_entry.configure(show='*')))
@@ -60,7 +60,7 @@ class telalogin:
                            textvariable=logar_var,
                            style='Estilo1.info.TButton',
                            command=logando)
-        logar.place(relx=0.2, rely=0.6, height=70)
+        logar.place(x=300,y=400,anchor='center', height=70)
         
         texto_secao_var = StringVar(value='Manter seção')
         manter_secao_var= BooleanVar(value=False)
@@ -70,7 +70,7 @@ class telalogin:
                                        style='TCheckbutton',
                                        bootstyle='info')
         # manter_secao.configure(font='Nexa 11')
-        manter_secao.place(relx=0.2, rely=0.76)
+        manter_secao.place(x=80,y=450)
         
         esqueci_senha_var = StringVar(value='Esqueci minha senha')
         esqueci_senha = ttk.Button(self.login,
@@ -83,8 +83,8 @@ class telalogin:
         registrar = ttk.Button(self.login, text='Registre-se aqui',
                                style='Estilo2.Link.TButton',
                                command=self.registro)
-        registrar_label.place(relx=0.3,rely=0.9)
-        registrar.place(relx=0.495, rely=0.892)
+        registrar_label.place(x=210,y=550,anchor='center')
+        registrar.place(x=365, y=550, anchor='center')
         
         self.login.mainloop()
         
