@@ -41,4 +41,6 @@ class usuario:
         self.cursor.execute(f'SELECT senha FROM credenciais WHERE senha="{self.senha}"')
         verificar = self.cursor.fetchone()
         if self.senha != verificar[0]:
-            return 'Senha inválida'
+            return False
+        else:
+            return True

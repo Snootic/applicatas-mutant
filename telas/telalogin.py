@@ -94,8 +94,10 @@ class telalogin:
             usuario = usuario.user()
             if usuario != True:
                 retorno.configure(text=usuario)
+                return False
             else:
                 retorno.configure(text='')
+                return True
         
         user_var = StringVar(value='Usuário')
         user_entry = ttk.Entry(registro,
@@ -114,8 +116,10 @@ class telalogin:
             email = email.Email()
             if email != True:
                 retorno.configure(text=email)
+                return False
             else:
                 retorno.configure(text='')
+                return True
         
         
         email_var = StringVar(value='E-mail')
@@ -134,8 +138,10 @@ class telalogin:
             senha = senha.passw()
             if senha != True:
                 retorno.configure(text=senha)
+                return False
             else:
                 retorno.configure(text='')
+                return True
         
         
         senha_var = StringVar(value='Senha')
@@ -150,6 +156,16 @@ class telalogin:
                                                           senha_entry.bind('<KeyRelease>', lambda event: senha())
                                                           ))
 
+        def confirmar_senha():
+            confirmar_senha = confirmar_senha_var.get()
+            senha = senha_var.get()
+            if confirmar_senha != senha:
+                retorno.configure(text='As senhas não coincidem')
+                return False
+            else:
+                retorno.configure(text='')
+                return True
+        
         confirmar_senha_var = StringVar(value='Confirmar Senha')
         confirmar_senha_entry = ttk.Entry(registro,
                                           font=self.estilo.fonte,
@@ -158,13 +174,23 @@ class telalogin:
         confirmar_senha_entry.pack(ipady=15,pady=5)
         confirmar_senha_entry.bind('<ButtonRelease>',lambda event: (confirmar_senha_var.set(value=''),
                                                                     confirmar_senha_entry.unbind('<ButtonRelease>'),
-                                                                    confirmar_senha_entry.configure(show='*')
+                                                                    confirmar_senha_entry.configure(show='*'),
+                                                                    confirmar_senha_entry.bind('<KeyRelease>', lambda event: confirmar_senha())
                                                                     ))
         
         def cadastrar():
-            cadastrar = cadastro.credenciais(user_var.get(),email_var.get(),senha_var.get())
-            cadastrar = cadastrar.cadastrar()
-            retorno.configure(text=cadastrar)
+            if not confirmar_senha():
+                retorno.configure(text='As senhas não coincidem')
+            elif not senha():
+                retorno.configure(text='Senha inválida')
+            elif not email():
+                retorno.configure(text='E-mail inválido')
+            elif not usuario():
+                retorno.configure(text='Usuário Inválido')
+            else:
+                cadastrar = cadastro.credenciais(user_var.get(),email_var.get(),senha_var.get())
+                cadastrar = cadastrar.cadastrar()
+                retorno.configure(text=cadastrar)
             
         
         confirmar = ttk.Button(registro,

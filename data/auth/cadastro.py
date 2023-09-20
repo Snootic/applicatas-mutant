@@ -75,5 +75,6 @@ class credenciais:
                 return 'Email já está cadastrado'
             elif add == 'UNIQUE constraint failed: credenciais.usuario':
                 return 'Usuário já está cadastrado'
-            return f'Um erro ocorreu: {add}'
+            else:
+                return f'Um erro ocorreu: {add}'
 
