@@ -65,7 +65,7 @@ class credenciais:
             return True
     
     def cadastrar(self):
-        senha_encriptada = self.EncriptarSenha(self.senha)
+        senha_encriptada = self.EncriptarSenha()
         add = UsuariosFunc.InserirDados(usuario=self.usuario,email=self.email,senha=senha_encriptada)
         add = add.add()
         if add == True:
