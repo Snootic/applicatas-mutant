@@ -44,4 +44,6 @@ class Estilo:
         # self.style.configure('TEntry', font=self.fonte)
 
 if __name__ == '__main__':
-    telalogin.login()
+    telalogin.telalogin()
+    # app = telalogin.telalogin()
+    # app.run()

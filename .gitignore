@@ -5,7 +5,7 @@ teste.py
 *.csv
 *.txt
 *.xsls
-
+*.db-journal
 
 !app_config.txt
 !requirements.txt
