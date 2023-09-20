@@ -1,51 +1,40 @@
 import os
 import sqlite3
+from data import edit_config
 
 class tabela:
-    usuario: str
-    def CriarDirTabela(self,nome_tabela):
+    def __init__(self, table=''):
+        self.tabela = table
+    def CriarDirSchema(self, usuario):
         
         CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data/users/sqlite_databases')
         
         if not os.path.exists(CAMINHO_PASTA_DB):
             os.mkdir(CAMINHO_PASTA_DB)
             
-        banco_de_dados = nome_tabela+'.db'
+        banco_de_dados = f'{usuario}'+'.db'
         CAMINHO_SCHEMA = os.path.join(CAMINHO_PASTA_DB,banco_de_dados)
         return CAMINHO_SCHEMA
     
-    def CriarBD(self,nome_tabela):
-        CAMINHO_SCHEMA = self.CriarDirTabela(self.usuario)
+    def CriarBD(self):
+        usuario = edit_config.getUser()
+        CAMINHO_SCHEMA = self.CriarDirSchema(usuario)
         
-        tabela_existente = os.path.exists(CAMINHO_SCHEMA)
-
         tabela = sqlite3.connect(CAMINHO_SCHEMA)
         cursor = tabela.cursor()
+        cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+        ocorrencias VARCHAR,
+        custo REAL DEFAULT NULL)''')
         
-        if tabela_existente:
-            return "tabela_existe"
+    def addValor(self, ocorrencias, custo=''): #Tabela, ocorrencias e custo (opcional)
+        usuario = edit_config.getUser()
+        
+        schema = self.CriarDirSchema(usuario)
+        schema = sqlite3.connect(schema)
+        cursor = schema.cursor()
+        
+        if custo != '':
+            cursor.execute(f"INSERT INTO {self.tabela} VALUES(?,?)", (ocorrencias, custo))
         else:
-            cursor.execute(f'''CREATE TABLE if not exists {nome_tabela}(
-            ocorrencias VARCHAR,
-            custo REAL DEFAULT NULL)''')
-            return f'{nome_tabela}'+".db"
-        
-    def addValor(self,*args): #Tabela, ocorrencias e custo (opcional)
-        
-        if len(args) == 3:
-            tabela, ocorrencias, custo = args
-            tabela = self.CriarDirTabela(tabela)
-            tabela = sqlite3.connect(tabela)
-            cursor = tabela.cursor()
-            cursor.execute("INSERT INTO tabela VALUES(?,?)", (ocorrencias, custo))
-        
-        elif len(args) == 2:
-            tabela, ocorrencias = args
-            tabela = self.CriarDirTabela(tabela)
-            tabela = sqlite3.connect(tabela)
-            cursor = tabela.cursor()
-            cursor.execute("INSERT INTO tabela (ocorrencias) VALUES(?)", (ocorrencias,))
-        else:
-            return 'argumentos_invalidos'
-
-        tabela.commit()
+            cursor.execute(f"INSERT INTO {self.tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
+        schema.commit()

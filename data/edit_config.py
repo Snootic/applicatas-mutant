@@ -1,7 +1,7 @@
-import os
-import sys
-CAMINHO_PROJETO = os.getcwd()
-sys.path.insert(0, CAMINHO_PROJETO)
+# import os
+# import sys
+# CAMINHO_PROJETO = os.getcwd()
+# sys.path.insert(0, CAMINHO_PROJETO)
 from bd.tabela_sqlite import *
 
 #mudar caminho para app_config.txt
@@ -11,20 +11,20 @@ def LerConfig(argumento):
     'config': retorna caminho absoluto das configurações ->
     'itens': retorna lista das variaveis das configurações ->
     'linhas': retorna as configurações brutas ->
-    'dirtab': retorna diretorio da tabela mais recente ->
+    'dirtab': retorna diretorio da schema mais recente ->
     """
     CAMINHO_CONFIG = (os.path.abspath('data/app_config_debug.txt'))
-
+    dir_schema = None
+    
     with open(CAMINHO_CONFIG, 'r', encoding='utf-8') as configuracoes:
         linhas = configuracoes.readlines()
         itens = []
         for linha in linhas:
             itens.append(linha.replace(' ', '').strip().split('='))
 
-        dir_tabela = ''
         for i in range(len(itens)):
-            if os.path.exists(itens[i][1]):
-                dir_tabela = itens[i][1]
+            if itens[i][0] == "schema_caminho":
+                dir_schema = itens[i][1]
                 
     if argumento == 'config':
         return CAMINHO_CONFIG
@@ -33,27 +33,31 @@ def LerConfig(argumento):
     elif argumento == 'linhas':
         return linhas
     elif argumento == 'dirtab':
-        return dir_tabela
+        return dir_schema
 
 
-def EditarTabela(nome_tabela):
+def EditarTabela(table):
     tabela1 = tabela()
-    CAMINHO_TABELA = tabela1.CriarDirTabela(nome_tabela)
+    user = getUser()
+    CAMINHO_SCHEMA = tabela1.CriarDirSchema(user)
     CAMINHO_CONFIG = LerConfig('config')
     itens = LerConfig('itens')
     linhas = LerConfig('linhas')
 
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
-            if itens[i][0] == 'ultima_tabela':
-                linhas[i] = 'ultima_tabela = '+nome_tabela+'.db\n'
+            if itens[i][0] == 'ultimo_schema':
+                linhas[i] = 'ultimo_schema = '+f'{user}'+'.db\n'
                 
-            if itens[i][0] == 'tabela_caminho':
-                linhas[i] = 'tabela_caminho = '+CAMINHO_TABELA+'\n'
+            if itens[i][0] == 'schema_caminho':
+                linhas[i] = 'schema_caminho = '+f'{CAMINHO_SCHEMA}'+'\n'
+                
+            if itens[i][0] == 'ultima_tabela':
+                linhas[i] = 'ultima_tabela = '+f'{table}'+'\n'
 
         configuracoes.writelines(linhas)
     
-def getTabela(argumento):
+def getSchema(argumento):
     """
     'dir': retorna diretorio da tabela ->
     'tab': retorna tabela
@@ -61,12 +65,19 @@ def getTabela(argumento):
     if argumento == 'tab':
         itens = LerConfig('itens')
         for i in range(len(itens)):
-            if itens[i][0] == 'ultima_tabela':
-                table = itens[i][1]
-                return table
+            if itens[i][0] == 'ultimo_schema':
+                schema = itens[i][1]
+                return schema
     elif argumento == 'dir':
         dir = LerConfig('dirtab')
         return dir
+
+def getTabela():
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'ultima_tabela':
+            tabela = itens[i][1]
+            return tabela
 
 def editUser(usuario):
     CAMINHO_CONFIG = LerConfig('config')
@@ -77,6 +88,7 @@ def editUser(usuario):
         for i in range(len(itens)):
             if itens[i][0] == 'user':
                 linhas[i] = 'user = '+usuario+'\n'
+                configuracoes.writelines(linhas)
                 
 def getUser():
     itens = LerConfig('itens')

@@ -5,13 +5,13 @@ import sys
 CAMINHO_PROJETO = os.getcwd()
 sys.path.insert(0, CAMINHO_PROJETO)
 from tabela_sqlite import *
-from data.edit_config import EditarTabela
+from data import edit_config
 
 nome_bd = input('Digite o nome do banco: ')
 
-tabela_sqlite = tabela()
+tabela_sqlite = tabela(table=nome_bd)
 
-criar_tabela = tabela_sqlite.CriarBD(nome_bd)
+criar_tabela = tabela_sqlite.CriarBD()
 if criar_tabela == 'tabela_existe':
     print('Tabela já existe')
 else:
@@ -22,5 +22,5 @@ while True:
     if ocorrencia == 'wq':
         break
     else:
-        tabela_sqlite.addValor(nome_bd, ocorrencia)
-EditarTabela(nome_bd)
+        tabela_sqlite.addValor(ocorrencia)
+edit_config.EditarTabela(nome_bd)

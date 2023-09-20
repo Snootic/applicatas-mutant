@@ -1,4 +1,5 @@
 from data.auth import cadastro, verificarusuario
+from data.edit_config import editUser
 
 def login(usuario,senha):
     credenciais = cadastro.credenciais(senha=senha)
@@ -9,4 +10,5 @@ def login(usuario,senha):
     elif not verificar.verificarSenha():
         return 'Senha incorreta'
     else:
+        editUser(usuario)
         return 'Logado'

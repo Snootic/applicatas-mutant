@@ -4,7 +4,7 @@ import os
 import sys
 CAMINHO_PROJETO = os.getcwd()
 sys.path.insert(0, CAMINHO_PROJETO)
-from data.edit_config import getTabela #ler_configuracao
+from data import edit_config #ler_configuracao
 
 #TODO: melhorar a semantica do sqlite + estudar uma forma mais otimizada de executar o código
 # Importar CSV/TXT e XSLS para análise de pareto
@@ -12,26 +12,27 @@ from data.edit_config import getTabela #ler_configuracao
 
 class pareto:
 
-    def sqlite(*args):
+    def sqlite(self):
         '''Cria uma tabela de pareto com dados inseridos num Banco de dados
         
         Returns:
             pareto_sql: Pandas DataFrame conténdo a tabela
         '''
-        dir_tabela = getTabela('dir')
+        dir_schema = edit_config.getSchema('dir')
+        tabela = edit_config.getTabela()
         
-        tabela = sqlite3.connect(dir_tabela)
-        cursor = tabela.cursor()
+        schema = sqlite3.connect(dir_schema)
+        cursor = schema.cursor()
         
-        cursor.execute('SELECT COUNT(*) FROM tabela WHERE custo IS NULL')
+        cursor.execute(f'SELECT COUNT(*) FROM {tabela} WHERE custo IS NULL')
         if cursor.fetchall()[0][0] > 0:
-            cursor.execute('SELECT COUNT(ocorrencias) FROM tabela GROUP BY ocorrencias')
+            cursor.execute(f'SELECT COUNT(ocorrencias) FROM {tabela} GROUP BY ocorrencias')
             numero_ocorrencias = cursor.fetchall()
             
-            cursor.execute('SELECT ocorrencias FROM tabela group BY ocorrencias')
+            cursor.execute(f'SELECT ocorrencias FROM {tabela} group BY ocorrencias')
             ocorrencias = cursor.fetchall()
             
-            cursor.execute('SELECT COUNT(ocorrencias) FROM TABELA')
+            cursor.execute(f'SELECT COUNT(ocorrencias) FROM {tabela}')
             total_ocorrencias = cursor.fetchall()[0][0]
             
             ocorrencias = [item[0] for item in ocorrencias]
@@ -57,6 +58,7 @@ class pareto:
                     items_ordenados[i] += (frequencia_relativa, '-')
                 
             pareto_sql = DataFrame(items_ordenados, columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
+            print(pareto_sql)
             return pareto_sql
         else:
             pass
@@ -66,3 +68,6 @@ class pareto:
 
     def xsls():
         pass
+    
+sqlite = pareto()
+sqlite.sqlite()
