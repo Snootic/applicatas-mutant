@@ -40,7 +40,7 @@ class usuario:
         '''
         self.cursor.execute(f'SELECT senha FROM credenciais WHERE senha="{self.senha}"')
         verificar = self.cursor.fetchone()
-        if self.senha != verificar[0]:
+        if verificar == None or self.senha != verificar[0]:
             return False
         else:
             return True

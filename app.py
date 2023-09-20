@@ -6,9 +6,9 @@ from telas import telalogin
 from data import edit_config
 
 class Tela:
-    def __init__(self, janela, titulo):
+    def __init__(self, janela='', titulo=''):
         self.janela = janela
-        self.janela.title(f"{titulo}")
+        self.janela.title(titulo)
         self.TELA_LARGURA = self.janela.winfo_screenwidth()
         self.TELA_ALTURA = self.janela.winfo_screenheight()
 
@@ -42,6 +42,12 @@ class Estilo:
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('Estilo2.Link.TButton', font=self.fonte, fg='red')
         # self.style.configure('TEntry', font=self.fonte)
+
+class centralizar_widget:
+    def __init__(self, tela, widget):
+        tela = Tela(janela=tela)
+        self.x = ((tela.TELA_LARGURA - widget.winfo_width()) // 2)
+        self.y = ((tela.TELA_ALTURA - widget.winfo_height()) // 2) 
 
 if __name__ == '__main__':
     telalogin.telalogin()

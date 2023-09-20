@@ -28,9 +28,9 @@ class credenciais:
         senha_gerada = ''.join(secrets.choice(caracteres_validos) for _ in range(tamanho))
         return senha_gerada
 
-    def EncriptarSenha(self,senha):
+    def EncriptarSenha(self):
         '''Encriptar Senha digitada ou gerada com SHA-256'''
-        senha = senha.encode('utf-8')
+        senha = self.senha.encode('utf-8')
         senha_encriptada = hashlib.sha256(senha).hexdigest()
         return senha_encriptada
         

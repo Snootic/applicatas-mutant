@@ -1,9 +1,9 @@
-import os
-import sys
+# import os
+# import sys
 from tkinter import *
 import ttkbootstrap as ttk
-CAMINHO_PROJETO = os.getcwd()
-sys.path.insert(0, CAMINHO_PROJETO)
+# CAMINHO_PROJETO = os.getcwd()
+# sys.path.insert(0, CAMINHO_PROJETO)
 from app import *
 from data.auth import login, cadastro
 
@@ -25,8 +25,14 @@ class telalogin:
         subtitulo = ttk.Label(self.login,
                               text='Bem vindo! Faça login para continuar',
                               style='Comum.TLabel')
-        titulo.place(relx=0.315, rely=0.08)
-        subtitulo.place(relx=0.28, rely=0.14)
+        titulo.place(x=300,y=70,anchor='center')
+        subtitulo.place(x=300,y=100,anchor='center')
+        
+        retorno = ttk.Label(self.login,
+                            text='',
+                            style='Comum.TLabel')
+        retorno.place(x=300,y=345,anchor='center')
+        retorno.update_idletasks()
         
         user_var = StringVar(value='Usuário / E-mail')
         user_entry = ttk.Entry(self.login,
@@ -44,11 +50,16 @@ class telalogin:
                                                           senha_entry.unbind('<ButtonRelease>'),
                                                           senha_entry.configure(show='*')))
         
+        def logando():
+            log = login.login(user_var.get(),senha_var.get())
+            retorno.configure(text=log)
+        
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
                            width=38,
                            textvariable=logar_var,
-                           style='Estilo1.info.TButton')
+                           style='Estilo1.info.TButton',
+                           command=logando)
         logar.place(relx=0.2, rely=0.6, height=70)
         
         texto_secao_var = StringVar(value='Manter seção')
