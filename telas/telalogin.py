@@ -162,9 +162,12 @@ class telalogin:
                                 font=self.estilo.fonte,
                                 textvariable=senha_var,
                                 width=30)
-        senha_entry.pack(ipady=15,pady=5,padx=(48,0),side='left')
+        senha_entry.pack(ipady=15,pady=5,padx=(0,0),side='left')
         senha_entry.bind('<ButtonRelease>',lambda event: senha_var.set(value=''))
         senha_var.trace('w',lambda *args: esconder_senha())
+        
+        ver_senha=ttk.Button(senha_frame,width=2,command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
+        ver_senha.pack(before=senha_entry,side='left',padx=(0,5))
         
         def gerarsenha():
             senha_gerada = cadastro.credenciais()
@@ -198,13 +201,14 @@ class telalogin:
         confirmar_senha_var.trace('w',lambda *args: esconder_senha(entry=confirmar_senha_entry,
                                                                    comando=confirmar_senha))
         
-        def esconder_senha(ver='esconder',entry=senha_entry,comando=senha):
+        def esconder_senha(ver='esconder',entry=senha_entry,comando=senha,entry1=''):
             if ver=='esconder':
                 entry.unbind('<ButtonRelease>'),
                 entry.configure(show='*')
                 entry.bind('<KeyRelease>', comando)
                 
             elif ver=='ver':
+                entry1.configure(show='')
                 entry.configure(show='')
             else:
                 return False
