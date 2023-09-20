@@ -40,14 +40,14 @@ class telalogin:
                                width=39,
                                font=self.estilo.fonte)
         user_entry.place(x=300,y=200,anchor='center', height=60)
-        user_entry.bind('<ButtonRelease>',lambda event: (user_var.set(value=''),
-                                                         user_entry.unbind('<ButtonRelease>')))
+        user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
+                                                         user_entry.unbind('<FocusIn>')))
         
         senha_var = StringVar(value='Senha')
         senha_entry = ttk.Entry(self.login, textvariable=senha_var, width=39, font=self.estilo.fonte)
         senha_entry.place(x=300,y=280,anchor='center', height=60)
-        senha_entry.bind('<ButtonRelease>',lambda event: (senha_var.set(value=''),
-                                                          senha_entry.unbind('<ButtonRelease>'),
+        senha_entry.bind('<FocusIn>',lambda event: (senha_var.set(value=''),
+                                                          senha_entry.unbind('<FocusIn>'),
                                                           senha_entry.configure(show='*')))
         
         def logando():
@@ -70,13 +70,13 @@ class telalogin:
                                        style='TCheckbutton',
                                        bootstyle='info')
         # manter_secao.configure(font='Nexa 11')
-        manter_secao.place(x=80,y=450)
+        manter_secao.place(x=165,y=450,anchor='center')
         
         esqueci_senha_var = StringVar(value='Esqueci minha senha')
         esqueci_senha = ttk.Button(self.login,
                                    textvariable=esqueci_senha_var,
                                    style='Estilo1.Link.TButton')
-        esqueci_senha.place(relx=0.58, rely=0.75)
+        esqueci_senha.place(x=420,y=450,anchor='center')
         
         registrar_label = ttk.Label(text='Não tem conta?',
                                     style='Comum.TLabel')
@@ -117,8 +117,8 @@ class telalogin:
                                width=30,
                                )
         user_entry.pack(ipady=15,pady=5)
-        user_entry.bind('<ButtonRelease>',lambda event: (user_var.set(value=''),
-                                                         user_entry.unbind('<ButtonRelease>'),
+        user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
+                                                         user_entry.unbind('<FocusIn>'),
                                                          user_entry.bind('<KeyRelease>', lambda event: usuario())
                                                          ))
 
@@ -139,12 +139,12 @@ class telalogin:
                                 textvariable=email_var,
                                 width=30)
         email_entry.pack(ipady=15,pady=5)
-        email_entry.bind('<ButtonRelease>',lambda event: (email_var.set(value=''),
-                                                         email_entry.unbind('<ButtonRelease>'),
+        email_entry.bind('<FocusIn>',lambda event: (email_var.set(value=''),
+                                                         email_entry.unbind('<FocusIn>'),
                                                          email_entry.bind('<KeyRelease>', lambda event: email())
                                                          ))
         
-        def senha():
+        def senha(*args):
             senha = cadastro.credenciais(senha=senha_var.get())
             senha = senha.passw()
             if senha != True:
@@ -163,7 +163,7 @@ class telalogin:
                                 textvariable=senha_var,
                                 width=30)
         senha_entry.pack(ipady=15,pady=5,padx=(0,0),side='left')
-        senha_entry.bind('<ButtonRelease>',lambda event: senha_var.set(value=''))
+        senha_entry.bind('<FocusIn>',lambda event: senha_var.set(value=''))
         senha_var.trace('w',lambda *args: esconder_senha())
         
         ver_senha=ttk.Button(senha_frame,width=2,command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
@@ -179,7 +179,7 @@ class telalogin:
         gerar_senha = ttk.Button(senha_frame,width=2,command=gerarsenha)
         gerar_senha.pack(padx=(5,0),side='right')
 
-        def confirmar_senha():
+        def confirmar_senha(*args):
             confirmar_senha = confirmar_senha_var.get()
             senha = senha_var.get()
             if confirmar_senha != senha:
@@ -196,14 +196,14 @@ class telalogin:
                                           textvariable=confirmar_senha_var,
                                           width=30)
         confirmar_senha_entry.pack(ipady=15,pady=5)
-        confirmar_senha_entry.bind('<ButtonRelease>',lambda event: confirmar_senha_var.set(value=''))
+        confirmar_senha_entry.bind('<FocusIn>',lambda event: confirmar_senha_var.set(value=''))
         
         confirmar_senha_var.trace('w',lambda *args: esconder_senha(entry=confirmar_senha_entry,
                                                                    comando=confirmar_senha))
         
         def esconder_senha(ver='esconder',entry=senha_entry,comando=senha,entry1=''):
             if ver=='esconder':
-                entry.unbind('<ButtonRelease>'),
+                entry.unbind('<FocusIn>'),
                 entry.configure(show='*')
                 entry.bind('<KeyRelease>', comando)
                 
