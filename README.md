@@ -13,16 +13,16 @@ Para Rodar o código clone o repositório e instale as dependencias que estão n
 ### Windows
 Rode no Powershell / Terminal: 
 
-`python -m pip install -r requirements.txt`
+        python -m pip install -r requirements.txt
 
 ### Linux
 Rodando o seguinte comando deve funcionar:
 
-`pip3 install -r requirements.txt`
+        pip3 install -r requirements.txt
 
 Em algumas distribuições com mecanismo de proteção aos pacotes do sistema (ex: OpenSuse Tumbleweed), o comando acima pode dar erro. Se acontecer utilize este:
 
-`pip3 install -r requirements.txt --break-system-packages`
+        pip3 install -r requirements.txt --break-system-packages
 
 tente trocar pip3 por pip caso nenhum dos dois funcione.
 
