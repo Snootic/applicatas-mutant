@@ -24,7 +24,7 @@ class InserirDados:
         
     def alterarUser(self):
         user = verificarusuario.usuario(usuario = self.usuario)
-        if user != None:
+        if user == None:
             return user
         else:
             self.cursor.execute(f'UPDATE credenciais SET usuario="{self.usuario}"')
@@ -32,7 +32,7 @@ class InserirDados:
             
     def alterarEmail(self):
         Email = verificarusuario.usuario(email = self.email)
-        if Email != None:
+        if Email == None:
             return Email
         else:
             self.cursor.execute(f'UPDATE credenciais SET email="{self.email}"')
@@ -40,7 +40,7 @@ class InserirDados:
             
     def alterarSenha(self):
         password = verificarusuario.usuario(self.senha)
-        if password != None:
+        if password == None:
             return password
         else:
             self.cursor.execute(f'UPDATE credenciais SET senha="{self.senha}"')
