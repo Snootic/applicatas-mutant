@@ -70,13 +70,13 @@ class telalogin:
                                        style='TCheckbutton',
                                        bootstyle='info')
         # manter_secao.configure(font='Nexa 11')
-        manter_secao.place(x=165,y=450,anchor='center')
+        manter_secao.place(x=165,y=460,anchor='center')
         
         esqueci_senha_var = StringVar(value='Esqueci minha senha')
         esqueci_senha = ttk.Button(self.login,
                                    textvariable=esqueci_senha_var,
                                    style='Estilo1.Link.TButton')
-        esqueci_senha.place(x=420,y=450,anchor='center')
+        esqueci_senha.place(x=420,y=460,anchor='center')
         
         registrar_label = ttk.Label(text='Não tem conta?',
                                     style='Comum.TLabel')
