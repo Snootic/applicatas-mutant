@@ -96,6 +96,8 @@ class telalogin:
         registrar_label.place(x=210,y=550,anchor='center')
         registrar.place(x=365, y=550, anchor='center')
         
+        self.login.protocol("WM_DELETE_WINDOW", self.login.destroy)
+        
         self.login.mainloop()
         
         
