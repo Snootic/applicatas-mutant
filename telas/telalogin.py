@@ -65,7 +65,6 @@ class telalogin:
             
         def logando(user, senha, manter_secao=False):
             global inicio
-            print(user,senha,manter_secao)
             log = login.login(user,senha,manter_secao)
             retorno.configure(text=log)
             if log == 'Logado':
@@ -118,7 +117,7 @@ class telalogin:
         registro.resizable(False, False)
         registro.title('Registrar-se')
 
-        titulo = Label(registro, text='Registrar-se', font='Nexa 20')
+        titulo = ttk.Label(registro, text='Registrar-se', font='Nexa 20')
         titulo.pack(pady=20)
         
         retorno = ttk.Label(registro, style='Comum.TLabel', text='')
