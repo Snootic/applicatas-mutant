@@ -54,12 +54,13 @@ class telalogin:
         def logando():
             global inicio
             log = login.login(self.user_var.get(),self.senha_var.get())
-            retorno.configure(text='')
-            self.senha_entry.destroy()
-            self.user_entry.destroy()
-            user_entry(self)
-            senha_entry(self)
+            retorno.configure(text=log)
             if log == 'Logado':
+                retorno.configure(text='')
+                self.senha_entry.destroy()
+                self.user_entry.destroy()
+                user_entry(self)
+                senha_entry(self)
                 self.login.withdraw()
                 inicio = telainicial.inicio(self.login)
         
