@@ -5,28 +5,48 @@ import ttkbootstrap as ttk
 from telas import telalogin
 from data import edit_config
 
+if __name__ == '__main__':
+    tela_login = telalogin.telalogin()
+
 class Tela:
+    tela_login = ''
     def __init__(self, janela='', titulo=''):
         self.janela = janela
         self.janela.title(titulo)
+        
+        if (self.janela.title()) == 'Peraeque - Login':
+            global tela_login
+            tela_login = self.janela
+
         self.TELA_LARGURA = self.janela.winfo_screenwidth()
         self.TELA_ALTURA = self.janela.winfo_screenheight()
 
     def centralizarTela(self,largura,altura):
             janela_largura = largura
             janela_altura = altura
-            HORIZONTAL = int(self.TELA_LARGURA /2 - janela_largura / 2)
-            VERTICAL = int(self.TELA_ALTURA /2 - janela_altura /2)
+            MONITOR_HORIZONTAL = int(self.TELA_LARGURA /2 - janela_largura / 2)
+            MONITOR_VERTICAL = int(self.TELA_ALTURA /2 - janela_altura /2)
             
-            self.janela.geometry(f'{janela_largura}x{janela_altura}+{HORIZONTAL}+{VERTICAL}')
+            self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
             
     def menu(self):
-        self.menu = Menu(self.janela)
-        self.importar_menu = ttk.Menu(self.menu, tearoff=False)
-        self.importar_menu.add_command(label = 'Importar CSV', command = lambda: print('alo'))
-        self.importar_menu.add_command(label = 'Importar XSLS', command = lambda: print('yes'))
-        self.menu.add_cascade(label='Importar', menu = self.importar_menu)
-    
+        self.menu_principal = ttk.Menu(self.janela)
+        
+        self.arquivo_menu = ttk.Menu(self.menu_principal, tearoff=False)
+        self.arquivo_menu.add_command(label='Abrir arquivo', command=lambda: print('pinto'))
+        self.arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('pinto'))
+        self.arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('pinto'))
+        self.arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(), tela_login.deiconify()))
+        self.arquivo_menu.add_command(label='Fechar', command=lambda: (self.janela.destroy(), tela_login.destroy()))
+        
+        self.importar_menu = ttk.Menu(self.menu_principal, tearoff=False)
+        self.importar_menu.add_command(label='Importar CSV', command=lambda: print('alo'))
+        self.importar_menu.add_command(label='Importar XSLS', command=lambda: print('yes'))
+        
+        self.menu_principal.add_cascade(label='Arquivo', menu=self.arquivo_menu)
+        self.menu_principal.add_cascade(label='Importar', menu=self.importar_menu)
+        self.janela.config(menu=self.menu_principal)
+        
 class Estilo:
     tema = edit_config.getTema()
     Tfonte = 'Nexa 20'
@@ -48,8 +68,3 @@ class centralizar_widget:
         tela = Tela(janela=tela)
         self.x = ((tela.TELA_LARGURA - widget.winfo_width()) // 2)
         self.y = ((tela.TELA_ALTURA - widget.winfo_height()) // 2) 
-
-if __name__ == '__main__':
-    telalogin.telalogin()
-    # app = telalogin.telalogin()
-    # app.run()

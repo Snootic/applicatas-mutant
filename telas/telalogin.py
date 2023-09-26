@@ -1,11 +1,9 @@
-# import os
-# import sys
+
 from tkinter import *
 import ttkbootstrap as ttk
-# CAMINHO_PROJETO = os.getcwd()
-# sys.path.insert(0, CAMINHO_PROJETO)
 from app import *
 from data.auth import login, cadastro
+from telas import telainicial
 
 #TODO: Achar uma forma de trocar cor do texto das label do TTKBOOTSTRAP
 
@@ -34,25 +32,36 @@ class telalogin:
         retorno.place(x=300,y=345,anchor='center')
         retorno.update_idletasks()
         
-        user_var = StringVar(value='Usuário / E-mail')
-        user_entry = ttk.Entry(self.login,
-                               textvariable=user_var,
-                               width=39,
-                               font=self.estilo.fonte)
-        user_entry.place(x=300,y=200,anchor='center', height=60)
-        user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
-                                                         user_entry.unbind('<FocusIn>')))
-        
-        senha_var = StringVar(value='Senha')
-        senha_entry = ttk.Entry(self.login, textvariable=senha_var, width=39, font=self.estilo.fonte)
-        senha_entry.place(x=300,y=280,anchor='center', height=60)
-        senha_entry.bind('<FocusIn>',lambda event: (senha_var.set(value=''),
-                                                          senha_entry.unbind('<FocusIn>'),
-                                                          senha_entry.configure(show='*')))
+        def user_entry(self):
+            self.user_var = StringVar(value='Usuário / E-mail')
+            self.user_entry = ttk.Entry(self.login,
+                                textvariable=self.user_var,
+                                width=39,
+                                font=self.estilo.fonte)
+            self.user_entry.place(x=300,y=200,anchor='center', height=60)
+            self.user_entry.bind('<FocusIn>',lambda event: (self.user_var.set(value=''),
+                                                            self.user_entry.unbind('<FocusIn>')))
+        def senha_entry(self):
+            self.senha_var = StringVar(value='Senha')
+            self.senha_entry = ttk.Entry(self.login, textvariable=self.senha_var, width=39, font=self.estilo.fonte)
+            self.senha_entry.place(x=300,y=280,anchor='center', height=60)
+            self.senha_entry.bind('<FocusIn>',lambda event: (self.senha_var.set(value=''),
+                                                            self.senha_entry.unbind('<FocusIn>'),
+                                                            self.senha_entry.configure(show='*')))
+        user_entry(self)
+        senha_entry(self)
         
         def logando():
-            log = login.login(user_var.get(),senha_var.get())
-            retorno.configure(text=log)
+            global inicio
+            log = login.login(self.user_var.get(),self.senha_var.get())
+            retorno.configure(text='')
+            self.senha_entry.destroy()
+            self.user_entry.destroy()
+            user_entry(self)
+            senha_entry(self)
+            if log == 'Logado':
+                self.login.withdraw()
+                inicio = telainicial.inicio(self.login)
         
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
