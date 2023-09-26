@@ -90,12 +90,30 @@ def editUser(usuario):
                 linhas[i] = 'user = '+usuario+'\n'
                 configuracoes.writelines(linhas)
                 
+def editSenha(senha):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'senha':
+                linhas[i] = 'senha = '+senha+'\n'
+                configuracoes.writelines(linhas)
+                
 def getUser():
     itens = LerConfig('itens')
     for i in range(len(itens)):
         if itens[i][0] == 'user':
             usuario = itens[i][1]
             return usuario
+        
+def getSenha():
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'senha':
+            senha = itens[i][1]
+            return senha
 
 def getTema():
     itens = LerConfig('itens')

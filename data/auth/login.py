@@ -1,14 +1,19 @@
 from data.auth import cadastro, verificarusuario
-from data.edit_config import editUser
+from data.edit_config import editUser,editSenha
 
-def login(usuario,senha):
-    credenciais = cadastro.credenciais(senha=senha)
-    senha_encriptada = credenciais.EncriptarSenha()
-    verificar = verificarusuario.usuario(usuario=usuario,email=usuario,senha=senha_encriptada)
+def login(usuario,senha,secao=''):
+    if len(senha) > 16:
+        verificar = verificarusuario.usuario(usuario=usuario,email=usuario,senha=senha)
+    else:
+        credenciais = cadastro.credenciais(senha=senha)
+        senha_encriptada = credenciais.EncriptarSenha()
+        verificar = verificarusuario.usuario(usuario=usuario,email=usuario,senha=senha_encriptada)
     if verificar.verificarUsuario() and verificar.verificarEmail():
         return 'Usuário ou E-mail não cadastrados'
     elif not verificar.verificarSenha():
         return 'Senha incorreta'
     else:
-        editUser(usuario)
+        if secao:
+            editUser(usuario)
+            editSenha(senha_encriptada)
         return 'Logado'

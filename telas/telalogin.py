@@ -1,9 +1,9 @@
-
 from tkinter import *
 import ttkbootstrap as ttk
 from app import *
 from data.auth import login, cadastro
 from telas import telainicial
+from data.edit_config import getUser, getSenha
 
 #TODO: Achar uma forma de trocar cor do texto das label do TTKBOOTSTRAP
 
@@ -51,36 +51,41 @@ class telalogin:
         user_entry(self)
         senha_entry(self)
         
-        def logando():
+        def manter_logado(self):
+            self.texto_secao_var = StringVar(value='Manter seção')
+            self.manter_secao_var= BooleanVar(value=False)
+            self.manter_secao = ttk.Checkbutton(self.login,
+                                        var=self.manter_secao_var,
+                                        textvariable=self.texto_secao_var,
+                                        style='TCheckbutton',
+                                        bootstyle='info')
+            self.manter_secao.place(x=165,y=460,anchor='center')
+            
+        manter_logado(self)
+            
+        def logando(user, senha, manter_secao=False):
             global inicio
-            log = login.login(self.user_var.get(),self.senha_var.get())
+            print(user,senha,manter_secao)
+            log = login.login(user,senha,manter_secao)
             retorno.configure(text=log)
             if log == 'Logado':
                 retorno.configure(text='')
                 self.senha_entry.destroy()
                 self.user_entry.destroy()
+                self.manter_secao_var.set(value=False)
                 user_entry(self)
                 senha_entry(self)
                 self.login.withdraw()
                 inicio = telainicial.inicio(self.login)
-        
+                
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
                            width=38,
                            textvariable=logar_var,
                            style='Estilo1.info.TButton',
-                           command=logando)
+                           command=lambda: logando(self.user_var.get(),self.senha_var.get(),self.manter_secao_var.get()))
         logar.place(x=300,y=400,anchor='center', height=70)
         
-        texto_secao_var = StringVar(value='Manter seção')
-        manter_secao_var= BooleanVar(value=False)
-        manter_secao = ttk.Checkbutton(self.login,
-                                       var=manter_secao_var,
-                                       textvariable=texto_secao_var,
-                                       style='TCheckbutton',
-                                       bootstyle='info')
-        # manter_secao.configure(font='Nexa 11')
-        manter_secao.place(x=165,y=460,anchor='center')
         
         esqueci_senha_var = StringVar(value='Esqueci minha senha')
         esqueci_senha = ttk.Button(self.login,
@@ -97,6 +102,12 @@ class telalogin:
         registrar.place(x=365, y=550, anchor='center')
         
         self.login.protocol("WM_DELETE_WINDOW", self.login.destroy)
+        try:
+            usuario = getUser()
+            senha = getSenha()
+            logando(usuario,senha)
+        except Exception as e:
+            retorno.configure(text=e)
         
         self.login.mainloop()
         
