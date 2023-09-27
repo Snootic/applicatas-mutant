@@ -13,7 +13,7 @@ def LerConfig(argumento):
     'linhas': retorna as configurações brutas ->
     'dirtab': retorna diretorio da schema mais recente ->
     """
-    CAMINHO_CONFIG = (os.path.abspath('data/app_config_debug.txt'))
+    CAMINHO_CONFIG = (os.path.abspath('data/app_config.txt'))
     dir_schema = None
     
     with open(CAMINHO_CONFIG, 'r', encoding='utf-8') as configuracoes:

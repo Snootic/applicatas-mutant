@@ -1,9 +1,5 @@
 import sqlite3
 from pandas import *
-import os
-import sys
-CAMINHO_PROJETO = os.getcwd()
-sys.path.insert(0, CAMINHO_PROJETO)
 from data import edit_config #ler_configuracao
 
 #TODO: melhorar a semantica do sqlite + estudar uma forma mais otimizada de executar o código
@@ -58,7 +54,6 @@ class pareto:
                     items_ordenados[i] += (frequencia_relativa, '-')
                 
             pareto_sql = DataFrame(items_ordenados, columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
-            print(pareto_sql)
             return pareto_sql
         else:
             pass

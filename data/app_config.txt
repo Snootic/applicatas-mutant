@@ -1,4 +1,6 @@
-tema = darkly
+tema = cyborg
+ultimo_schema = 
 ultima_tabela = 
-tabela_caminho = 
-user =
+schema_caminho = 
+user = 
+senha = 

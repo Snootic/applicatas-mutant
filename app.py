@@ -1,12 +1,8 @@
 '''Arquivo principal do programa'''
 
-from tkinter import *
+# from tkinter import *
 import ttkbootstrap as ttk
-from telas import telalogin
 from data import edit_config
-
-if __name__ == '__main__':
-    tela_login = telalogin.telalogin()
 
 class Tela:
     tela_login = ''
@@ -54,15 +50,21 @@ class Estilo:
     Sfonte = 'Nexa 10'
     def __init__(self):
         self.style = ttk.Style(self.tema)
+        cores = self.style._theme_definitions.get(self.tema)
+        self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
+        self.style.configure('Estilo1.TButton', font=self.fonte)
         self.style.configure('Estilo1.info.TButton', font=self.fonte)
-        self.style.configure('Estilo1.Link.TButton', font=self.Sfonte)
-        self.style.configure('Titulo.TLabel', font=self.Tfonte)
+        self.style.configure('Estilo1.Link.TButton', font=self.Sfonte,
+                            focuscolor=cores.colors.warning,
+                            foreground=cores.colors.warning,)
+        self.style.configure('Estilo2.Link.TButton', font=self.fonte,
+                             focuscolor=cores.colors.warning,
+                             foreground=cores.colors.warning,
+                             )
+        self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=cores.colors.info)
         self.style.configure('Comum.TLabel', font=self.fonte)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
-        self.style.configure('Estilo2.Link.TButton', font=self.fonte, fg='red')
-        # self.style.configure('TEntry', font=self.fonte)
-
 class centralizar_widget:
     def __init__(self, tela, widget):
         tela = Tela(janela=tela)

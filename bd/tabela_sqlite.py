@@ -1,7 +1,4 @@
 import os
-import sys
-CAMINHO_PROJETO = os.getcwd()
-sys.path.insert(0, CAMINHO_PROJETO)
 import sqlite3
 from data import edit_config
 
@@ -21,7 +18,6 @@ class tabela:
         return CAMINHO_SCHEMA
     
     def CriarBD(self):
-        usuario = edit_config.getUser()
         CAMINHO_SCHEMA = self.CriarDirSchema()
         
         tabela = sqlite3.connect(CAMINHO_SCHEMA)
@@ -29,6 +25,10 @@ class tabela:
         cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
         ocorrencias VARCHAR,
         custo REAL DEFAULT NULL)''')
+        cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
+        resultado = cursor.fetchone()
+        if resultado[0] == 1:
+            return 'tabela_existe'
         
     def addValor(self, ocorrencias, custo=''): #Tabela, ocorrencias e custo (opcional)
         usuario = edit_config.getUser()
