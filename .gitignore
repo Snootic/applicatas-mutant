@@ -4,7 +4,7 @@ __pycache__
 teste.py
 *.csv
 *.txt
-*.xsls
+*.xlsx
 *.db-journal
 
 !app_config.txt
