@@ -39,7 +39,7 @@ def LerConfig(argumento):
 def EditarTabela(table):
     tabela1 = tabela()
     user = getUser()
-    CAMINHO_SCHEMA = tabela1.CriarDirSchema(user)
+    CAMINHO_SCHEMA = tabela1.CriarDirSchema()
     CAMINHO_CONFIG = LerConfig('config')
     itens = LerConfig('itens')
     linhas = LerConfig('linhas')
@@ -100,7 +100,18 @@ def editSenha(senha):
             if itens[i][0] == 'senha':
                 linhas[i] = 'senha = '+senha+'\n'
                 configuracoes.writelines(linhas)
-                
+
+def editSchema(schema):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'schema_caminho':
+                linhas[i] = 'schema_caminho = '+schema+'\n'
+                configuracoes.writelines(linhas)
+    
 def getUser():
     itens = LerConfig('itens')
     for i in range(len(itens)):

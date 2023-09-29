@@ -22,13 +22,16 @@ class tabela:
         
         tabela = sqlite3.connect(CAMINHO_SCHEMA)
         cursor = tabela.cursor()
-        cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
-        ocorrencias VARCHAR,
-        custo REAL DEFAULT NULL)''')
         cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
         resultado = cursor.fetchone()
         if resultado[0] == 1:
-            return 'tabela_existe'
+            return 'Tabela já existe'
+        else:
+            cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+                            ocorrencias VARCHAR,
+                            custo REAL DEFAULT NULL)''')
+            edit_config.EditarTabela(self.tabela)
+            return 'Tabela Criada'
         
     def addValor(self, ocorrencias, custo=''): #Tabela, ocorrencias e custo (opcional)
         usuario = edit_config.getUser()

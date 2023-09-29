@@ -5,10 +5,7 @@ class sql_tabela:
     def criar_tabela(self,nome_tabela):
         tabela_sqlite = tabela(table=nome_tabela)
         criar_tabela = tabela_sqlite.CriarBD()
-        if criar_tabela == 'tabela_existe':
-            return 'Tabela já existe'
-        else:
-            return 'Tabela Criada'
+        return criar_tabela
         
     def adicionar_itens_tabela(self,tabela):
         tabela_sqlite = tabela(table=tabela)
@@ -18,4 +15,3 @@ class sql_tabela:
                 break
             else:
                 self.tabela_sqlite.addValor(ocorrencia)
-        edit_config.EditarTabela(self.nome_tabela)

@@ -64,6 +64,7 @@ class inicio:
             criar_tabela = criar_tabela.criar_tabela(criar_tabela_var.get())
             criar_tabela_label.configure(text=criar_tabela)
             tabela_atual.configure(text=criar_tabela_var.get())
+            analise_pareto()
         
         criar_tabela_entry.pack(padx=(10,0),ipady=5,side=LEFT)
         criar_tabela_botao.pack(padx=(0,10),side=RIGHT)
@@ -72,24 +73,30 @@ class inicio:
         
         tabela_atual = ttk.Label(Frame_geral,text=f'tabela',style='Titulo.TLabel')
         tabela_atual.pack()
-        
         sqlite = pareto()
-        DataFrame=sqlite.sqlite()
-        colunas=list(DataFrame)
-        colunas_novas = []
-        for item in colunas:
-            if isinstance(item, str):
-                dicionario = {"text": item, "stretch": True, "width": 120}
-            elif isinstance(item, dict):
-                dicionario = item
-            colunas_novas.append(dicionario)
-            
-        dados=DataFrame.to_numpy().tolist()
+        def analise_pareto():
+            global colunas_novas, dados
+            DataFrame=sqlite.sqlite()
+            colunas=list(DataFrame)
+            colunas_novas = []
+            for item in colunas:
+                if isinstance(item, str):
+                    dicionario = {"text": item, "stretch": True, "width": 120}
+                elif isinstance(item, dict):
+                    dicionario = item
+                colunas_novas.append(dicionario)
+
+            dados=DataFrame.to_numpy().tolist()
+            pareto_tabela.insert_rows(index = 'end', rowdata = dados)
         
         pareto_tabela = Tableview(
             Frame_geral,
-            coldata=colunas_novas,
-            rowdata=dados,
+            coldata=[{"text": "Ocorrências", "stretch": True, "width": 120},
+                     {"text": "No. Ocorrências", "stretch": True, "width": 120},
+                     {"text": "Freq. Relativa", "stretch": True, "width": 120},
+                     {"text": "Freq. Acumulada", "stretch": True, "width": 120}
+                     ],
+            rowdata=[],
             autofit=True,
             autoalign=False,
             stripecolor=(colors.active, None)
