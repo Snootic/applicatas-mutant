@@ -203,7 +203,7 @@ class inicio:
             color1 = 'royalblue'
             color2 = 'black'
 
-            fig,ax1 = plt.subplots(figsize=(12,6))
+            fig,ax1 = plt.subplots(figsize=(15,10))
 
             ax1.set_title('Pareto')
 
