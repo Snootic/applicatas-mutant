@@ -11,6 +11,13 @@ import matplotlib.pyplot as plt
 # Funcoes de importação de xlsx e csv
 # Salvamento de arquivos em tabelas sqlite
 # exportacao de arquivos em xlsx e csv
+# bind nas entry de adicionar e alterar ocorrencia
+# adicionar custo em tabelas com zero dados e tabelas com custo ja adicionado
+# descobrir uma forma de editar apenas uma quantidade específica de uma ocorrencia no sqlite
+# notebook
+# melhorar layout dos botoes para caber o resto que precisa ser adicionado e o notebook futuramente
+# mudança de tema
+# apagar dados do usuario na saída, caso o manter login não esteja ativado
 
 
 class inicio:
@@ -118,7 +125,7 @@ class inicio:
                                     font=self.estilo.fonte)
         adicionar_itens.place(relx=0.03,y=10)
         
-        quantidade_ocorrencia_var = ttk.IntVar()
+        quantidade_ocorrencia_var = ttk.IntVar(value=1)
         quantidade_ocorrencia = ttk.Spinbox(adicionar_itens_frame,
                                             textvariable=quantidade_ocorrencia_var,
                                             width=10,

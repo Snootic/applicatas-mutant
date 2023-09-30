@@ -5,7 +5,9 @@ from data.auth import login, cadastro
 from telas import telainicial
 from data.edit_config import getUser, getSenha
 
-#TODO: Achar uma forma de trocar cor do texto das label do TTKBOOTSTRAP
+#TODO:
+# melhorar a segurança do login automatico
+# mudar a cor das bordas das entry em caso de erro
 
 
 class telalogin:
@@ -104,7 +106,10 @@ class telalogin:
         try:
             usuario = getUser()
             senha = getSenha()
-            logando(usuario,senha)
+            if usuario == '' and senha == '':
+                pass
+            else:
+                logando(usuario,senha)
         except Exception as e:
             retorno.configure(text=e)
         
