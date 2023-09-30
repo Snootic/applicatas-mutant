@@ -23,7 +23,8 @@ class pareto:
         cursor.execute(f'SELECT COUNT(ocorrencias) FROM {tabela}')
         if cursor.fetchall()[0][0] == 0:
             pareto_sql = DataFrame(columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
-            return pareto_sql
+            pareto_tkinter = DataFrame(columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
+            return pareto_sql, pareto_tkinter
         else:
             cursor.execute(f'SELECT COUNT(*) FROM {tabela} WHERE custo IS NULL')
             if cursor.fetchall()[0][0] > 0:
@@ -44,22 +45,32 @@ class pareto:
                 items_ordenados = sorted(items, key=lambda item_maior: item_maior[1], reverse=True)
                 items_ordenados.append(('Total',total_ocorrencias))
                 
+                itens_tableview = items_ordenados[:]
+                
                 for i in range(len(items_ordenados)):
                     frequencia_relativa = items_ordenados[i][1] / items_ordenados[-1][1]
                     frequencia_relativa *= 100
                     if i == 0:
                         frequencia_acumulada = frequencia_relativa
                         items_ordenados[i] += (frequencia_relativa, frequencia_acumulada)
+                        itens_tableview[i] += (f'{frequencia_relativa:.2f}%', f'{frequencia_acumulada:.2f}%')
                         
                     elif items_ordenados[i] != items_ordenados[-1]:
                         frequencia_acumulada = items_ordenados[i-1][3] + frequencia_relativa
-                        items_ordenados[i] += (frequencia_relativa, frequencia_acumulada)
+                        if frequencia_acumulada > 99.99:
+                            items_ordenados[i] += (frequencia_relativa, frequencia_acumulada)
+                            itens_tableview[i] += (f'{frequencia_relativa:.2f}%', f'{frequencia_acumulada:.2f}%')
+                        else:
+                            items_ordenados[i] += (frequencia_relativa, frequencia_acumulada)
+                            itens_tableview[i] += (f'{frequencia_relativa:.2f}%', f'{frequencia_acumulada:.2f}%')
                         
                     else:
-                        items_ordenados[i] += (frequencia_relativa, '-')
+                        # items_ordenados[i] += (frequencia_relativa,)
+                        itens_tableview[i] += (f'{frequencia_relativa:.2f}%', '-')
                     
                 pareto_sql = DataFrame(items_ordenados, columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
-                return pareto_sql
+                pareto_tkinter = DataFrame(itens_tableview, columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
+                return pareto_sql, pareto_tkinter
             else:
                 pass
             

@@ -1,6 +1,3 @@
-'''Arquivo principal do programa'''
-
-# from tkinter import *
 import ttkbootstrap as ttk
 from data import edit_config
 
@@ -65,6 +62,8 @@ class Estilo:
         self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=cores.colors.info)
         self.style.configure('Comum.TLabel', font=self.fonte)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
+        self.style.configure('TCombobox', font=self.fonte)
+        
 class centralizar_widget:
     def __init__(self, tela, widget):
         tela = Tela(janela=tela)

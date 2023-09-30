@@ -1,6 +1,6 @@
 from tkinter import *
 import ttkbootstrap as ttk
-from app import *
+from telas.app import *
 from data.auth import login, cadastro
 from telas import telainicial
 from data.edit_config import getUser, getSenha

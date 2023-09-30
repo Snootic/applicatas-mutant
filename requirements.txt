@@ -2,3 +2,4 @@ tk
 ttkbootstrap
 pandas
 validate_email
+matplotlib

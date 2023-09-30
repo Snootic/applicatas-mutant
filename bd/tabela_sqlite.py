@@ -33,23 +33,26 @@ class tabela:
             edit_config.EditarTabela(self.tabela)
             return 'Tabela Criada'
         
-    def addValor(self, ocorrencias, custo=''): #Tabela, ocorrencias e custo (opcional)
-        usuario = edit_config.getUser()
-        
+    def addValor(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
         schema = self.CriarDirSchema()
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
         
-        if custo != '':
-            cursor.execute(f"INSERT INTO {self.tabela} VALUES(?,?)", (ocorrencias, custo))
-        else:
-            cursor.execute(f"INSERT INTO {self.tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
-        schema.commit()
+        tabela = edit_config.getTabela()
         
-    def atualizar_ocorrencia(self,tabela,ocorrenciaatual,novaocorrencia,quantidade=''):
+        for i in range(quantidade):
+            if custo != '':
+                cursor.execute(f"INSERT INTO {tabela} VALUES(?,?)", (ocorrencias, custo))
+            else:
+                cursor.execute(f"INSERT INTO {tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
+            schema.commit()
+        
+    def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=''):
         schema = self.CriarDirSchema()
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
+        
+        tabela = edit_config.getTabela()
         
         cursor.execute(f'SELECT ocorrencias from {tabela} WHERE ocorrencias="{ocorrenciaatual}"')
         sim = cursor.fetchall()
@@ -60,7 +63,20 @@ class tabela:
         cursor.execute(f'SELECT ocorrencias from {tabela} WHERE ocorrencias="{novaocorrencia}"')
         nao = cursor.fetchall()
         
-        return sim, nao
+        # return sim, nao
         
     def atualizar_custo(self,):
         pass
+    
+    def getTabelas(self):
+        schema = self.CriarDirSchema()
+        schema = sqlite3.connect(schema)
+        cursor = schema.cursor()
+        
+        cursor.execute(f"SELECT name FROM sqlite_master")
+        resultado = cursor.fetchall()
+        
+        return resultado
+    
+    def SelectTabela(self, tabela):
+        edit_config.EditarTabela(tabela)

@@ -1,6 +1,6 @@
 tema = cyborg
 ultimo_schema = kaik.db
-ultima_tabela = qwetr
+ultima_tabela = pareto
 schema_caminho = /home/snootic/Documentos/pareto/data/users/sqlite_databases/kaik.db
 user = kaik
 senha = 168953cbc37ce9db6e48fa30e0f28e9c1b5d81349eb0375939e50a3d9a4e6b69
