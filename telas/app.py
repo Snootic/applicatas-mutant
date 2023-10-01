@@ -1,8 +1,11 @@
 import ttkbootstrap as ttk
-import asyncio
+from tkinter import filedialog
 from data import edit_config
+from bd import tabela_pareto
+from telas.telainicial import inicio
 
 class Tela:
+    instancia_com_tabela=None
     def __init__(self, janela='', titulo=''):
         self.janela = janela
         self.janela.title(titulo)
@@ -35,31 +38,41 @@ class Tela:
         estilo = Estilo()
 
     def menu(self):
-        self.menu_principal = ttk.Menu(self.janela)
+        menu_principal = ttk.Menu(self.janela)
         
-        self.arquivo_menu = ttk.Menu(self.menu_principal, tearoff=False)
-        self.arquivo_menu.add_command(label='Abrir arquivo', command=lambda: print('teste'))
-        self.arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('teste'))
-        self.arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('teste'))
-        self.arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
+        arquivo_menu = ttk.Menu(menu_principal, tearoff=False)
+        arquivo_menu.add_command(label='Abrir arquivo', command=lambda: print('teste'))
+        arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('teste'))
+        arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('teste'))
+        arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
                                                                      tela_login.deiconify(),
                                                                      edit_config.apagar_dados()))
-        self.arquivo_menu.add_command(label='Fechar', command=lambda: (self.janela.destroy(),
+        arquivo_menu.add_command(label='Fechar', command=lambda: (self.janela.destroy(),
                                                                        tela_login.destroy(),
                                                                        edit_config.apagar_dados()))
         
-        self.importar_menu = ttk.Menu(self.menu_principal, tearoff=False)
-        self.importar_menu.add_command(label='Importar CSV', command=lambda: print('alo'))
-        self.importar_menu.add_command(label='Importar XSLS', command=lambda: print('yes'))
+        def import_arquivo(tipo):
+            if tipo=='csv':
+                arquivo = filedialog.askopenfilename(filetypes=[("CSV", ".csv .txt")])
+                csv = tabela_pareto.pareto()
+                matplot, tabela = csv.csv(arquivo)
+                self.instancia_com_tabela.analise_pareto(tabela=tabela, grafico=matplot)
+                
+            else:
+                arquivo = filedialog.askopenfilename(filetypes=[("Arquivos Excel", ".xlsx .xls")])
         
-        self.programa_menu = ttk.Menu(self.menu_principal, tearoff=False)
-        self.programa_menu.add_command(label='Trocar Tema', command=lambda: self.trocar_tema())
-        self.programa_menu.add_command(label='Versão: 0.1')
+        importar_menu = ttk.Menu(menu_principal, tearoff=False)
+        importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))
+        importar_menu.add_command(label='Importar arquivo Excel', command=lambda: import_arquivo(tipo='xlsx'))
         
-        self.menu_principal.add_cascade(label='Arquivo', menu=self.arquivo_menu)
-        self.menu_principal.add_cascade(label='Importar', menu=self.importar_menu)
-        self.menu_principal.add_cascade(label='Programa', menu=self.programa_menu)
-        self.janela.config(menu=self.menu_principal)
+        programa_menu = ttk.Menu(menu_principal, tearoff=False)
+        programa_menu.add_command(label='Trocar Tema', command=lambda: self.trocar_tema())
+        programa_menu.add_command(label='Versão: 0.1')
+        
+        menu_principal.add_cascade(label='Arquivo', menu=arquivo_menu)
+        menu_principal.add_cascade(label='Importar', menu=importar_menu)
+        menu_principal.add_cascade(label='Programa', menu=programa_menu)
+        self.janela.config(menu=menu_principal)
         
 class Estilo:
     tema = edit_config.getTema()

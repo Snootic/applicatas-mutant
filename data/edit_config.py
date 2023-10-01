@@ -1,5 +1,4 @@
 from bd.sqlite import *
-import asyncio
 
 def LerConfig(argumento):
     """

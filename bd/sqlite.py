@@ -81,10 +81,7 @@ class tabela:
         cursor.execute(f"SELECT name FROM sqlite_master")
         resultado = cursor.fetchall()
         
-        try:
-            resultado.remove(resultado[-1])
-        except IndexError:
-            pass
+        resultado = [tabela for tabela in resultado if tabela[0] != 'sqlite_sequence']
                 
         return resultado
     

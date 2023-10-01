@@ -1,8 +1,9 @@
 import sqlite3
 from pandas import *
-from data import edit_config #ler_configuracao
+from data import edit_config
+import numpy as np
 
-#TODO: melhorar a semantica do sqlite + estudar uma forma mais otimizada de executar o código
+#TODO: estudar uma forma mais otimizada de executar o código
 # Importar CSV/TXT e XSLS para análise de pareto
 
 
@@ -74,8 +75,27 @@ class pareto:
             else:
                 pass
             
-    def csv():
-        pass
-
-    def xsls():
+    def csv(self,arquivo):
+        tabela = read_csv(arquivo,sep=',')
+        matplot = ''
+        if len(tabela) > 2:
+            matplot = tabela[:]
+            matplot["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
+            matplot.at[matplot.shape[0] - 1, "Freq. Acumulada"] = np.nan
+            matplot.at[matplot.shape[0] - 1, "Freq. Relativa"] = np.nan
+            
+            tabela_total = tabela.iloc[-1:].copy()
+            tabela_total = tabela_total.to_numpy().tolist()
+            tabela_total[0][2] = '100.00%'
+            tabela = tabela.iloc[:-1]
+            tabela["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
+            tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
+            tabela["Freq. Acumulada"] = tabela["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
+            tabela.loc[-1] = tabela_total[0]
+            
+        else:
+            pass
+        return matplot, tabela
+        
+    def xsls(self):
         pass
