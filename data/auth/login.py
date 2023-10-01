@@ -1,6 +1,6 @@
 from data.auth import cadastro, verificarusuario
 from data.edit_config import editUser,editSenha,editSchema
-from bd import tabela_sqlite
+from bd import sqlite
 
 def login(usuario,senha,secao=''):
     if len(senha) > 16:
@@ -17,7 +17,7 @@ def login(usuario,senha,secao=''):
         if secao:
             editSenha(senha_encriptada)
         editUser(usuario)
-        SCHEMA = tabela_sqlite.tabela()
+        SCHEMA = sqlite.tabela()
         SCHEMA = SCHEMA.CriarDirSchema()
         editSchema(SCHEMA)
         return 'Logado'

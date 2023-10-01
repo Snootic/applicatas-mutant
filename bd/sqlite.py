@@ -19,7 +19,6 @@ class tabela:
     
     def CriarBD(self):
         CAMINHO_SCHEMA = self.CriarDirSchema()
-        
         tabela = sqlite3.connect(CAMINHO_SCHEMA)
         cursor = tabela.cursor()
         cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
@@ -28,10 +27,11 @@ class tabela:
             return 'Tabela já existe'
         else:
             cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
                             ocorrencias VARCHAR,
                             custo REAL DEFAULT NULL)''')
             edit_config.EditarTabela(self.tabela)
-            return 'Tabela Criada'
+            return 'Tabela criada'
         
     def addValor(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
         schema = self.CriarDirSchema()
@@ -42,29 +42,34 @@ class tabela:
         
         for i in range(quantidade):
             if custo != '':
-                cursor.execute(f"INSERT INTO {tabela} VALUES(?,?)", (ocorrencias, custo))
+                cursor.execute(f"INSERT INTO {tabela} (ocorrencias,custo) VALUES(?,?)", (ocorrencias, custo))
             else:
                 cursor.execute(f"INSERT INTO {tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
             schema.commit()
         
-    def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=''):
+    def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=0):
         schema = self.CriarDirSchema()
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
         
         tabela = edit_config.getTabela()
         
-        cursor.execute(f'SELECT ocorrencias from {tabela} WHERE ocorrencias="{ocorrenciaatual}"')
-        sim = cursor.fetchall()
-        
-        cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
-        schema.commit()
-        
-        cursor.execute(f'SELECT ocorrencias from {tabela} WHERE ocorrencias="{novaocorrencia}"')
-        nao = cursor.fetchall()
-        
-        # return sim, nao
-        
+        cursor.execute(f'SELECT id, ocorrencias from {tabela} WHERE ocorrencias="{ocorrenciaatual}"')
+        lista_com_ids= cursor.fetchall()
+
+        if quantidade == 0:
+            cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
+            schema.commit()
+        else:
+            if quantidade > len(lista_com_ids):
+                    print('Quantidade listada maior do que ocorrência existente')
+                    return 'Quantidade listada maior do que ocorrência existente'
+            else:
+                for i in range(quantidade):
+                        cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' AND id={lista_com_ids[0][0]}")
+                        lista_com_ids.remove(lista_com_ids[0])
+                        schema.commit()
+            
     def atualizar_custo(self,):
         pass
     
@@ -76,6 +81,11 @@ class tabela:
         cursor.execute(f"SELECT name FROM sqlite_master")
         resultado = cursor.fetchall()
         
+        try:
+            resultado.remove(resultado[-1])
+        except IndexError:
+            pass
+                
         return resultado
     
     def SelectTabela(self, tabela):

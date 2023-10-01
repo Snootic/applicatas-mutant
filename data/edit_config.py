@@ -1,10 +1,5 @@
-# import os
-# import sys
-# CAMINHO_PROJETO = os.getcwd()
-# sys.path.insert(0, CAMINHO_PROJETO)
-from bd.tabela_sqlite import *
-
-#mudar caminho para app_config.txt
+from bd.sqlite import *
+import asyncio
 
 def LerConfig(argumento):
     """
@@ -111,6 +106,17 @@ def editSchema(schema):
             if itens[i][0] == 'schema_caminho':
                 linhas[i] = 'schema_caminho = '+schema+'\n'
                 configuracoes.writelines(linhas)
+                
+def editTema(tema):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'tema':
+                linhas[i] = 'tema = '+tema+'\n'
+                configuracoes.writelines(linhas)
     
 def getUser():
     itens = LerConfig('itens')
@@ -132,4 +138,22 @@ def getTema():
         if itens[i][0] == 'tema':
             tema = itens[i][1]
             return tema
+
+def apagar_dados():
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
     
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'user':
+                linhas[i] = 'user = '+'\n'
+            if itens[i][0] == 'senha':
+                linhas[i] = 'senha = '+'\n'
+            if itens[i][0] == 'ultimo_schema':
+                linhas[i] = 'ultimo_schema = '+'\n'
+            if itens[i][0] == 'ultima_tabela':
+                linhas[i] = 'ultima_tabela = '+'\n'
+            if itens[i][0] == 'schema_caminho':
+                linhas[i] = 'schema_caminho = '+'\n'
+        configuracoes.writelines(linhas)

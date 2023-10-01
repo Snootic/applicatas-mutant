@@ -2,18 +2,15 @@ from telas.app import *
 import ttkbootstrap as ttk
 from ttkbootstrap.tableview import Tableview
 from ttkbootstrap.constants import *
-from bd.criar_tabela import *
 from bd.analise_pareto_tabela import *
-from bd.tabela_sqlite import tabela
+from bd.sqlite import tabela
 import matplotlib.pyplot as plt
 
 #TODO:
 # Funcoes de importação de xlsx e csv
 # Salvamento de arquivos em tabelas sqlite
 # exportacao de arquivos em xlsx e csv
-# bind nas entry de adicionar e alterar ocorrencia
 # adicionar custo em tabelas com zero dados e tabelas com custo ja adicionado
-# descobrir uma forma de editar apenas uma quantidade específica de uma ocorrencia no sqlite
 # notebook
 # melhorar layout dos botoes para caber o resto que precisa ser adicionado e o notebook futuramente
 # mudança de tema
@@ -29,12 +26,8 @@ class inicio:
         tela.menu()
         
         #Estilo da tela
-        colors = self.home.style.colors
+        colors = self.login.style.colors
         self.estilo = Estilo()
-        self.estilo.style.configure('Table.Treeview',font=self.estilo.fonte, rowheight=30)
-        self.estilo.style.configure('Table.Treeview.Heading', font=self.estilo.fonte)
-        self.estilo.style.configure('custom.TFrame', relief='solid')
-        
         
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
@@ -68,8 +61,8 @@ class inicio:
         )
         
         def criar_tabela():
-            criar_tabela = sql_tabela()
-            criar_tabela = criar_tabela.criar_tabela(criar_tabela_var.get())
+            criar_tabela = tabela(criar_tabela_var.get())
+            criar_tabela = criar_tabela.CriarBD()
             criar_tabela_label.configure(text=criar_tabela)
             tabela_atual.configure(text=criar_tabela_var.get())
             analise_pareto()
@@ -124,6 +117,10 @@ class inicio:
                                     width=30,
                                     font=self.estilo.fonte)
         adicionar_itens.place(relx=0.03,y=10)
+        adicionar_itens.bind(
+            '<FocusIn>',
+            lambda event: (adicionar_itens_var.set(value=''),
+                           adicionar_itens.unbind('<FocusIn>')))
         
         quantidade_ocorrencia_var = ttk.IntVar(value=1)
         quantidade_ocorrencia = ttk.Spinbox(adicionar_itens_frame,
@@ -142,7 +139,7 @@ class inicio:
         
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
-            tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get())
+            tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
             analise_pareto()
         
         atualizar_itens_frame = ttk.Frame(self.home, style='custom.TFrame')
@@ -154,6 +151,10 @@ class inicio:
                                     width=30,
                                     font=self.estilo.fonte)
         ocorrencia_atual.place(relx=0.03,y=10)
+        ocorrencia_atual.bind(
+            '<FocusIn>',
+            lambda event: (ocorrencia_atual_var.set(value=''),
+                           ocorrencia_atual.unbind('<FocusIn>')))
         
         ocorrencia_quantidade_var = ttk.IntVar()
         ocorrencia_quantidade = ttk.Spinbox(atualizar_itens_frame,
@@ -168,6 +169,10 @@ class inicio:
                                     textvariable=ocorrencia_nova_var,
                                     width=30,
                                     font=self.estilo.fonte)
+        ocorrencia_nova.bind(
+            '<FocusIn>',
+            lambda event: (ocorrencia_nova_var.set(value=''),
+                           ocorrencia_nova.unbind('<FocusIn>')))
         ocorrencia_nova.place(relx=0.03,y=50)
         
         
@@ -248,7 +253,6 @@ class inicio:
                 rowdata=[],
                 autofit=True,
                 autoalign=False,
-                stripecolor=(colors.active, None)
             )
             pareto_tabela.place(relx=0.5,y=290,anchor=CENTER, width=900)
         
@@ -259,5 +263,6 @@ class inicio:
         self.home.mainloop()
         
     def fechar_login(self):
+        edit_config.apagar_dados()
         self.home.destroy()
         self.login.destroy()
