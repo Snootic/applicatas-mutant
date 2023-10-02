@@ -1,3 +1,4 @@
+
 # APPLICATAS MUTANT
 
 Projeto de estatística aplicada, feito para inserir, atualizar e deletar dados para a criação de uma Tabela e um Gráfico de Análise de Pareto, utilizando SQLite, CSV e Tabelas do Excel.
@@ -9,7 +10,7 @@ Projeto de estatística aplicada, feito para inserir, atualizar e deletar dados 
 - matplotlib
 - sqlite3
 
-Para Rodar o código, clone o repositório e instale as dependências que estão no arquivo requirements.txt
+Para Rodar o código, clone este repositório `https://github.com/snootic/applicatas-mutant.git` e instale as dependências que estão no arquivo requirements.txt
 
 ### Windows
 Powershell / Terminal: 
