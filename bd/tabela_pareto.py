@@ -78,7 +78,7 @@ class pareto:
     def csv(self,arquivo):
         tabela = read_csv(arquivo,sep=',')
         matplot = ''
-        if len(tabela) > 2:
+        if len(tabela.columns) > 2:
             matplot = tabela[:]
             matplot["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
             matplot.at[matplot.shape[0] - 1, "Freq. Acumulada"] = np.nan
@@ -93,9 +93,29 @@ class pareto:
             tabela["Freq. Acumulada"] = tabela["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
             tabela.loc[-1] = tabela_total[0]
             
-        else:
+        elif len(tabela.columns) == 2:
             pass
+        else:
+            tabela['No. Ocorrências'] = tabela.groupby('Ocorrências')['Ocorrências'].transform('count')
+            tabela.drop_duplicates(subset='Ocorrências', keep='first', inplace=True)
+            
+            tabela = tabela.sort_values(by=['No. Ocorrências'],ascending=False)
+            
+            tabela['Freq. Relativa'] = tabela['No. Ocorrências'] / tabela['No. Ocorrências'].sum() * 100
+            
+            tabela['Freq. Acumulada'] = tabela['Freq. Relativa'].cumsum()/tabela['Freq. Relativa'].sum() * 100
+            
+            matplot = tabela[:].copy()
+            
+            total = tabela['No. Ocorrências'].sum()
+            matplot.loc[-1] = ['Total', total, np.nan, np.nan]
+            
+            tabela["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
+            tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
+            tabela["Freq. Acumulada"] = tabela["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
+            tabela.loc[-1] = ['Total', total, '100.00%', '-']
+            
         return matplot, tabela
         
-    def xsls(self):
+    def xlsx(self):
         pass

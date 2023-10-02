@@ -107,9 +107,3 @@ class Estilo:
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
         self.style.configure('Table.Treeview.Heading', font=self.fonte)
         self.style.configure('custom.TFrame', relief='solid')
-        
-class centralizar_widget:
-    def __init__(self, tela, widget):
-        tela = Tela(janela=tela)
-        self.x = ((tela.TELA_LARGURA - widget.winfo_width()) // 2)
-        self.y = ((tela.TELA_ALTURA - widget.winfo_height()) // 2) 

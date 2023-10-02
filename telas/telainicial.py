@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 # notebook
 # melhorar layout dos botoes para caber o resto que precisa ser adicionado e o notebook futuramente
 
+# TRATAMENTO DE ERROS E RETORNO VISUAL PARA O USUARIO COM POPUPS - URGENTE
+
 
 class inicio:
     def __init__(self, login=''):
