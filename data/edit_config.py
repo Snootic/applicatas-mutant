@@ -1,4 +1,5 @@
 from bd.sqlite import *
+import platform
 
 def LerConfig(argumento):
     """
@@ -14,8 +15,8 @@ def LerConfig(argumento):
         linhas = configuracoes.readlines()
         itens = []
         for linha in linhas:
-            itens.append(linha.replace(' ', '').strip().split('='))
-
+            itens.append(linha.strip().split('='))
+        
         for i in range(len(itens)):
             if itens[i][0] == "schema_caminho":
                 dir_schema = itens[i][1]
@@ -27,6 +28,7 @@ def LerConfig(argumento):
     elif argumento == 'linhas':
         return linhas
     elif argumento == 'dirtab':
+        print(dir_schema)
         return dir_schema
 
 
@@ -41,13 +43,13 @@ def EditarTabela(table):
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'ultimo_schema':
-                linhas[i] = 'ultimo_schema = '+f'{user}'+'.db\n'
+                linhas[i] = 'ultimo_schema='+f'{user}'+'.db\n'
                 
             if itens[i][0] == 'schema_caminho':
-                linhas[i] = 'schema_caminho = '+f'{CAMINHO_SCHEMA}'+'\n'
+                linhas[i] = 'schema_caminho='+f'{CAMINHO_SCHEMA}'+'\n'
                 
             if itens[i][0] == 'ultima_tabela':
-                linhas[i] = 'ultima_tabela = '+f'{table}'+'\n'
+                linhas[i] = 'ultima_tabela='+f'{table}'+'\n'
 
         configuracoes.writelines(linhas)
     
@@ -81,7 +83,7 @@ def editUser(usuario):
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'user':
-                linhas[i] = 'user = '+usuario+'\n'
+                linhas[i] = 'user='+usuario+'\n'
                 configuracoes.writelines(linhas)
                 
 def editSenha(senha):
@@ -92,7 +94,7 @@ def editSenha(senha):
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'senha':
-                linhas[i] = 'senha = '+senha+'\n'
+                linhas[i] = 'senha='+senha+'\n'
                 configuracoes.writelines(linhas)
 
 def editSchema(schema):
@@ -103,7 +105,7 @@ def editSchema(schema):
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'schema_caminho':
-                linhas[i] = 'schema_caminho = '+schema+'\n'
+                linhas[i] = 'schema_caminho='+schema+'\n'
                 configuracoes.writelines(linhas)
                 
 def editTema(tema):
@@ -114,7 +116,7 @@ def editTema(tema):
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'tema':
-                linhas[i] = 'tema = '+tema+'\n'
+                linhas[i] = 'tema='+tema+'\n'
                 configuracoes.writelines(linhas)
     
 def getUser():
@@ -146,13 +148,13 @@ def apagar_dados():
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'user':
-                linhas[i] = 'user = '+'\n'
+                linhas[i] = 'user='+'\n'
             if itens[i][0] == 'senha':
-                linhas[i] = 'senha = '+'\n'
+                linhas[i] = 'senha='+'\n'
             if itens[i][0] == 'ultimo_schema':
-                linhas[i] = 'ultimo_schema = '+'\n'
+                linhas[i] = 'ultimo_schema='+'\n'
             if itens[i][0] == 'ultima_tabela':
-                linhas[i] = 'ultima_tabela = '+'\n'
+                linhas[i] = 'ultima_tabela='+'\n'
             if itens[i][0] == 'schema_caminho':
-                linhas[i] = 'schema_caminho = '+'\n'
+                linhas[i] = 'schema_caminho='+'\n'
         configuracoes.writelines(linhas)

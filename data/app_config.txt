@@ -1,6 +1,6 @@
-tema = cyborg
-ultimo_schema = 
-ultima_tabela = 
-schema_caminho = 
-user = 
-senha = 
+tema=cyborg
+ultimo_schema=
+ultima_tabela=
+schema_caminho=
+user=
+senha=

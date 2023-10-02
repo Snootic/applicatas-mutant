@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from data import edit_config
+import platform
 
 class tabela:
     def __init__(self, table=''):
@@ -8,7 +9,10 @@ class tabela:
     def CriarDirSchema(self):
         
         usuario = edit_config.getUser()
-        CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data/users/sqlite_databases')
+        if platform.system() == 'Windows':
+            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),'data\\users\\sqlite_databases')
+        else:
+            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),'data/users/sqlite_databases')
         
         if not os.path.exists(CAMINHO_PASTA_DB):
             os.mkdir(CAMINHO_PASTA_DB)
