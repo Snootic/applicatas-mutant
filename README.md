@@ -1,6 +1,6 @@
 # APPLICATAS MUTANT
 
-Projeto de estátisca aplicada, feito para inserir, atualizar e deletar dados para a criação de uma Tabela e um Gráfico de Análise de Pareto, utilizando SQLite, CSV e Tabelas do Excel.
+Projeto de estatística aplicada, feito para inserir, atualizar e deletar dados para a criação de uma Tabela e um Gráfico de Análise de Pareto, utilizando SQLite, CSV e Tabelas do Excel.
 
 ## Principais Bibliotecas utilizadas e instalação
 - tkinter
