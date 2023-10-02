@@ -44,12 +44,19 @@ class Tela:
         arquivo_menu.add_command(label='Abrir arquivo', command=lambda: print('teste'))
         arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('teste'))
         arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('teste'))
+        
+        def apagar_dados():
+            if edit_config.getSecao() == 'False':
+                edit_config.apagar_dados()
+            else:
+                pass
+        
         arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
                                                                      tela_login.deiconify(),
                                                                      edit_config.apagar_dados()))
         arquivo_menu.add_command(label='Fechar', command=lambda: (self.janela.destroy(),
                                                                        tela_login.destroy(),
-                                                                       edit_config.apagar_dados()))
+                                                                       apagar_dados()))
         
         def import_arquivo(tipo):
             if tipo=='csv':

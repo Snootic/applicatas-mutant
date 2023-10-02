@@ -66,7 +66,6 @@ class tabela:
             schema.commit()
         else:
             if quantidade > len(lista_com_ids):
-                    print('Quantidade listada maior do que ocorrência existente')
                     return 'Quantidade listada maior do que ocorrência existente'
             else:
                 for i in range(quantidade):

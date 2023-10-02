@@ -1,5 +1,5 @@
 from data.auth import cadastro, verificarusuario
-from data.edit_config import editUser,editSenha,editSchema
+from data.edit_config import editUser,editSenha,editSchema,editSecao
 from bd import sqlite
 
 def login(usuario,senha,secao=''):
@@ -16,6 +16,9 @@ def login(usuario,senha,secao=''):
     else:
         if secao:
             editSenha(senha_encriptada)
+            editSecao('True')
+        else:
+            editSecao('False')
         editUser(usuario)
         SCHEMA = sqlite.tabela()
         SCHEMA = SCHEMA.CriarDirSchema()

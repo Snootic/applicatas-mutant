@@ -4,3 +4,4 @@ ultima_tabela=
 schema_caminho=
 user=
 senha=
+manter_logado=False

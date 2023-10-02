@@ -5,16 +5,14 @@ from ttkbootstrap.constants import *
 from bd.tabela_pareto import *
 from bd.sqlite import tabela
 import matplotlib.pyplot as plt
-from tkinter import filedialog
 
 #TODO:
-# Funcoes de importação de xlsx e csv
+# Funcoes de importação de xlsx
 # Salvamento de arquivos em tabelas sqlite
 # exportacao de arquivos em xlsx e csv
 # adicionar custo em tabelas com zero dados e tabelas com custo ja adicionado
 # notebook
 # melhorar layout dos botoes para caber o resto que precisa ser adicionado e o notebook futuramente
-# apagar dados do usuario na saída, caso o manter login não esteja ativado
 
 
 class inicio:
@@ -270,6 +268,7 @@ class inicio:
         pareto_tabela.load_table_data()
             
     def fechar_login(self):
-        edit_config.apagar_dados()
+        if edit_config.getSecao() == 'False':
+            edit_config.apagar_dados()
         self.home.destroy()
         self.login.destroy()

@@ -28,7 +28,6 @@ def LerConfig(argumento):
     elif argumento == 'linhas':
         return linhas
     elif argumento == 'dirtab':
-        print(dir_schema)
         return dir_schema
 
 
@@ -118,6 +117,17 @@ def editTema(tema):
             if itens[i][0] == 'tema':
                 linhas[i] = 'tema='+tema+'\n'
                 configuracoes.writelines(linhas)
+                
+def editSecao(secao):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'manter_logado':
+                linhas[i] = 'manter_logado='+secao+'\n'
+                configuracoes.writelines(linhas)
     
 def getUser():
     itens = LerConfig('itens')
@@ -140,6 +150,14 @@ def getTema():
             tema = itens[i][1]
             return tema
 
+def getSecao():
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'manter_logado':
+            secao = itens[i][1]
+            return secao
+
+
 def apagar_dados():
     CAMINHO_CONFIG = LerConfig('config')
     itens = LerConfig('itens')
@@ -157,4 +175,6 @@ def apagar_dados():
                 linhas[i] = 'ultima_tabela='+'\n'
             if itens[i][0] == 'schema_caminho':
                 linhas[i] = 'schema_caminho='+'\n'
+            if itens[i][0] == 'manter_logado':
+                linhas[i] = 'manter_logado=False'+'\n'
         configuracoes.writelines(linhas)
