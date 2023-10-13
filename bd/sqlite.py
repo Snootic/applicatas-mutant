@@ -58,20 +58,12 @@ class tabela:
         
         tabela = edit_config.getTabela()
         
-        cursor.execute(f'SELECT id, ocorrencias from {tabela} WHERE ocorrencias="{ocorrenciaatual}"')
-        lista_com_ids= cursor.fetchall()
-
         if quantidade == 0:
             cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
             schema.commit()
         else:
-            if quantidade > len(lista_com_ids):
-                    return 'Quantidade listada maior do que ocorrência existente'
-            else:
-                for i in range(quantidade):
-                        cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' AND id={lista_com_ids[0][0]}")
-                        lista_com_ids.remove(lista_com_ids[0])
-                        schema.commit()
+            cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
+            schema.commit()
             
     def atualizar_custo(self,):
         pass
