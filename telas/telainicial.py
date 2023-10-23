@@ -107,7 +107,12 @@ class inicio:
         #Adicionar ocorrencias na tabela aberta
         
         def adicionar_itens_funcao():
-            tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
+            custo = adicionar_custo_var.get()
+            try:
+                int(custo)
+                tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
+            except:
+                tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
             self.analise_pareto()
         
         adicionar_itens_frame = ttk.Frame(self.home, style='custom.TFrame')
@@ -137,10 +142,10 @@ class inicio:
         adicionar_custo.configure(state="disabled")
         
         def bloquear_entrys():
-            if tabela_atual_var.get() == 'SELECIONE UMA TABELA':
-                adicionar_custo.configure(state="disabled")
-            elif len(pareto_tabela.get_rows()) < 1:
+            if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 6:
                 adicionar_custo.configure(state='normal')
+            else:
+                adicionar_custo.configure(state="disabled")
                     
         quantidade_ocorrencia_var = ttk.IntVar(value=1)
         quantidade_ocorrencia = ttk.Spinbox(adicionar_itens_frame,
@@ -252,15 +257,11 @@ class inicio:
 
         #Tabela da análise de pareto
         
-    def tabela_analise_pareto(self):
+    def tabela_analise_pareto(self,colunas = ''):
         global pareto_tabela
         pareto_tabela = Tableview(
             self.home,
-            coldata=[{"text": "Ocorrências", "stretch": True, "width": 200},
-                    {"text": "No. Ocorrências", "stretch": True, "width": 200},
-                    {"text": "Freq. Relativa", "stretch": True, "width": 200},
-                    {"text": "Freq. Acumulada", "stretch": True, "width": 200}
-                    ],
+            coldata=colunas,
             rowdata=[],
             autofit=True,
             autoalign=False,
@@ -286,7 +287,7 @@ class inicio:
         dados=DataFrame.to_numpy().tolist()
         dados = list(reversed(dados))
         pareto_tabela.destroy()
-        self.tabela_analise_pareto()
+        self.tabela_analise_pareto(colunas=colunas_novas)
         pareto_tabela.insert_rows(index = 'end', rowdata = dados)
         pareto_tabela.load_table_data()
         

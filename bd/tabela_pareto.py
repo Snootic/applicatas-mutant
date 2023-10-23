@@ -22,13 +22,14 @@ class pareto:
         cursor = schema.cursor()
 
         cursor.execute(f'SELECT COUNT(ocorrencias) FROM {tabela}')
-        if cursor.fetchall()[0][0] == 0:
+        if cursor.fetchall()[0][0] == 0: # se a tabela estiver completamente vazia ele retorna este dataframe
             pareto_sql = DataFrame(columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
             pareto_tkinter = DataFrame(columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
             return pareto_sql, pareto_tkinter
+        
         else:
             cursor.execute(f'SELECT COUNT(*) FROM {tabela} WHERE custo IS NULL')
-            if cursor.fetchall()[0][0] > 0:
+            if cursor.fetchall()[0][0] > 0: # se na tabela houver custo com valor padrao (NULL)
                 cursor.execute(f'SELECT COUNT(ocorrencias) FROM {tabela} GROUP BY ocorrencias')
                 numero_ocorrencias = cursor.fetchall()
                 
@@ -73,7 +74,44 @@ class pareto:
                 pareto_tkinter = DataFrame(itens_tableview, columns=['Ocorrências','No. Ocorrências', 'Freq. Relativa','Freq. Acumulada'])
                 return pareto_sql, pareto_tkinter
             else:
-                pass
+            # para tabelas com custo definido (NOT-NULL)
+                matplot = ''
+                cursor.execute(f'SELECT ocorrencias FROM {tabela}')
+                ocorrencias = cursor.fetchall()
+                
+                cursor.execute(f'SELECT custo FROM {tabela}')
+                custos = cursor.fetchall()
+                
+                ocorrencias = [i[0] for i in ocorrencias]
+                custos = [i[0] for i in custos]
+                
+                items = list(zip(ocorrencias,custos))
+                
+                tabela = DataFrame(items,columns=['Ocorrências','Custo Un.'])
+            
+                tabela['No. Ocorrências'] = tabela.groupby('Ocorrências')['Ocorrências'].transform('count')
+                tabela.drop_duplicates(subset='Ocorrências', keep='first', inplace=True)
+                
+                tabela = tabela.sort_values(by=['No. Ocorrências'],ascending=False)
+                
+                tabela['Custo Total'] = tabela['Custo Un.'] * tabela['No. Ocorrências']
+                
+                tabela['Freq. Relativa'] = tabela['No. Ocorrências'] / tabela['No. Ocorrências'].sum() * 100
+                
+                tabela['Freq. Acumulada'] = tabela['Freq. Relativa'].cumsum()/tabela['Freq. Relativa'].sum() * 100
+                
+                matplot = tabela[:].copy()
+                
+                total_ocorrencias = tabela['No. Ocorrências'].sum()
+                total_custos_unitarios = tabela['Custo Un.'].sum()
+                total_custos = tabela['Custo Total'].sum()
+                matplot.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, total_custos, np.nan, np.nan]
+                
+                tabela["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
+                tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
+                tabela["Freq. Acumulada"] = tabela["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
+                tabela.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, total_custos, '100.00%', '-']
+                return matplot, tabela
             
     def csv(self,arquivo):
         tabela = read_csv(arquivo,sep=',')
