@@ -3,12 +3,15 @@ from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto
 from telas.telainicial import inicio
+import os
 
 class Tela:
     instancia_com_tabela=None
     def __init__(self, janela='', titulo=''):
         self.janela = janela
         self.janela.title(titulo)
+        icone_caminho= os.path.abspath('data/icone.png')
+        self.janela.iconphoto(False, ttk.PhotoImage(file=icone_caminho))
         
         if (self.janela.title()) == 'Peraeque - Login':
             global tela_login
