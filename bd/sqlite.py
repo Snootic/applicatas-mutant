@@ -37,7 +37,7 @@ class tabela:
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             ocorrencias VARCHAR,
                             custo REAL DEFAULT NULL)''')
-            edit_config.EditarTabela(self.tabela)
+            edit_config.EditarTabela(self.tabela,dados)
             return 'Tabela criada'
         
     def addValor_pareto(self, dados, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
@@ -83,5 +83,5 @@ class tabela:
                 
         return resultado
     
-    def SelectTabela(self, tabela,dados):
+    def SelectTabela(self, tabela, dados):
         edit_config.EditarTabela(tabela,dados)
