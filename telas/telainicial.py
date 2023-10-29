@@ -44,7 +44,7 @@ class inicio:
         notebook.add(tela_medidas, text='Medidas')
         
         self.tela_pareto(tela_pareto)
-        # self.tela_medidas(tela_medidas)
+        self.tela_medidas(tela_medidas)
         
         self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
         
@@ -115,16 +115,9 @@ class inicio:
             command=lambda: criar_tabela()
         )
         
-        criar_tabela_label = ttk.Label(
-            criar_tabela_frame,
-            style='Comum.TLabel',
-            text='TESTE'
-        )
-        
         def criar_tabela():
             criar_tabela = tabela(criar_tabela_var.get())
             criar_tabela = criar_tabela.CriarBD('pareto')
-            criar_tabela_label.configure(text=criar_tabela)
             tabela_atual_var.set(value=criar_tabela_var.get())
             analise_pareto()
         
@@ -308,7 +301,68 @@ class inicio:
         tabela_analise_pareto()
         
     def tela_medidas(self, tela):
-        pass
+        #Criar uma tabela nova
+        criar_tabela_frame = ttk.Frame(
+            tela,
+            style='custom.TFrame',
+            width=500,
+            height=200)
+        
+        criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
+        criar_tabela_entry = ttk.Entry(
+            criar_tabela_frame,
+            textvariable=criar_tabela_var,
+            width=30,
+            font=self.estilo.fonte)
+        criar_tabela_entry.bind(
+            '<FocusIn>',
+            lambda event: (criar_tabela_var.set(value=''),
+                           criar_tabela_entry.unbind('<FocusIn>')))
+        
+        criar_tabela_botao = ttk.Button(
+            criar_tabela_frame,
+            text='Criar',
+            style='Estilo1.TButton',
+            command=lambda: criar_tabela()
+        )
+        
+        def criar_tabela():
+            criar_tabela = tabela(criar_tabela_var.get())
+            criar_tabela = criar_tabela.CriarBD()
+            tabela_atual_var.set(value=criar_tabela_var.get())
+        
+        criar_tabela_entry.pack(padx=(10,5),ipady=5,side=LEFT)
+        criar_tabela_botao.pack(padx=(5,10),side=RIGHT)
+        criar_tabela_frame.place(x=240, y=40, anchor='center', height=60)
+
+        abrir_tabela_frame = ttk.Frame(
+            tela,
+            width=500,
+            height=200)
+    
+        abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
+        abrir_tabela = ttk.Combobox(abrir_tabela_frame,
+                                    width=30,
+                                    textvariable=abrir_tabela_var,
+                                    font=self.estilo.fonte)
+        
+        tabelas = tabela()
+        abrir_tabela['value'] = tabelas.getTabelas('medidas')
+        
+        abrir_tabela_btn = ttk.Button(abrir_tabela_frame,
+                                      text='Abrir',
+                                      style='Estilo1.TButton',
+                                    )
+        
+        abrir_tabela_btn.pack(side=RIGHT,padx=5)
+        abrir_tabela.pack(side=LEFT,padx=5)
+        abrir_tabela_frame.place(x=670,y=25, anchor='center')
+        
+        # Display tabela atual
+        tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
+        tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
+        tabela_atual.lower()
+        tabela_atual.place(relx=0.5,y=85,anchor=CENTER)
 
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
