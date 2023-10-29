@@ -37,10 +37,14 @@ class inicio:
         
         tela_pareto = ttk.Frame(notebook, width=900, height=600)
         tela_pareto.pack(fill='both', expand=True)
-        
+        tela_medidas = ttk.Frame(notebook, width=900, height=600)
+        tela_medidas.pack(fill='both',expand=True)
         
         notebook.add(tela_pareto, text='Pareto')
+        notebook.add(tela_medidas, text='Medidas')
+        
         self.tela_pareto(tela_pareto)
+        # self.tela_medidas(tela_medidas)
         
         self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
         
@@ -119,7 +123,7 @@ class inicio:
         
         def criar_tabela():
             criar_tabela = tabela(criar_tabela_var.get())
-            criar_tabela = criar_tabela.CriarBD()
+            criar_tabela = criar_tabela.CriarBD('pareto')
             criar_tabela_label.configure(text=criar_tabela)
             tabela_atual_var.set(value=criar_tabela_var.get())
             analise_pareto()
@@ -133,7 +137,7 @@ class inicio:
         tabelas = tabela()
         
         def abrir_tabela_selecionada():
-            tabelas.SelectTabela(abrir_tabela_var.get())
+            tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
             analise_pareto()
             tabela_atual_var.set(value=abrir_tabela_var.get())
         
@@ -148,7 +152,7 @@ class inicio:
                                     textvariable=abrir_tabela_var,
                                     font=self.estilo.fonte)
         
-        abrir_tabela['value'] = tabelas.getTabelas()
+        abrir_tabela['value'] = tabelas.getTabelas('pareto')
         
         abrir_tabela_btn = ttk.Button(abrir_tabela_frame,
                                       text='Abrir',
@@ -165,9 +169,9 @@ class inicio:
             custo = adicionar_custo_var.get()
             try:
                 float(custo)
-                tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
+                tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
             except:
-                tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
+                tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
             analise_pareto()
         
         adicionar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
@@ -303,10 +307,9 @@ class inicio:
     
         tabela_analise_pareto()
         
-    def segunda_tela():
+    def tela_medidas(self, tela):
         pass
 
-         
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
             edit_config.apagar_dados()

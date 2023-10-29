@@ -31,10 +31,10 @@ def LerConfig(argumento):
         return dir_schema
 
 
-def EditarTabela(table):
+def EditarTabela(table,dados):
     tabela1 = tabela()
     user = getUser()
-    CAMINHO_SCHEMA = tabela1.CriarDirSchema()
+    CAMINHO_SCHEMA = tabela1.CriarDirSchema(dados)
     CAMINHO_CONFIG = LerConfig('config')
     itens = LerConfig('itens')
     linhas = LerConfig('linhas')

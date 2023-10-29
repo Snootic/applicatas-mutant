@@ -21,6 +21,7 @@ def login(usuario,senha,secao=''):
             editSecao('False')
         editUser(usuario)
         SCHEMA = sqlite.tabela()
-        SCHEMA = SCHEMA.CriarDirSchema()
+        SCHEMA_ADICIONAL = SCHEMA.CriarDirSchema('medidas')
+        SCHEMA = SCHEMA.CriarDirSchema('pareto')
         editSchema(SCHEMA)
         return 'Logado'

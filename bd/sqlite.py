@@ -6,7 +6,7 @@ import platform
 class tabela:
     def __init__(self, table=''):
         self.tabela = table
-    def CriarDirSchema(self):
+    def CriarDirSchema(self, dados):
         
         usuario = edit_config.getUser()
         if platform.system() == 'Windows':
@@ -16,13 +16,16 @@ class tabela:
         
         if not os.path.exists(CAMINHO_PASTA_DB):
             os.mkdir(CAMINHO_PASTA_DB)
-            
-        banco_de_dados = f'{usuario}'+'.db'
+        
+        if dados == 'pareto':
+            banco_de_dados = f'{usuario}_pareto'+'.db'
+        elif dados == 'medidas':
+            banco_de_dados = f'{usuario}_medidas'+'.db'
         CAMINHO_SCHEMA = os.path.join(CAMINHO_PASTA_DB,banco_de_dados)
         return CAMINHO_SCHEMA
     
-    def CriarBD(self):
-        CAMINHO_SCHEMA = self.CriarDirSchema()
+    def CriarBD(self,dados):
+        CAMINHO_SCHEMA = self.CriarDirSchema(dados)
         tabela = sqlite3.connect(CAMINHO_SCHEMA)
         cursor = tabela.cursor()
         cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
@@ -37,8 +40,8 @@ class tabela:
             edit_config.EditarTabela(self.tabela)
             return 'Tabela criada'
         
-    def addValor(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
-        schema = self.CriarDirSchema()
+    def addValor_pareto(self, dados, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
+        schema = self.CriarDirSchema('pareto')
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
         
@@ -52,7 +55,7 @@ class tabela:
             schema.commit()
         
     def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=0):
-        schema = self.CriarDirSchema()
+        schema = self.CriarDirSchema('pareto')
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
         
@@ -68,8 +71,8 @@ class tabela:
     def atualizar_custo(self,):
         pass
     
-    def getTabelas(self):
-        schema = self.CriarDirSchema()
+    def getTabelas(self,dados):
+        schema = self.CriarDirSchema(dados)
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
         
@@ -80,5 +83,5 @@ class tabela:
                 
         return resultado
     
-    def SelectTabela(self, tabela):
-        edit_config.EditarTabela(tabela)
+    def SelectTabela(self, tabela,dados):
+        edit_config.EditarTabela(tabela,dados)
