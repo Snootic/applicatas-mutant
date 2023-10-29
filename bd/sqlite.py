@@ -33,10 +33,16 @@ class tabela:
         if resultado[0] == 1:
             return 'Tabela já existe'
         else:
-            cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            ocorrencias VARCHAR,
-                            custo REAL DEFAULT NULL)''')
+            if dados == 'pareto':
+                cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                ocorrencias VARCHAR,
+                                custo REAL DEFAULT NULL)''')
+            elif dados == 'medidas':
+                cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                medidas INTEGER NOT NULL)''')
+                
             edit_config.EditarTabela(self.tabela,dados)
             return 'Tabela criada'
         
