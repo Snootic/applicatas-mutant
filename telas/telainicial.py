@@ -35,12 +35,60 @@ class inicio:
         notebook = ttk.Notebook(self.home)
         notebook.pack(expand=True)
         
-        self.tela1 = ttk.Frame(notebook, width=900, height=600)
-        self.tela1.pack(fill='both', expand=True)
+        tela_pareto = ttk.Frame(notebook, width=900, height=600)
+        tela_pareto.pack(fill='both', expand=True)
+        
+        
+        notebook.add(tela_pareto, text='Pareto')
+        self.tela_pareto(tela_pareto)
+        
+        self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
+        
+        self.home.mainloop()   
+        
+    def tela_pareto(self, tela): 
+        #Pegar dados para criar tabela análise de pareto
+        sqlite = pareto()
+        
+        #Tabela da análise de pareto
+        def tabela_analise_pareto(colunas = ''):
+            global pareto_tabela
+            pareto_tabela = Tableview(
+                tela,
+                coldata=colunas,
+                rowdata=[],
+                autofit=True,
+                autoalign=False,
+            )
+            pareto_tabela.place(relx=0.5,y=275,anchor=CENTER, width=900)
+        
+        def analise_pareto(tabela=None, grafico=None):
+            global matplot
+            if tabela is not None and not tabela.empty:
+                DataFrame = tabela
+                matplot = grafico
+            else:
+                matplot, DataFrame= sqlite.sqlite()
+
+            colunas=list(DataFrame)
+            colunas_novas = []
+            for item in colunas:
+                if isinstance(item, str):
+                    dicionario = {"text": item, "stretch": True, "width": 120}
+                elif isinstance(item, dict):
+                    dicionario = item
+                colunas_novas.append(dicionario)
+            dados=DataFrame.to_numpy().tolist()
+            dados = list(reversed(dados))
+            pareto_tabela.destroy()
+            tabela_analise_pareto(colunas=colunas_novas)
+            pareto_tabela.insert_rows(index = 'end', rowdata = dados)
+            pareto_tabela.load_table_data()
+        
         
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
-            self.tela1,
+            tela,
             style='custom.TFrame',
             width=500,
             height=200)
@@ -74,7 +122,7 @@ class inicio:
             criar_tabela = criar_tabela.CriarBD()
             criar_tabela_label.configure(text=criar_tabela)
             tabela_atual_var.set(value=criar_tabela_var.get())
-            self.analise_pareto()
+            analise_pareto()
         
         criar_tabela_entry.pack(padx=(10,5),ipady=5,side=LEFT)
         criar_tabela_botao.pack(padx=(5,10),side=RIGHT)
@@ -86,11 +134,11 @@ class inicio:
         
         def abrir_tabela_selecionada():
             tabelas.SelectTabela(abrir_tabela_var.get())
-            self.analise_pareto()
+            analise_pareto()
             tabela_atual_var.set(value=abrir_tabela_var.get())
         
         abrir_tabela_frame = ttk.Frame(
-            self.tela1,
+            tela,
             width=500,
             height=200)
     
@@ -120,9 +168,9 @@ class inicio:
                 tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
             except:
                 tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
-            self.analise_pareto()
+            analise_pareto()
         
-        adicionar_itens_frame = ttk.Frame(self.tela1, style='custom.TFrame')
+        adicionar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         adicionar_itens_frame.place(x=225, y=510, anchor=CENTER,height=100,width=430)
         
         adicionar_itens_var = ttk.StringVar(value='Ocorrência')
@@ -172,9 +220,9 @@ class inicio:
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
             tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
-            self.analise_pareto()
+            analise_pareto()
         
-        atualizar_itens_frame = ttk.Frame(self.tela1, style='custom.TFrame')
+        atualizar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         atualizar_itens_frame.place(x=670, y=510, anchor=CENTER,height=100,width=430)
         
         ocorrencia_atual_var = ttk.StringVar(value='Ocorrência atual')
@@ -217,7 +265,7 @@ class inicio:
         
         # Display tabela atual
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
-        tabela_atual = ttk.Label(self.tela1,textvariable=tabela_atual_var,style='Titulo.TLabel')
+        tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
         tabela_atual.lower()
         tabela_atual.place(relx=0.5,y=85,anchor=CENTER)
         tabela_atual_var.trace("w", lambda *args: bloquear_entrys())
@@ -250,56 +298,11 @@ class inicio:
                 i.set_rotation(45)
             plt.show()
         
-        gerar_grafico = ttk.Button(self.tela1,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
+        gerar_grafico = ttk.Button(tela,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
         gerar_grafico.place(x=795,y=65,anchor=CENTER)
+    
+        tabela_analise_pareto()
         
-        self.tabela_analise_pareto()
-        
-        notebook.add(self.tela1, text='Pareto')
-        
-        self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
-        
-        self.home.mainloop()   
-        
-        #Pegar dados para criar tabela análise de pareto
-    sqlite = pareto()
-
-        #Tabela da análise de pareto
-        
-    def tabela_analise_pareto(self,colunas = ''):
-        global pareto_tabela
-        pareto_tabela = Tableview(
-            self.tela1,
-            coldata=colunas,
-            rowdata=[],
-            autofit=True,
-            autoalign=False,
-        )
-        pareto_tabela.place(relx=0.5,y=275,anchor=CENTER, width=900)
-              
-    def analise_pareto(self,tabela=None, grafico=None):
-        global matplot
-        if tabela is not None and not tabela.empty:
-            DataFrame = tabela
-            matplot = grafico
-        else:
-            matplot, DataFrame= self.sqlite.sqlite()
-
-        colunas=list(DataFrame)
-        colunas_novas = []
-        for item in colunas:
-            if isinstance(item, str):
-                dicionario = {"text": item, "stretch": True, "width": 120}
-            elif isinstance(item, dict):
-                dicionario = item
-            colunas_novas.append(dicionario)
-        dados=DataFrame.to_numpy().tolist()
-        dados = list(reversed(dados))
-        pareto_tabela.destroy()
-        self.tabela_analise_pareto(colunas=colunas_novas)
-        pareto_tabela.insert_rows(index = 'end', rowdata = dados)
-        pareto_tabela.load_table_data()
-
     def segunda_tela():
         pass
 
