@@ -77,7 +77,11 @@ class Tela:
         
         programa_menu = ttk.Menu(menu_principal, tearoff=False)
         programa_menu.add_command(label='Trocar Tema', command=lambda: self.trocar_tema())
-        programa_menu.add_command(label='Versão: 0.3')
+        version = os.path.abspath('VERSION')
+        with open(version, 'r') as version:
+            versao = version.readlines()
+            versao = versao[0]
+        programa_menu.add_command(label=f'Versão: {versao}')
         
         menu_principal.add_cascade(label='Arquivo', menu=arquivo_menu)
         menu_principal.add_cascade(label='Importar', menu=importar_menu)
