@@ -31,9 +31,16 @@ class inicio:
         colors = self.login.style.colors
         self.estilo = app.Estilo()
         
+        #notebook
+        notebook = ttk.Notebook(self.home)
+        notebook.pack(expand=True)
+        
+        self.tela1 = ttk.Frame(notebook, width=900, height=600)
+        self.tela1.pack(fill='both', expand=True)
+        
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
-            self.home,
+            self.tela1,
             style='custom.TFrame',
             width=500,
             height=200)
@@ -83,7 +90,7 @@ class inicio:
             tabela_atual_var.set(value=abrir_tabela_var.get())
         
         abrir_tabela_frame = ttk.Frame(
-            self.home,
+            self.tela1,
             width=500,
             height=200)
     
@@ -109,14 +116,14 @@ class inicio:
         def adicionar_itens_funcao():
             custo = adicionar_custo_var.get()
             try:
-                int(custo)
+                float(custo)
                 tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
             except:
                 tabelas.addValor(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
             self.analise_pareto()
         
-        adicionar_itens_frame = ttk.Frame(self.home, style='custom.TFrame')
-        adicionar_itens_frame.place(x=225, y=520, anchor=CENTER,height=100,width=430)
+        adicionar_itens_frame = ttk.Frame(self.tela1, style='custom.TFrame')
+        adicionar_itens_frame.place(x=225, y=510, anchor=CENTER,height=100,width=430)
         
         adicionar_itens_var = ttk.StringVar(value='Ocorrência')
         adicionar_itens = ttk.Entry(adicionar_itens_frame,
@@ -167,8 +174,8 @@ class inicio:
             tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
             self.analise_pareto()
         
-        atualizar_itens_frame = ttk.Frame(self.home, style='custom.TFrame')
-        atualizar_itens_frame.place(x=670, y=520, anchor=CENTER,height=100,width=430)
+        atualizar_itens_frame = ttk.Frame(self.tela1, style='custom.TFrame')
+        atualizar_itens_frame.place(x=670, y=510, anchor=CENTER,height=100,width=430)
         
         ocorrencia_atual_var = ttk.StringVar(value='Ocorrência atual')
         ocorrencia_atual = ttk.Entry(atualizar_itens_frame,
@@ -208,11 +215,11 @@ class inicio:
                                           command=atualizar_itens_funcao)
         atualizar_itens_plus.place(x=311,y=50)
         
-        
         # Display tabela atual
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
-        tabela_atual = ttk.Label(self.home,textvariable=tabela_atual_var,style='Titulo.TLabel')
-        tabela_atual.place(relx=0.5,y=100,anchor=CENTER)
+        tabela_atual = ttk.Label(self.tela1,textvariable=tabela_atual_var,style='Titulo.TLabel')
+        tabela_atual.lower()
+        tabela_atual.place(relx=0.5,y=85,anchor=CENTER)
         tabela_atual_var.trace("w", lambda *args: bloquear_entrys())
         
         # Gerar gráfico com matplotlib
@@ -243,10 +250,12 @@ class inicio:
                 i.set_rotation(45)
             plt.show()
         
-        gerar_grafico = ttk.Button(self.home,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
-        gerar_grafico.place(x=650,y=65,anchor=CENTER)
+        gerar_grafico = ttk.Button(self.tela1,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
+        gerar_grafico.place(x=795,y=65,anchor=CENTER)
         
         self.tabela_analise_pareto()
+        
+        notebook.add(self.tela1, text='Pareto')
         
         self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
         
@@ -260,13 +269,13 @@ class inicio:
     def tabela_analise_pareto(self,colunas = ''):
         global pareto_tabela
         pareto_tabela = Tableview(
-            self.home,
+            self.tela1,
             coldata=colunas,
             rowdata=[],
             autofit=True,
             autoalign=False,
         )
-        pareto_tabela.place(relx=0.5,y=290,anchor=CENTER, width=900)
+        pareto_tabela.place(relx=0.5,y=275,anchor=CENTER, width=900)
               
     def analise_pareto(self,tabela=None, grafico=None):
         global matplot
@@ -290,8 +299,11 @@ class inicio:
         self.tabela_analise_pareto(colunas=colunas_novas)
         pareto_tabela.insert_rows(index = 'end', rowdata = dados)
         pareto_tabela.load_table_data()
-        
-            
+
+    def segunda_tela():
+        pass
+
+         
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
             edit_config.apagar_dados()
