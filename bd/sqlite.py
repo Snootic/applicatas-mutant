@@ -46,7 +46,7 @@ class tabela:
             edit_config.EditarTabela(self.tabela,dados)
             return 'Tabela criada'
         
-    def addValor_pareto(self, dados, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
+    def addValor_pareto(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
         schema = self.CriarDirSchema('pareto')
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
@@ -91,3 +91,11 @@ class tabela:
     
     def SelectTabela(self, tabela, dados):
         edit_config.EditarTabela(tabela,dados)
+
+    def add_valor_medidas(self, medida):
+        schema = self.CriarDirSchema('medidas')
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            tabela = edit_config.getTabela()
+            cursor.execute(f"INSERT INTO {tabela} (medidas) VALUES(?)", (medida,))
+            schema.commit()
