@@ -6,6 +6,7 @@ from ttkbootstrap.constants import *
 from bd.tabela_pareto import *
 from bd.sqlite import tabela
 import matplotlib.pyplot as plt
+from bd.medidas import *
 
 #TODO:
 # Funcoes de importação de xlsx
@@ -319,6 +320,7 @@ class inicio:
         
         #Tabela de medidas
         def tabela_medidas_matriz(colunas = ''):
+            global tabela_medidas
             tabela_medidas = Tableview(
                 dados_matriz,
                 coldata=colunas,
@@ -338,7 +340,7 @@ class inicio:
             )
             tabela_medidas.place(relx=0.5,rely=0.5,width=900,anchor='center')
             
-        def tabela_medidas(colunas = ''):
+        def tabela_de_medidas(colunas = ''):
             tabela_medidas = Tableview(
                 medidas_dados,
                 coldata=colunas,
@@ -433,7 +435,7 @@ class inicio:
                                           text= 'Adicionar',
                                           width=9,
                                           style='Estilo1.TButton',
-                                          command= lambda: print('oi'))
+                                          command= lambda: add_valor_tabela())
         inserir_dados_btn.place(x=311,y=10)
         
         #Atualizar dados
@@ -469,10 +471,37 @@ class inicio:
         def abrir_tabela_selecionada():
             tabelas.SelectTabela(abrir_tabela_var.get(), 'medidas')
             tabela_atual_var.set(value=abrir_tabela_var.get())
+            tabelas_medidas()
+        
+        def add_valor_tabela():
+            medida = dados_var.get()
+            tabelas.add_valor_medidas(medida)
+            tabelas_medidas()
+            
+        
+        def tabelas_medidas(tabela=None, grafico=None):
+            if tabela is not None and not tabela.empty:
+                matriz = tabela.sort()
+                medidas_tabela = imports
+            else:
+                medidas_tabelas = sqlite_table
+            
+            tabela = medidas_tabelas()
+            tabela = [dado for dados in tabela for dado in dados]
+            linhas = []
+            for i in range(0, len(tabela), 5):
+                sublista = tabela[i:i + 5]
+                linhas.append(sublista)
+
+            tabela_medidas.destroy()
+            coluna = [{"text": '', "stretch": True, "width": 120}] * 5
+            tabela_medidas_matriz(colunas = coluna)
+            tabela_medidas.insert_rows(index = 0, rowdata = linhas)
+            tabela_medidas.load_table_data()
             
         tabela_medidas_matriz()
         tabela_medidas_formatada()
-        tabela_medidas()
+        tabela_de_medidas()
         tabela_tdf()
         
     def fechar_login(self):
