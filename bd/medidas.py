@@ -3,7 +3,7 @@ import numpy as np
 import sqlite3
 from data import edit_config
 
-def sqlite():
+def sqlite_table():
     dir_schema = edit_config.getSchema('dir')
     tabela = edit_config.getTabela()
     with sqlite3.connect(dir_schema) as schema:
