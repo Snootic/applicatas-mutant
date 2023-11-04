@@ -108,7 +108,7 @@ def corte_inferior(tabela):
     fst_qrt = primeiro_quartil(tabela)
     iqr_valores = iqr(tabela)
     
-    inf = fst_qrt - 1,5 * iqr_valores
+    inf = fst_qrt - 1.5 * iqr_valores
     
     return inf
 
