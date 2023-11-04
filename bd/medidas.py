@@ -31,6 +31,7 @@ def sqlite_table():
         
     tabela_formatada = DataFrame(tupla_medidas, columns=colunas)
     
+    
     return matriz, tabela_formatada
 
 def imports():
@@ -38,14 +39,14 @@ def imports():
     pass
 
 def media(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas = np.array(medidas)
     media = np.average(medidas)
     
     return media
     
 def mediana(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas.sort()
     medidas = np.array(medidas)
     mediana = np.median(medidas)
@@ -53,14 +54,14 @@ def mediana(tabela):
     return mediana
 
 def max(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas = np.array(medidas)
     max = np.max(medidas)
     
     return max
 
 def min(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas = np.array(medidas)
     min = np.min(medidas)
     
@@ -75,7 +76,7 @@ def amplitude(tabela):
     return amp
 
 def primeiro_quartil(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas.sort()
     medidas = np.array(medidas)
     fst_qrt = np.quantile(medidas, 0.25)
@@ -83,7 +84,7 @@ def primeiro_quartil(tabela):
     return fst_qrt
 
 def terceiro_quartil(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas.sort()
     medidas = np.array(medidas)
     trd_qrt = np.quantile(medidas, 0.75)
@@ -119,7 +120,7 @@ def dados_discrepantes(tabela):
     pass
 
 def moda(tabela):
-    medidas = tabela()
+    matriz,medidas = tabela()
     medidas.sort()
     medidas = DataFrame(medidas)
     moda = medidas.mode()
