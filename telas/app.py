@@ -90,9 +90,9 @@ class Tela:
         
 class Estilo:
     tema = edit_config.getTema()
-    Tfonte = 'Nexa 20'
-    fonte = 'Nexa 12'
-    Sfonte = 'Nexa 10'
+    Tfonte = 'Nexa 18'
+    fonte = 'Nexa 11'
+    Sfonte = 'Nexa 9'
     def __init__(self):
         self.style = ttk.Style(self.tema)
         cores = self.style._theme_definitions.get(self.tema)
