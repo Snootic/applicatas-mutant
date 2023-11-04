@@ -47,7 +47,6 @@ def media(tabela):
     
 def mediana(tabela):
     matriz,medidas = tabela()
-    medidas.sort()
     medidas = np.array(medidas)
     mediana = np.median(medidas)
     
@@ -68,16 +67,15 @@ def min(tabela):
     return min
 
 def amplitude(tabela):
-    max = max(tabela)
-    min = min(tabela)
+    maximo = max(tabela)
+    minimo = min(tabela)
     
-    amp = max-min
+    amp = maximo-minimo
     
     return amp
 
 def primeiro_quartil(tabela):
     matriz,medidas = tabela()
-    medidas.sort()
     medidas = np.array(medidas)
     fst_qrt = np.quantile(medidas, 0.25)
     
@@ -85,7 +83,6 @@ def primeiro_quartil(tabela):
 
 def terceiro_quartil(tabela):
     matriz,medidas = tabela()
-    medidas.sort()
     medidas = np.array(medidas)
     trd_qrt = np.quantile(medidas, 0.75)
     
@@ -101,17 +98,17 @@ def iqr(tabela):
     
 def corte_superior(tabela):
     trd_qrt = terceiro_quartil(tabela)
-    iqr = iqr(tabela)
+    iqr_valores = iqr(tabela)
     
-    sup = trd_qrt + 1,5 * iqr
+    sup = trd_qrt + 1.5 * iqr_valores
     
     return sup
 
 def corte_inferior(tabela):
     fst_qrt = primeiro_quartil(tabela)
-    iqr = iqr(tabela)
+    iqr_valores = iqr(tabela)
     
-    inf = fst_qrt - 1,5 * iqr
+    inf = fst_qrt - 1,5 * iqr_valores
     
     return inf
 
@@ -121,7 +118,6 @@ def dados_discrepantes(tabela):
 
 def moda(tabela):
     matriz,medidas = tabela()
-    medidas.sort()
     medidas = DataFrame(medidas)
     moda = medidas.mode()
     moda = moda.values
