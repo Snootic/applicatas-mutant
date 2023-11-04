@@ -8,10 +8,15 @@ def sqlite_table():
     tabela = edit_config.getTabela()
     with sqlite3.connect(dir_schema) as schema:
         cursor = schema.cursor()
-        cursor.execute(f"SELECT medidas FROM {tabela}")
-        medidas = cursor.fetchall()
-        
-    return medidas
+        coluna_id = 'id'
+        cursor.execute(f"PRAGMA table_info({tabela})")
+        colunas_da_tabela = cursor.fetchall()
+        nomes_de_colunas = [coluna[1] for coluna in colunas_da_tabela if coluna[1] != coluna_id]
+        cursor.execute(f"SELECT {', '.join(nomes_de_colunas)} FROM {tabela}")
+        matriz = cursor.fetchall()
+
+    
+    return matriz
 
 def imports():
     #TODO
