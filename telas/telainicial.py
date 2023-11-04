@@ -24,6 +24,7 @@ class inicio:
         tela.centralizarTela(900, 600)
         tela.menu()
         tela.instancia_com_tabela = self
+        tela.home = self.home
         
         #Estilo da tela
         colors = self.login.style.colors
@@ -33,22 +34,22 @@ class inicio:
         notebook = ttk.Notebook(self.home)
         notebook.pack(expand=True)
         
-        tela_pareto = ttk.Frame(notebook, width=900, height=600)
-        tela_pareto.pack(fill='both', expand=True)
-        tela_medidas = ttk.Frame(notebook, width=900, height=600)
-        tela_medidas.pack(fill='both',expand=True)
+        self.tela_pareto = ttk.Frame(notebook, width=900, height=600)
+        self.tela_pareto.pack(fill='both', expand=True)
+        self.tela_medidas = ttk.Frame(notebook, width=900, height=600)
+        self.tela_medidas.pack(fill='both',expand=True)
         
-        notebook.add(tela_pareto, text='Pareto')
-        notebook.add(tela_medidas, text='Medidas')
+        notebook.add(self.tela_pareto, text='Pareto')
+        notebook.add(self.tela_medidas, text='Medidas')
         
-        self.tela_pareto(tela_pareto)
-        self.tela_medidas(tela_medidas)
+        self.telas_pareto(self.tela_pareto)
+        self.telas_medidas(self.tela_medidas)
         
         self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
         
         self.home.mainloop()   
         
-    def tela_pareto(self, tela): 
+    def telas_pareto(self, tela): 
         #Pegar dados para criar tabela análise de pareto
         sqlite = pareto()
         
@@ -296,8 +297,9 @@ class inicio:
         gerar_grafico.place(x=795,y=65,anchor=CENTER)
     
         tabela_analise_pareto()
+        return analise_pareto
         
-    def tela_medidas(self, tela):
+    def telas_medidas(self, tela):
         #Notebok tabelas
         notebook = ttk.Notebook(tela)
         notebook.place(relx=0.5, y=290, anchor='center')
@@ -503,6 +505,10 @@ class inicio:
         tabela_medidas_formatada()
         tabela_de_medidas()
         tabela_tdf()
+
+    def analise_pareto(self, tabela, grafico):
+        pareto = self.telas_pareto(self.tela_pareto)
+        pareto(tabela, grafico)
         
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
