@@ -536,6 +536,10 @@ class inicio:
             tabela_medidas_format.load_table_data()
             
             # Tabela de medidas
+            tabela_medidas.destroy()
+            tabela_de_medidas()
+            
+            #chamando funções de todas as medidas
             media_valores = media(medidas_tabelas)
             mediana_valores = mediana(medidas_tabelas)
             max_valores = max(medidas_tabelas)
@@ -547,7 +551,19 @@ class inicio:
             corte_inferior_valores = corte_inferior(medidas_tabelas)
             corte_superior_valores = corte_superior(medidas_tabelas)
             moda_valores = moda(medidas_tabelas)
-            print(media_valores, mediana_valores, max_valores, min_valores, amplitude_valores, primeiro_quartil_valores, terceiro_quartil_valores, iqr_valores, corte_inferior_valores, corte_superior_valores, moda_valores)
+            
+            #colunas da tabela
+            colunas = ['Média', 'Mediana', 'Max', 'Min', 'Amplitude', '1ºQuartil', '3ºQuartil','IQR','Corte Inferior', 'Corte Superior', 'Moda']
+            for i in colunas:
+                tabela_medidas.insert_column("end",text=f'{i}', stretch=True, width=30)
+            # adicionando os valores as linhas
+            for x in range(len(media_valores)):
+                dados = [media_valores[x], mediana_valores[x], max_valores[x], min_valores[x],
+                         amplitude_valores[x],primeiro_quartil_valores[x],terceiro_quartil_valores[x],
+                         iqr_valores[x],corte_inferior_valores[x],corte_superior_valores[x],moda_valores[x]]
+                tabela_medidas.insert_row(index=0,values=dados)
+                tabela_medidas.load_table_data()
+                
             # Tabela de Distribuição de frequência
             
             
