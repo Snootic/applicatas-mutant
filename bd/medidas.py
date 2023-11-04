@@ -40,77 +40,139 @@ def imports():
 
 def media(tabela):
     matriz,medidas = tabela()
-    medidas = np.array(medidas)
-    media = np.average(medidas)
-    
-    return media,
+    medidas_totais = np.array(medidas)
+    media = np.average(medidas_totais)
+
+    lista_medidas = [media]
+    for i in medidas:
+        coluna = medidas[i].to_list()
+        coluna = np.array(coluna)
+        media_coluna = np.average(coluna)
+        lista_medidas.append(media_coluna)
+        
+    return lista_medidas
     
 def mediana(tabela):
     matriz,medidas = tabela()
-    medidas = np.array(medidas)
-    mediana = np.median(medidas)
+    medidas_totais = np.array(medidas)
+    mediana = np.median(medidas_totais)
     
-    return mediana,
+    lista_medidas = [mediana]
+    for i in medidas:
+        coluna = medidas[i].to_list()
+        coluna = np.array(coluna)
+        mediana_coluna = np.median(coluna)
+        lista_medidas.append(mediana_coluna)
+        
+    return lista_medidas
 
 def max(tabela):
     matriz,medidas = tabela()
-    medidas = np.array(medidas)
-    max = np.max(medidas)
+    medidas_totais = np.array(medidas)
+    max = np.max(medidas_totais)
     
-    return max,
+    lista_medidas = [max]
+    for i in medidas:
+        coluna = medidas[i].to_list()
+        coluna = np.array(coluna)
+        max_coluna = np.max(coluna)
+        lista_medidas.append(max_coluna)
+        
+    return lista_medidas
 
 def min(tabela):
     matriz,medidas = tabela()
-    medidas = np.array(medidas)
-    min = np.min(medidas)
+    medidas_totais = np.array(medidas)
+    min = np.min(medidas_totais)
     
-    return min,
+    lista_medidas = [min]
+    for i in medidas:
+        coluna = medidas[i].to_list()
+        coluna = np.array(coluna)
+        min_coluna = np.min(coluna)
+        lista_medidas.append(min_coluna)
+        
+    return lista_medidas
 
 def amplitude(tabela):
     maximo = max(tabela)
     minimo = min(tabela)
     
-    amp = maximo[0]-minimo[0]
-    
-    return amp,
+    lista_medidas = []
+    for i in range(len(maximo)):
+        maximo_conjunto = maximo[i]
+        minimo_conjunto= minimo[i]
+        amp_conjunto = maximo_conjunto - minimo_conjunto
+        lista_medidas.append(amp_conjunto)
+        
+    return lista_medidas
 
 def primeiro_quartil(tabela):
     matriz,medidas = tabela()
-    medidas = np.array(medidas)
-    fst_qrt = np.quantile(medidas, 0.25)
+    medidas_totais = np.array(medidas)
+    fst_qrt = np.quantile(medidas_totais, 0.25)
     
-    return fst_qrt,
+    lista_medidas = [fst_qrt]
+    for i in medidas:
+        coluna = medidas[i].to_list()
+        coluna = np.array(coluna)
+        fst_qrt_coluna = np.quantile(coluna, 0.25)
+        lista_medidas.append(fst_qrt_coluna)
+        
+    return lista_medidas
 
 def terceiro_quartil(tabela):
     matriz,medidas = tabela()
-    medidas = np.array(medidas)
-    trd_qrt = np.quantile(medidas, 0.75)
+    medidas_totais = np.array(medidas)
+    trd_qrt = np.quantile(medidas_totais, 0.75)
     
-    return trd_qrt,
+    lista_medidas = [trd_qrt]
+    for i in medidas:
+        coluna = medidas[i].to_list()
+        coluna = np.array(coluna)
+        trd_qrt_coluna = np.quantile(coluna, 0.75)
+        lista_medidas.append(trd_qrt_coluna)
+        
+    return lista_medidas
 
 def iqr(tabela):
     fst_qrt = primeiro_quartil(tabela)
     trd_qrt = terceiro_quartil(tabela)
     
-    iqr = trd_qrt[0] - fst_qrt[0]
-    
-    return iqr,
+    lista_medidas = []
+    for i in range(len(trd_qrt)):
+        trd_qrt_conjunto = trd_qrt[i]
+        fst_qrt_conjunto = fst_qrt[i]
+        iqr = trd_qrt_conjunto - fst_qrt_conjunto
+        lista_medidas.append(iqr)
+        
+    return lista_medidas
     
 def corte_superior(tabela):
     trd_qrt = terceiro_quartil(tabela)
     iqr_valores = iqr(tabela)
     
-    sup = trd_qrt[0] + 1.5 * iqr_valores[0]
-    
-    return sup,
+    lista_medidas = []
+    for i in range(len(trd_qrt)):
+        trd_qrt_conjunto = trd_qrt[i]
+        iqr_valores_conjunto = iqr_valores[i]
+        inf = trd_qrt_conjunto + 1.5 * iqr_valores_conjunto
+        lista_medidas.append(inf)
 
+    return lista_medidas
+    
 def corte_inferior(tabela):
     fst_qrt = primeiro_quartil(tabela)
     iqr_valores = iqr(tabela)
-    
-    inf = fst_qrt[0] - 1.5 * iqr_valores[0]
-    
-    return inf,
+
+    lista_medidas = []
+    for i in range(len(fst_qrt)):
+        fst_qrt_conjunto = fst_qrt[i]
+        iqr_valores_conjunto = iqr_valores[i]
+        inf = fst_qrt_conjunto - 1.5 * iqr_valores_conjunto
+        lista_medidas.append(inf)
+        
+    return lista_medidas
 
 def dados_discrepantes(tabela):
     #TODO
@@ -118,9 +180,13 @@ def dados_discrepantes(tabela):
 
 def moda(tabela):
     matriz,medidas = tabela()
-    lista_valores_totais = medidas.values.flatten()
-    moda_total = Series(lista_valores_totais).mode().values
-    # moda = medidas.mode()
-    # moda = moda.values
+    medidas_totais = medidas.values.flatten()
+    moda = Series(medidas_totais).mode().values
     
-    return moda_total,
+    lista_medidas = [moda]
+    for i in medidas:
+        coluna = medidas[i]
+        moda_coluna = coluna.mode().values
+        lista_medidas.append(moda_coluna)
+        
+    return lista_medidas
