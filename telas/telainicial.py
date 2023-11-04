@@ -536,7 +536,18 @@ class inicio:
             tabela_medidas_format.load_table_data()
             
             # Tabela de medidas
-            
+            media_valores = media(medidas_tabelas)
+            mediana_valores = mediana(medidas_tabelas)
+            max_valores = max(medidas_tabelas)
+            min_valores = min(medidas_tabelas)
+            amplitude_valores = amplitude(medidas_tabelas)
+            primeiro_quartil_valores = primeiro_quartil(medidas_tabelas)
+            terceiro_quartil_valores = terceiro_quartil(medidas_tabelas)
+            iqr_valores = iqr(medidas_tabelas)
+            corte_inferior_valores = corte_inferior(medidas_tabelas)
+            corte_superior_valores = corte_superior(medidas_tabelas)
+            moda_valores = moda(medidas_tabelas)
+            print(media_valores, mediana_valores, max_valores, min_valores, amplitude_valores, primeiro_quartil_valores, terceiro_quartil_valores, iqr_valores, corte_inferior_valores, corte_superior_valores, moda_valores)
             # Tabela de Distribuição de frequência
             
             
