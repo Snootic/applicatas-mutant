@@ -505,7 +505,7 @@ class inicio:
             else:
                 medidas_tabelas = sqlite_table
             
-            tabela = medidas_tabelas()
+            tabela, tabela_formatada = medidas_tabelas()
             tabela = [dado for dados in tabela for dado in dados] # Cria uma lista com os valores das colunas da tabela
             tabela_matriz = [dado for dado in tabela if dado is not None] # Separa os valores da lista, excluindo os valores Nulos, para matriz
             
@@ -523,9 +523,16 @@ class inicio:
             tabela_medidas_matrix.load_table_data()
             
             # Tabela formatada, com tarefas e separação de colunas etc.
+            colunas=list(tabela_formatada)
+            dados=tabela_formatada.to_numpy().tolist()
+            # dados = list(reversed(dados))
+            
             tabela_medidas_format.destroy()
             tabela_medidas_formatada()
-            tabela_medidas_format.insert_column("end", text='Tarefas', stretch=True, width=120)
+            # tabela_medidas_format.insert_column("end", text='Tarefas', stretch=True, width=120)
+            for item in colunas:
+                tabela_medidas_format.insert_column("end",text=f'{item}', stretch=True, width=120)
+            tabela_medidas_format.insert_rows(index=0, rowdata=dados)
             tabela_medidas_format.load_table_data()
             
             # Tabela de medidas
