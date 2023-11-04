@@ -41,7 +41,7 @@ class tabela:
             elif dados == 'medidas':
                 cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                medidas INTEGER NOT NULL)''')
+                                medidas1 INTEGER)''')
                 
             edit_config.EditarTabela(self.tabela,dados)
             return 'Tabela criada'
@@ -92,10 +92,22 @@ class tabela:
     def SelectTabela(self, tabela, dados):
         edit_config.EditarTabela(tabela,dados)
 
-    def add_valor_medidas(self, medida):
+    def add_valor_medidas(self, medida, conj_dados = 1):
         schema = self.CriarDirSchema('medidas')
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
-            cursor.execute(f"INSERT INTO {tabela} (medidas) VALUES(?)", (medida,))
+            coluna = "medidas"+f'{conj_dados}'
+            cursor.execute(f"""PRAGMA table_info({tabela})""")
+            colunas_da_tabela = [row[1] for row in cursor.fetchall()]
+
+            print(coluna)
+            
+            if coluna not in colunas_da_tabela:
+                cursor.execute(f"""
+                    ALTER TABLE {tabela}
+                    ADD COLUMN {coluna} integer
+                    """)
+                schema.commit()
+            cursor.execute(f"INSERT INTO {tabela} ({coluna}) VALUES(?)", (medida,))
             schema.commit()
