@@ -313,8 +313,6 @@ class inicio:
         tdf = ttk.Frame(notebook, width=900, height=350)
         tdf.pack(fill='both', expand=True)
         
-        
-        
         notebook.add(dados_matriz, text='Matriz de dados')
         notebook.add(tabela_formatada, text='Tabela formatada')
         notebook.add(medidas_dados, text='Medidas')
@@ -322,27 +320,29 @@ class inicio:
         
         #Tabela de medidas
         def tabela_medidas_matriz(colunas = ''):
-            global tabela_medidas
-            tabela_medidas = Tableview(
+            global tabela_medidas_matrix
+            tabela_medidas_matrix = Tableview(
                 dados_matriz,
                 coldata=colunas,
                 rowdata=[],
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas_matrix.place(relx=0.5,rely=0.5,width=900,anchor='center')
             
-        def tabela_medidas_formatada(colunas = ''):
-            tabela_medidas = Tableview(
+        def tabela_medidas_formatada():
+            global tabela_medidas_format
+            tabela_medidas_format = Tableview(
                 tabela_formatada,
-                coldata=colunas,
+                coldata=[],
                 rowdata=[],
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas_format.place(relx=0.5,rely=0.5,width=900,anchor='center')
             
         def tabela_de_medidas(colunas = ''):
+            global tabela_medidas
             tabela_medidas = Tableview(
                 medidas_dados,
                 coldata=colunas,
@@ -353,14 +353,16 @@ class inicio:
             tabela_medidas.place(relx=0.5,rely=0.5,width=900,anchor='center')
             
         def tabela_tdf(colunas = ''):
-            tabela_medidas = Tableview(
+            global tabela_medidas_tdf
+            tabela_medidas_tdf = Tableview(
                 tdf,
                 coldata=colunas,
                 rowdata=[],
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas_tdf.place(relx=0.5,rely=0.5,width=900,anchor='center')
+        
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
             tela,
@@ -425,20 +427,28 @@ class inicio:
         dados_var = ttk.StringVar(value='Insira o dado')
         dados = ttk.Entry(conjunto_de_dados_frame,
                                     textvariable=dados_var,
-                                    width=30,
+                                    width=19,
                                     font=self.estilo.fonte)
-        dados.place(x=13,y=10)
+        dados.place(x=10,y=10)
         dados.bind(
             '<FocusIn>',
             lambda event: (dados_var.set(value=''),
                            dados.unbind('<FocusIn>')))
         
+        conjunto_dados_var = ttk.StringVar(value='Cojunto de dados')
+        conjunto_dados = ttk.Combobox(conjunto_de_dados_frame,
+                                      textvariable=conjunto_dados_var,
+                                      width=15,
+                                      font=self.estilo.fonte)
+        conjunto_dados.place(x=180, y=10)
+        conjunto_dados.bind('<FocusIn>', lambda event: (conjunto_dados_var.set(value=''), conjunto_dados.unbind_all))
+        
         inserir_dados_btn = ttk.Button(conjunto_de_dados_frame,
                                           text= 'Adicionar',
-                                          width=9,
+                                          width=8,
                                           style='Estilo1.TButton',
                                           command= lambda: add_valor_tabela())
-        inserir_dados_btn.place(x=311,y=10)
+        inserir_dados_btn.place(x=330,y=10)
         
         #Atualizar dados
         atualizar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
@@ -477,29 +487,51 @@ class inicio:
         
         def add_valor_tabela():
             medida = dados_var.get()
-            tabelas.add_valor_medidas(medida)
+            conjunto_dados = conjunto_dados_var.get()
+            try:
+                conjunto_dados = int(conjunto_dados)
+            except:
+                tabelas.add_valor_medidas(medida)
+            else:
+                tabelas.add_valor_medidas(medida,conjunto_dados)
+            print(type(conjunto_dados))
             tabelas_medidas()
             
-        
         def tabelas_medidas(tabela=None, grafico=None):
-            if tabela is not None and not tabela.empty:
+            if tabela is not None and not tabela.empty: # Caso os parametros não sejam None, chamar o comando de import
                 matriz = tabela.sort()
                 medidas_tabela = imports
+                
             else:
                 medidas_tabelas = sqlite_table
             
             tabela = medidas_tabelas()
-            tabela = [dado for dados in tabela for dado in dados]
+            tabela = [dado for dados in tabela for dado in dados] # Cria uma lista com os valores das colunas da tabela
+            tabela_matriz = [dado for dado in tabela if dado is not None] # Separa os valores da lista, excluindo os valores Nulos, para matriz
+            
+            # Separa os dados em linhas de 5 valores cada
             linhas = []
-            for i in range(0, len(tabela), 5):
-                sublista = tabela[i:i + 5]
+            for i in range(0, len(tabela_matriz), 5):
+                sublista = tabela_matriz[i:i + 5]
                 linhas.append(sublista)
-
-            tabela_medidas.destroy()
+            
+            # Matriz de dados
+            tabela_medidas_matrix.destroy()
             coluna = [{"text": '', "stretch": True, "width": 120}] * 5
             tabela_medidas_matriz(colunas = coluna)
-            tabela_medidas.insert_rows(index = 0, rowdata = linhas)
-            tabela_medidas.load_table_data()
+            tabela_medidas_matrix.insert_rows(index = 0, rowdata = linhas)
+            tabela_medidas_matrix.load_table_data()
+            
+            # Tabela formatada, com tarefas e separação de colunas etc.
+            tabela_medidas_format.destroy()
+            tabela_medidas_formatada()
+            tabela_medidas_format.insert_column("end", text='Tarefas', stretch=True, width=120)
+            tabela_medidas_format.load_table_data()
+            
+            # Tabela de medidas
+            
+            # Tabela de Distribuição de frequência
+            
             
         tabela_medidas_matriz()
         tabela_medidas_formatada()
