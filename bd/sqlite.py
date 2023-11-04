@@ -99,9 +99,7 @@ class tabela:
             tabela = edit_config.getTabela()
             coluna = "medidas"+f'{conj_dados}'
             cursor.execute(f"""PRAGMA table_info({tabela})""")
-            colunas_da_tabela = [row[1] for row in cursor.fetchall()]
-
-            print(coluna)
+            colunas_da_tabela = [linha[1] for linha in cursor.fetchall()]
             
             if coluna not in colunas_da_tabela:
                 cursor.execute(f"""
