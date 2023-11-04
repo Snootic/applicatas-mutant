@@ -43,74 +43,74 @@ def media(tabela):
     medidas = np.array(medidas)
     media = np.average(medidas)
     
-    return media
+    return media,
     
 def mediana(tabela):
     matriz,medidas = tabela()
     medidas = np.array(medidas)
     mediana = np.median(medidas)
     
-    return mediana
+    return mediana,
 
 def max(tabela):
     matriz,medidas = tabela()
     medidas = np.array(medidas)
     max = np.max(medidas)
     
-    return max
+    return max,
 
 def min(tabela):
     matriz,medidas = tabela()
     medidas = np.array(medidas)
     min = np.min(medidas)
     
-    return min
+    return min,
 
 def amplitude(tabela):
     maximo = max(tabela)
     minimo = min(tabela)
     
-    amp = maximo-minimo
+    amp = maximo[0]-minimo[0]
     
-    return amp
+    return amp,
 
 def primeiro_quartil(tabela):
     matriz,medidas = tabela()
     medidas = np.array(medidas)
     fst_qrt = np.quantile(medidas, 0.25)
     
-    return fst_qrt
+    return fst_qrt,
 
 def terceiro_quartil(tabela):
     matriz,medidas = tabela()
     medidas = np.array(medidas)
     trd_qrt = np.quantile(medidas, 0.75)
     
-    return trd_qrt
+    return trd_qrt,
 
 def iqr(tabela):
     fst_qrt = primeiro_quartil(tabela)
     trd_qrt = terceiro_quartil(tabela)
     
-    iqr = trd_qrt - fst_qrt
+    iqr = trd_qrt[0] - fst_qrt[0]
     
-    return iqr
+    return iqr,
     
 def corte_superior(tabela):
     trd_qrt = terceiro_quartil(tabela)
     iqr_valores = iqr(tabela)
     
-    sup = trd_qrt + 1.5 * iqr_valores
+    sup = trd_qrt[0] + 1.5 * iqr_valores[0]
     
-    return sup
+    return sup,
 
 def corte_inferior(tabela):
     fst_qrt = primeiro_quartil(tabela)
     iqr_valores = iqr(tabela)
     
-    inf = fst_qrt - 1.5 * iqr_valores
+    inf = fst_qrt[0] - 1.5 * iqr_valores[0]
     
-    return inf
+    return inf,
 
 def dados_discrepantes(tabela):
     #TODO
@@ -118,8 +118,9 @@ def dados_discrepantes(tabela):
 
 def moda(tabela):
     matriz,medidas = tabela()
-    medidas = DataFrame(medidas)
-    moda = medidas.mode()
-    moda = moda.values
+    lista_valores_totais = medidas.values.flatten()
+    moda_total = Series(lista_valores_totais).mode().values
+    # moda = medidas.mode()
+    # moda = moda.values
     
-    return moda
+    return moda_total,
