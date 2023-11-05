@@ -192,3 +192,65 @@ def moda(tabela):
         lista_medidas.append(moda_coluna)
         
     return lista_medidas
+
+def tdf(tabela):
+    matriz, dataframe = tabela()
+    amp = amplitude(tabela)
+    
+    # calcula quantidade de linhas e colunas do dataframe
+    qtd_linhas_dataframe = len(dataframe['1ª'])
+    colunas_dataframe = dataframe.to_numpy().tolist()
+    qtd_colunas_dataframe = len(colunas_dataframe[0])
+    
+    if qtd_colunas_dataframe*qtd_linhas_dataframe > 100:
+    
+        # Calcula o Intervalo de Classe pelo método de Sturges
+        linhas_classe =  1+3.33*np.log10(qtd_colunas_dataframe*qtd_linhas_dataframe)
+        tamanho_classe = amp[0]/linhas_classe
+    else:
+        # Calcula o Intervalo de Classe pelo Critério Raiz
+        linhas_classe = np.sqrt(qtd_colunas_dataframe*qtd_linhas_dataframe)
+        tamanho_classe = amp[0]/linhas_classe
+    
+    # Arredonda a quantidade de linhas
+    linhas_classe = round(linhas_classe)
+    
+    # Arredonda o tamanho das classes
+    tamanho_classe= round(tamanho_classe)
+    
+    # tabela de distribuição de frequência
+    nova_matriz = []
+    for i in range(len(colunas_dataframe)):
+        for x in range(len(colunas_dataframe[0])):
+            nova_matriz.append(colunas_dataframe[i][x])
+            
+    nova_matriz = sorted(nova_matriz)
+    
+    dado_inicial = nova_matriz[0]
+    dado_limite = dado_inicial
+    dados = []
+    while dado_limite < nova_matriz[-1]: # Define os dados da TDF
+        dado_limite += tamanho_classe
+        ponto_medio = (dado_inicial+dado_limite)/2
+        
+        fi = 0
+        for i in nova_matriz:
+            if i in range(dado_inicial, dado_limite):
+                fi += 1
+        
+        if dado_limite > nova_matriz[-1]:
+            dados.append((f'{dado_inicial}|--|{dado_limite}',ponto_medio, fi))
+        else:
+            dados.append((f'{dado_inicial}|--{dado_limite}',ponto_medio, fi))
+        dado_inicial = dado_limite
+    
+    tdf = DataFrame(dados, columns=['', 'Ponto Médio', 'Fi'])
+    tdf['Freq. Relativa'] = tdf['Fi'] / tdf['Fi'].sum()
+    tdf['Freq. Relativa %'] = tdf['Fi'] / tdf['Fi'].sum() * 100
+    tdf['Freq. Acumulada'] = tdf['Freq. Relativa'].cumsum()/tdf['Freq. Relativa'].sum() * 100
+    total_fi = tdf['Fi'].sum()
+    total_fr = tdf['Freq. Relativa'].sum()
+    total_frp = tdf['Freq. Relativa %'].sum()
+    tdf.loc[-1] = ['Totais', '-',total_fi, total_fr,f'{total_frp}%', '-']
+    
+    return tdf
