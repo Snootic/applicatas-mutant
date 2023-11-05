@@ -110,7 +110,7 @@ class pareto:
                 tabela["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
                 tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
                 tabela["Freq. Acumulada"] = tabela["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
-                tabela.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, total_custos, '100.00%', '-']
+                tabela.loc[-1] = ['Total', f'R${total_custos_unitarios}', total_ocorrencias, f'R${total_custos}', '100.00%', '-']
                 return matplot, tabela
             
     def csv(self,arquivo):

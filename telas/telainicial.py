@@ -182,22 +182,38 @@ class inicio:
                            adicionar_itens.unbind('<FocusIn>')))
         
         adicionar_custo_var = ttk.StringVar(value='Custo Unitário')
-        adicionar_custo = ttk.Entry(adicionar_itens_frame,
+        adicionar_custo = ttk.Spinbox(adicionar_itens_frame,
                                     textvariable=adicionar_custo_var,
-                                    width=30,
+                                    width=27,
                                     font=self.estilo.fonte)
         adicionar_custo.place(x=13, y=50)
         adicionar_custo.bind(
             '<FocusIn>',
             lambda event: (adicionar_custo_var.set(value=''),
                            adicionar_custo.unbind('<FocusIn>')))
-        adicionar_custo.configure(state="disabled")
         
         def bloquear_entrys():
             if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 6:
                 adicionar_custo.configure(state='normal')
+                alterar_custo.configure(state='normal')
             else:
                 adicionar_custo.configure(state="disabled")
+                alterar_custo.configure(state='disabled')
+                
+            if tabela_atual_var.get() == 'SELECIONE UMA TABELA':
+                adicionar_itens.configure(state='disabled')
+                quantidade_ocorrencia.configure(state='disabled')
+                ocorrencia_atual.configure(state='disabled')
+                ocorrencia_quantidade.configure(state='disabled')
+                ocorrencia_nova.configure(state='disabled')
+                adicionar_custo.configure(state="disabled")
+                alterar_custo.configure(state='disabled')
+            else:
+                adicionar_itens.configure(state='normal')
+                quantidade_ocorrencia.configure(state='normal')
+                ocorrencia_atual.configure(state='normal')
+                ocorrencia_quantidade.configure(state='normal')
+                ocorrencia_nova.configure(state='normal')
                     
         quantidade_ocorrencia_var = ttk.IntVar(value=1)
         quantidade_ocorrencia = ttk.Spinbox(adicionar_itens_frame,
@@ -244,13 +260,24 @@ class inicio:
         ocorrencia_nova_var = ttk.StringVar(value='Nova ocorrência')
         ocorrencia_nova = ttk.Entry(atualizar_itens_frame,
                                     textvariable=ocorrencia_nova_var,
-                                    width=30,
+                                    width=15,
                                     font=self.estilo.fonte)
         ocorrencia_nova.bind(
             '<FocusIn>',
             lambda event: (ocorrencia_nova_var.set(value=''),
                            ocorrencia_nova.unbind('<FocusIn>')))
         ocorrencia_nova.place(x=13, y=50)
+        
+        alterar_custo_var = StringVar(value='Custo Unitário')
+        alterar_custo = ttk.Spinbox(atualizar_itens_frame,
+                                    textvariable=alterar_custo_var,
+                                    width=10,
+                                    font=self.estilo.fonte)
+        alterar_custo.place(x=151, y=50)
+        alterar_custo.bind(
+            '<FocusIn>',
+            lambda event: (alterar_custo_var.set(value=''),
+                           alterar_custo.unbind('<FocusIn>')))
         
         atualizar_itens_plus = ttk.Button(atualizar_itens_frame,
                                           text= 'Atualizar',
@@ -296,8 +323,18 @@ class inicio:
         
         gerar_grafico = ttk.Button(tela,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
         gerar_grafico.place(x=795,y=65,anchor=CENTER)
-    
+
+        ocorrencia_atual_var.trace("w", lambda *args: alterar_custos())
+        
+        def alterar_custos():
+            linhas_tabela = pareto_tabela.tablerows
+            if len(pareto_tabela.get_columns()) == 6:
+                for linha in linhas_tabela:
+                    if linha.values[0] == ocorrencia_atual_var.get():
+                        alterar_custo_var.set(value=linha.values[1])
+
         tabela_analise_pareto()
+        bloquear_entrys()
         return analise_pareto
         
     def telas_medidas(self, tela):
