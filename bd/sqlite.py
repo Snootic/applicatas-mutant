@@ -109,3 +109,20 @@ class tabela:
                 schema.commit()
             cursor.execute(f"INSERT INTO {tabela} ({coluna}) VALUES(?)", (medida,))
             schema.commit()
+            
+    def get_TableColumns(self, medida):
+        schema = self.CriarDirSchema('medidas')
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            tabela = edit_config.getTabela()
+            # coluna = "medidas"+f'{conj_dados}'
+            cursor.execute(f"""PRAGMA table_info({tabela});""")
+            colunas_da_tabela = [linha[1] for linha in cursor.fetchall()]
+        
+        colunas_da_tabela.remove('id')
+        
+        lista_colunas = []
+        for i in range(len(colunas_da_tabela)):
+            lista_colunas.append(f'conjunto de dados {i+1}')
+            
+        return lista_colunas

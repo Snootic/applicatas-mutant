@@ -444,7 +444,7 @@ class inicio:
                                       width=15,
                                       font=self.estilo.fonte)
         conjunto_dados.place(x=180, y=10)
-        conjunto_dados.bind('<FocusIn>', lambda event: (conjunto_dados_var.set(value=''), conjunto_dados.unbind_all))
+        conjunto_dados.bind('<FocusIn>', lambda event: (conjunto_dados_var.set(value=''), conjunto_dados.unbind('<FocusIn>')))
         
         inserir_dados_btn = ttk.Button(conjunto_de_dados_frame,
                                           text= 'Adicionar',
@@ -487,17 +487,23 @@ class inicio:
         def abrir_tabela_selecionada():
             tabelas.SelectTabela(abrir_tabela_var.get(), 'medidas')
             tabela_atual_var.set(value=abrir_tabela_var.get())
+            conjunto_dados['value'] = tabelas.get_TableColumns('medidas')
             tabelas_medidas()
         
         def add_valor_tabela():
             medida = dados_var.get()
-            conjunto_dados = conjunto_dados_var.get()
+            conjunto_dado = conjunto_dados_var.get()
+            conj_dados = ''
+            for caractere in conjunto_dado:
+                if caractere.isdigit():
+                    conj_dados += caractere
             try:
-                conjunto_dados = int(conjunto_dados)
+                conjunto_dado = int(conj_dados)
             except:
                 tabelas.add_valor_medidas(medida)
             else:
-                tabelas.add_valor_medidas(medida,conjunto_dados)
+                tabelas.add_valor_medidas(medida,conj_dados)
+            conjunto_dados['value'] = tabelas.get_TableColumns('medidas')    
             tabelas_medidas()
             
         def tabelas_medidas(tabela=None, grafico=None):
