@@ -234,6 +234,7 @@ class inicio:
         def atualizar_itens_funcao():
             tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
             analise_pareto()
+            att_max_att()
         
         atualizar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         atualizar_itens_frame.place(x=670, y=510, anchor=CENTER,height=100,width=430)
@@ -332,7 +333,14 @@ class inicio:
                 for linha in linhas_tabela:
                     if linha.values[0] == ocorrencia_atual_var.get():
                         alterar_custo_var.set(value=linha.values[1])
-
+                        ocorrencia_quantidade.configure(to=linha.values[2])
+        
+        def att_max_att():
+            linhas_tabela = pareto_tabela.tablerows
+            for linha in linhas_tabela:
+                if linha.values[0] == ocorrencia_atual_var.get():
+                    ocorrencia_quantidade.configure(to=linha.values[2])
+                    
         tabela_analise_pareto()
         bloquear_entrys()
         return analise_pareto
