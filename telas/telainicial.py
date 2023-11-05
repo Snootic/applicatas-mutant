@@ -310,13 +310,13 @@ class inicio:
         medidas_dados.pack(fill='both', expand=True)
         tabela_formatada = ttk.Frame(notebook, width=900, height=350)
         tabela_formatada.pack(fill='both', expand=True)
-        tdf = ttk.Frame(notebook, width=900, height=350)
-        tdf.pack(fill='both', expand=True)
+        tdf_frame = ttk.Frame(notebook, width=900, height=350)
+        tdf_frame.pack(fill='both', expand=True)
         
         notebook.add(dados_matriz, text='Matriz de dados')
         notebook.add(tabela_formatada, text='Tabela formatada')
         notebook.add(medidas_dados, text='Medidas')
-        notebook.add(tdf, text='Tabela de distribuição de frequência')
+        notebook.add(tdf_frame, text='Tabela de distribuição de frequência')
         
         #Tabela de medidas
         def tabela_medidas_matriz(colunas = ''):
@@ -355,7 +355,7 @@ class inicio:
         def tabela_tdf(colunas = ''):
             global tabela_medidas_tdf
             tabela_medidas_tdf = Tableview(
-                tdf,
+                tdf_frame,
                 coldata=colunas,
                 rowdata=[],
                 autofit=True,
@@ -575,7 +575,23 @@ class inicio:
                 tabela_medidas.load_table_data()
                 
             # Tabela de Distribuição de frequência
+            tabela_df = tdf(medidas_tabelas)
             
+            colunas=list(tabela_df)
+            colunas_novas = []
+            for item in colunas:
+                if isinstance(item, str):
+                    dicionario = {"text": item, "stretch": True, "width": 120}
+                elif isinstance(item, dict):
+                    dicionario = item
+                colunas_novas.append(dicionario)
+            dados=tabela_df.to_numpy().tolist()
+            dados = list(reversed(dados))
+            tabela_medidas_tdf.destroy()
+            tabela_tdf(colunas=colunas_novas)
+            tabela_medidas_tdf.insert_rows(index = 'end', rowdata = dados)
+            tabela_medidas_tdf.load_table_data()
+
             
         tabela_medidas_matriz()
         tabela_medidas_formatada()
