@@ -1,6 +1,6 @@
 from pandas import *
 import numpy as np
-import sqlite3
+import sqlite3, asyncio
 from data import edit_config
 
 def sqlite_table():
@@ -36,11 +36,11 @@ def sqlite_table():
     
     return matriz, tabela_formatada
 
-def imports():
+async def imports():
     #TODO
     pass
 
-def media(tabela):
+async def media(tabela):
     matriz,medidas = tabela()
     medidas_totais = np.array(medidas)
     media = np.average(medidas_totais)
@@ -54,7 +54,7 @@ def media(tabela):
         
     return lista_medidas
     
-def mediana(tabela):
+async def mediana(tabela):
     matriz,medidas = tabela()
     medidas_totais = np.array(medidas)
     mediana = np.median(medidas_totais)
@@ -68,7 +68,7 @@ def mediana(tabela):
         
     return lista_medidas
 
-def max(tabela):
+async def max(tabela):
     matriz,medidas = tabela()
     medidas_totais = np.array(medidas)
     max = np.max(medidas_totais)
@@ -82,7 +82,7 @@ def max(tabela):
         
     return lista_medidas
 
-def min(tabela):
+async def min(tabela):
     matriz,medidas = tabela()
     medidas_totais = np.array(medidas)
     min = np.min(medidas_totais)
@@ -96,9 +96,9 @@ def min(tabela):
         
     return lista_medidas
 
-def amplitude(tabela):
-    maximo = max(tabela)
-    minimo = min(tabela)
+async def amplitude(tabela):
+    maximo = await max(tabela)
+    minimo = await min(tabela)
     
     lista_medidas = []
     for i in range(len(maximo)):
@@ -109,7 +109,7 @@ def amplitude(tabela):
         
     return lista_medidas
 
-def primeiro_quartil(tabela):
+async def primeiro_quartil(tabela):
     matriz,medidas = tabela()
     medidas_totais = np.array(medidas)
     fst_qrt = np.quantile(medidas_totais, 0.25)
@@ -123,7 +123,7 @@ def primeiro_quartil(tabela):
         
     return lista_medidas
 
-def terceiro_quartil(tabela):
+async def terceiro_quartil(tabela):
     matriz,medidas = tabela()
     medidas_totais = np.array(medidas)
     trd_qrt = np.quantile(medidas_totais, 0.75)
@@ -137,9 +137,9 @@ def terceiro_quartil(tabela):
         
     return lista_medidas
 
-def iqr(tabela):
-    fst_qrt = primeiro_quartil(tabela)
-    trd_qrt = terceiro_quartil(tabela)
+async def iqr(tabela):
+    fst_qrt = await primeiro_quartil(tabela)
+    trd_qrt = await terceiro_quartil(tabela)
     
     lista_medidas = []
     for i in range(len(trd_qrt)):
@@ -150,9 +150,9 @@ def iqr(tabela):
         
     return lista_medidas
     
-def corte_superior(tabela):
-    trd_qrt = terceiro_quartil(tabela)
-    iqr_valores = iqr(tabela)
+async def corte_superior(tabela):
+    trd_qrt = await terceiro_quartil(tabela)
+    iqr_valores = await iqr(tabela)
     
     lista_medidas = []
     for i in range(len(trd_qrt)):
@@ -163,9 +163,9 @@ def corte_superior(tabela):
 
     return lista_medidas
     
-def corte_inferior(tabela):
-    fst_qrt = primeiro_quartil(tabela)
-    iqr_valores = iqr(tabela)
+async def corte_inferior(tabela):
+    fst_qrt = await primeiro_quartil(tabela)
+    iqr_valores = await iqr(tabela)
 
     lista_medidas = []
     for i in range(len(fst_qrt)):
@@ -176,11 +176,11 @@ def corte_inferior(tabela):
         
     return lista_medidas
 
-def dados_discrepantes(tabela):
+async def dados_discrepantes(tabela):
     #TODO
     pass
 
-def moda(tabela):
+async def moda(tabela):
     matriz,medidas = tabela()
     medidas_totais = medidas.values.flatten()
     moda = Series(medidas_totais).mode().values
@@ -193,9 +193,9 @@ def moda(tabela):
         
     return lista_medidas
 
-def tdf(tabela):
+async def tdf(tabela):
     matriz, dataframe = tabela()
-    amp = amplitude(tabela)
+    amp = await amplitude(tabela)
     
     # calcula quantidade de linhas e colunas do dataframe
     qtd_linhas_dataframe = len(dataframe['1ª'])
