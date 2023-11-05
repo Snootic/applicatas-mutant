@@ -494,7 +494,6 @@ class inicio:
                 tabelas.add_valor_medidas(medida)
             else:
                 tabelas.add_valor_medidas(medida,conjunto_dados)
-            print(type(conjunto_dados))
             tabelas_medidas()
             
         def tabelas_medidas(tabela=None, grafico=None):
@@ -558,9 +557,10 @@ class inicio:
                 tabela_medidas.insert_column("end",text=f'{i}', stretch=True, width=30)
             # adicionando os valores as linhas
             for x in range(len(media_valores)):
-                dados = [media_valores[x], mediana_valores[x], max_valores[x], min_valores[x],
-                         amplitude_valores[x],primeiro_quartil_valores[x],terceiro_quartil_valores[x],
-                         iqr_valores[x],corte_inferior_valores[x],corte_superior_valores[x],moda_valores[x]]
+                dados = [f'{media_valores[x]:.2f}', f'{mediana_valores[x]:.2f}', f'{max_valores[x]:.2f}', f'{min_valores[x]:.2f}',
+                         f'{amplitude_valores[x]:.2f}',f'{primeiro_quartil_valores[x]:.2f}',f'{terceiro_quartil_valores[x]:.2f}',
+                         f'{iqr_valores[x]:.2f}',f'{corte_inferior_valores[x]:.2f}',f'{corte_superior_valores[x]:.2f}',
+                         moda_valores[x]]
                 tabela_medidas.insert_row(index=0,values=dados)
                 tabela_medidas.load_table_data()
                 
