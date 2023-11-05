@@ -74,8 +74,14 @@ class tabela:
             cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
             schema.commit()
             
-    def atualizar_custo(self,):
-        pass
+    def atualizar_custo(self,ocorrenciaatual,custo):
+        schema = self.CriarDirSchema('pareto')
+        schema = sqlite3.connect(schema)
+        cursor = schema.cursor()
+        
+        tabela = edit_config.getTabela()
+        cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}'")
+        schema.commit()
     
     def getTabelas(self,dados):
         schema = self.CriarDirSchema(dados)

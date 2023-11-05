@@ -232,6 +232,7 @@ class inicio:
         
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
+            tabelas.atualizar_custo(ocorrencia_atual_var.get(),alterar_custo_var.get())
             tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
             analise_pareto()
             att_max_att()
@@ -273,6 +274,7 @@ class inicio:
         alterar_custo = ttk.Spinbox(atualizar_itens_frame,
                                     textvariable=alterar_custo_var,
                                     width=10,
+                                    from_=1,
                                     font=self.estilo.fonte)
         alterar_custo.place(x=151, y=50)
         alterar_custo.bind(
