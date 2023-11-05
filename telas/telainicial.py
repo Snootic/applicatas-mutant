@@ -414,6 +414,9 @@ class inicio:
         abrir_tabela.pack(side=LEFT,padx=5)
         abrir_tabela_frame.place(x=670,y=25, anchor='center')
         
+        gerar_grafico = ttk.Button(tela,text='Gerar gráfico',style='Estilo1.TButton', command= lambda: grafico())
+        gerar_grafico.place(x=785,y=65,anchor=CENTER)
+        
         # Display tabela atual
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
         tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
@@ -505,6 +508,7 @@ class inicio:
             else:
                 medidas_tabelas = sqlite_table
             
+            global tabela_df
             tabela, tabela_formatada = medidas_tabelas()
             if not isinstance(tabela_formatada, DataFrame):
                 tabela_medidas_matrix.destroy()
@@ -513,6 +517,9 @@ class inicio:
                 tabela_medidas_formatada()
                 tabela_medidas.destroy()
                 tabela_de_medidas()
+                tabela_medidas_tdf.destroy()
+                tabela_df =([],DataFrame([], columns=['', 'Freq. Relativa %']))
+                tabela_tdf()
                 return None
             
             tabela = [dado for dados in tabela for dado in dados] # Cria uma lista com os valores das colunas da tabela
@@ -577,7 +584,7 @@ class inicio:
             # Tabela de Distribuição de frequência
             tabela_df = tdf(medidas_tabelas)
             
-            colunas=list(tabela_df)
+            colunas=list(tabela_df[0])
             colunas_novas = []
             for item in colunas:
                 if isinstance(item, str):
@@ -585,13 +592,30 @@ class inicio:
                 elif isinstance(item, dict):
                     dicionario = item
                 colunas_novas.append(dicionario)
-            dados=tabela_df.to_numpy().tolist()
+            dados=tabela_df[0].to_numpy().tolist()
             dados = list(reversed(dados))
             tabela_medidas_tdf.destroy()
             tabela_tdf(colunas=colunas_novas)
             tabela_medidas_tdf.insert_rows(index = 'end', rowdata = dados)
             tabela_medidas_tdf.load_table_data()
 
+        def grafico():
+            color1 = 'royalblue'
+            
+            fig,ax1 = plt.subplots(figsize=(15,10))
+
+            ax1.set_title('Distribuição de Frequência')
+
+            ax1.set_ylabel('Frequência (%)',color=color1)
+
+            ax1.bar(tabela_df[1][''], tabela_df[1]['Freq. Relativa %'], color=color1, edgecolor='orange', linewidth=2, width=0.99)
+            
+            ax1.tick_params(axis = 'y', labelcolor = color1)
+
+            for i in ax1.get_xticklabels():
+                i.set_rotation(45)
+                
+            plt.show()
             
         tabela_medidas_matriz()
         tabela_medidas_formatada()

@@ -248,9 +248,18 @@ def tdf(tabela):
     tdf['Freq. Relativa'] = tdf['Fi'] / tdf['Fi'].sum()
     tdf['Freq. Relativa %'] = tdf['Fi'] / tdf['Fi'].sum() * 100
     tdf['Freq. Acumulada'] = tdf['Freq. Relativa'].cumsum()/tdf['Freq. Relativa'].sum() * 100
+    
+    matplot = tdf[:].copy()
+    
     total_fi = tdf['Fi'].sum()
     total_fr = tdf['Freq. Relativa'].sum()
     total_frp = tdf['Freq. Relativa %'].sum()
+    
+    # matplot.loc[-1] = ['Totais', np.nan, np.nan, np.nan, np.nan, 0]
+    
+    tdf["Freq. Relativa"] = tdf["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}")
+    tdf["Freq. Relativa %"] = tdf["Freq. Relativa %"].round(2).apply(lambda x: f"{x:.2f}%")
+    tdf["Freq. Acumulada"] = tdf["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
     tdf.loc[-1] = ['Totais', '-',total_fi, total_fr,f'{total_frp}%', '-']
     
-    return tdf
+    return tdf, matplot
