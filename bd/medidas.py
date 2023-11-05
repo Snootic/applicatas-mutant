@@ -216,7 +216,10 @@ def tdf(tabela):
     linhas_classe = round(linhas_classe)
     
     # Arredonda o tamanho das classes
-    tamanho_classe= round(tamanho_classe)
+    try:
+        tamanho_classe= round(tamanho_classe)
+    except:
+        pass
     
     # tabela de distribuição de frequência
     nova_matriz = []
@@ -260,6 +263,6 @@ def tdf(tabela):
     tdf["Freq. Relativa"] = tdf["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}")
     tdf["Freq. Relativa %"] = tdf["Freq. Relativa %"].round(2).apply(lambda x: f"{x:.2f}%")
     tdf["Freq. Acumulada"] = tdf["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
-    tdf.loc[-1] = ['Totais', '-',total_fi, total_fr,f'{total_frp}%', '-']
+    tdf.loc[-1] = ['Totais', '-',total_fi, total_fr,f'{total_frp:.2f}%', '-']
     
     return tdf, matplot
