@@ -479,6 +479,7 @@ class inicio:
             criar_tabela = tabela(criar_tabela_var.get())
             criar_tabela = criar_tabela.CriarBD('medidas')
             tabela_atual_var.set(value=criar_tabela_var.get())
+            tabelas_medidas()
 
         def abrir_tabela_selecionada():
             tabelas.SelectTabela(abrir_tabela_var.get(), 'medidas')
@@ -505,6 +506,15 @@ class inicio:
                 medidas_tabelas = sqlite_table
             
             tabela, tabela_formatada = medidas_tabelas()
+            if not isinstance(tabela_formatada, DataFrame):
+                tabela_medidas_matrix.destroy()
+                tabela_medidas_matriz()
+                tabela_medidas_format.destroy()
+                tabela_medidas_formatada()
+                tabela_medidas.destroy()
+                tabela_de_medidas()
+                return None
+            
             tabela = [dado for dados in tabela for dado in dados] # Cria uma lista com os valores das colunas da tabela
             tabela_matriz = [dado for dado in tabela if dado is not None] # Separa os valores da lista, excluindo os valores Nulos, para matriz
             

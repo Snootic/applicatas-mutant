@@ -15,6 +15,9 @@ def sqlite_table():
         cursor.execute(f"SELECT {', '.join(nomes_de_colunas)} FROM {tabela}")
         matriz = cursor.fetchall()
     
+    if len(matriz) == 0:
+        return matriz, None
+    
     lista_medidas = []
     for i in range(len(matriz[0])):
         medidas_coluna = [dados[i] for dados in matriz if dados[i] is not None]
@@ -30,7 +33,6 @@ def sqlite_table():
         colunas.append(f'{coluna+1}ª')
         
     tabela_formatada = DataFrame(tupla_medidas, columns=colunas)
-    
     
     return matriz, tabela_formatada
 
