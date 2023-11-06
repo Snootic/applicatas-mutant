@@ -142,3 +142,16 @@ class tabela:
             lista_colunas.append(f'conjunto {i+1}')
             
         return lista_colunas
+
+    def delete_valor_pareto(self, ocorrencia, quantidade=0):
+        schema = self.CriarDirSchema('pareto')
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            tabela = edit_config.getTabela()
+            
+            if quantidade == 0:
+                cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}'")
+                schema.commit()
+            else:
+                cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}' LIMIT {quantidade}")
+                schema.commit()
