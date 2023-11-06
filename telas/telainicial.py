@@ -486,7 +486,7 @@ class inicio:
             lambda event: (dados_var.set(value=''),
                            dados.unbind('<FocusIn>')))
         
-        conjunto_dados_var = ttk.StringVar(value='Cojunto de dados')
+        conjunto_dados_var = ttk.StringVar(value='Coluna de dados')
         conjunto_dados = ttk.Combobox(conjunto_de_dados_frame,
                                       textvariable=conjunto_dados_var,
                                       width=15,
@@ -508,7 +508,7 @@ class inicio:
         medida_atual_var = ttk.StringVar(value='Dado atual')
         medida_atual = ttk.Entry(atualizar_itens_frame,
                                     textvariable=medida_atual_var,
-                                    width=30,
+                                    width=10,
                                     font=self.estilo.fonte)
         medida_atual.place(x=13,y=10)
         medida_atual.bind(
@@ -516,12 +516,37 @@ class inicio:
             lambda event: (medida_atual_var.set(value=''),
                            medida_atual.unbind('<FocusIn>')))
         
+        medida_nova_var = ttk.StringVar(value='Novo dado')
+        medida_nova = ttk.Entry(atualizar_itens_frame,
+                                    textvariable=medida_nova_var,
+                                    width=10,
+                                    font=self.estilo.fonte)
+        medida_nova.place(x=112,y=10)
+        medida_nova.bind(
+            '<FocusIn>',
+            lambda event: (medida_nova_var.set(value=''),
+                           medida_nova.unbind('<FocusIn>')))
+        
+        conjunto_dados_new_var = ttk.StringVar(value='Coluna')
+        conjunto_dados_new = ttk.Combobox(atualizar_itens_frame,
+                                      textvariable=conjunto_dados_new_var,
+                                      width=10,
+                                      font=self.estilo.fonte)
+        conjunto_dados_new.place(x=210, y=10)
+        conjunto_dados_new.bind('<FocusIn>', lambda event: (conjunto_dados_new_var.set(value=''),
+                                                            conjunto_dados_new.unbind('<FocusIn>')))
+        
         atualizar_itens_plus = ttk.Button(atualizar_itens_frame,
                                           text= 'Atualizar',
                                           width=9,
                                           style='Estilo1.TButton',
-                                          command= lambda: print('oi'))
-        atualizar_itens_plus.place(x=311,y=10)
+                                          command= lambda: att_valor_tabela())
+        atualizar_itens_plus.place(x=325,y=10)
+        
+        medida_atual_var.trace('w', lambda *args: mudar_conj_dados())
+        
+        def mudar_conj_dados():
+            conjunto_dados_new['value'] = tabelas.get_TableColumns('medidas')
         
         tabelas = tabela()
         abrir_tabela['value'] = tabelas.getTabelas('medidas')
@@ -553,7 +578,24 @@ class inicio:
                 tabelas.add_valor_medidas(medida,conj_dados)
             conjunto_dados['value'] = tabelas.get_TableColumns('medidas')    
             asyncio.run(tabelas_medidas())
-            
+        
+        def att_valor_tabela():
+            dado_atual = medida_atual_var.get()
+            novo_dado = medida_nova_var.get()
+            conjunto_dado = conjunto_dados_new_var.get()
+            conj_dados = ''
+            for caractere in conjunto_dado:
+                if caractere.isdigit():
+                    conj_dados += caractere
+            try:
+                conjunto_dado = int(conj_dados)
+            except:
+                return 'Não foi possível atualizar, coluna inválida.'
+            else:
+                tabelas.att_valor_medidas(dado_atual, novo_dado, conjunto_dado)
+                
+            asyncio.run(tabelas_medidas())
+        
         async def tabelas_medidas(tabela=None, grafico=None):
             if tabela is not None and not tabela.empty: # Caso os parametros não sejam None, chamar o comando de import
                 matriz = tabela.sort()

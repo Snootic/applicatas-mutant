@@ -115,6 +115,16 @@ class tabela:
                 schema.commit()
             cursor.execute(f"INSERT INTO {tabela} ({coluna}) VALUES(?)", (medida,))
             schema.commit()
+     
+    def att_valor_medidas(self, medida_atual, nova_medida, conj_dados):
+        schema = self.CriarDirSchema('medidas')
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            tabela = edit_config.getTabela()
+            coluna = "medidas"+f'{conj_dados}'
+            
+            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual}'")
+            schema.commit()
             
     def get_TableColumns(self, medida):
         schema = self.CriarDirSchema('medidas')
@@ -129,6 +139,6 @@ class tabela:
         
         lista_colunas = []
         for i in range(len(colunas_da_tabela)):
-            lista_colunas.append(f'conjunto de dados {i+1}')
+            lista_colunas.append(f'conjunto {i+1}')
             
         return lista_colunas
