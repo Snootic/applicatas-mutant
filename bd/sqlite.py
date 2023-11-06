@@ -155,3 +155,13 @@ class tabela:
             else:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}' LIMIT {quantidade}")
                 schema.commit()
+                
+    def delete_valor_medidas(self, dado, conj_dados):
+        schema = self.CriarDirSchema('medidas')
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            coluna = "medidas"+f'{conj_dados}'
+            tabela = edit_config.getTabela()
+            
+            cursor.execute(f"DELETE FROM {tabela} WHERE {coluna}='{dado}' LIMIT 1")
+            schema.commit()
