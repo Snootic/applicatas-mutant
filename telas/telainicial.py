@@ -605,6 +605,7 @@ class inicio:
                 medidas_tabelas = sqlite_table
             
             global tabela_df
+            global tabela_matriz
             tabela, tabela_formatada = medidas_tabelas()
             if not isinstance(tabela_formatada, DataFrame):
                 tabela_medidas_matrix.destroy()
@@ -696,9 +697,16 @@ class inicio:
             tabela_medidas_tdf.load_table_data()
 
         def grafico():
+            popup = ttk.Toplevel(self.home)
+            histograma = ttk.Button(popup, text='Histograma', command=lambda: Histograma())
+            histograma.pack()
+            boxplot = ttk.Button(popup, text='BoxPlot', command=lambda: BoxPlot())
+            boxplot.pack()
+        
+        def Histograma():
             color1 = 'royalblue'
             
-            fig,ax1 = plt.subplots(figsize=(15,10))
+            ax1 = plt.subplots(figsize=(15,10))
 
             ax1.set_title('Distribuição de Frequência')
 
@@ -711,6 +719,19 @@ class inicio:
             for i in ax1.get_xticklabels():
                 i.set_rotation(45)
                 
+            plt.show()
+        
+        def BoxPlot():
+            color1 = 'royalblue'
+            
+            plt.subplots(figsize=(15,10))
+            
+            plt.boxplot(tabela_matriz)
+            
+            plt.xlabel('Eixo X')
+            plt.ylabel('Eixo Y')
+            plt.title('Boxplot')
+            
             plt.show()
             
         tabela_medidas_matriz()
