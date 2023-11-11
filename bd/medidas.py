@@ -2,6 +2,8 @@ from pandas import *
 import numpy as np
 import sqlite3, asyncio
 from data import edit_config
+from bd import sqlite
+
 
 def sqlite_table():
     dir_schema = edit_config.getSchema('dir')
@@ -36,9 +38,30 @@ def sqlite_table():
     
     return matriz, tabela_formatada
 
-async def imports():
-    #TODO
-    pass
+async def imports(dados, tipo='', nome=''):
+    if tipo == 'csv':
+        tabela = read_csv(dados,sep=',')
+    else:
+        tabela = read_excel(dados)
+    
+    nome = nome.split('.')[0]
+    temp = 1
+    nome = f'{nome}_temp{temp}'
+    sql = sqlite.tabela()
+    tabelas = sql.getTabelas('medidas')
+    while temp != 0:
+        if nome not in tabelas:
+            sql.tabela = nome
+            break
+        else:
+            temp += 1
+                
+    sql.CriarBD('medidas')
+    dados = tabela.to_numpy().tolist()
+    for dado in dados:
+        sql.add_valor_medidas(dado[0])
+    
+    return tabela
 
 async def media(tabela):
     matriz,medidas = tabela()

@@ -1,12 +1,13 @@
 import ttkbootstrap as ttk
 from tkinter import filedialog
 from data import edit_config
-from bd import tabela_pareto
+from bd import tabela_pareto, medidas
 from telas.telainicial import inicio
-import os
+import os, asyncio
 
 class Tela:
     instancia_com_tabela=None
+    aba_atual = None
     def __init__(self, janela='', titulo=''):
         self.janela = janela
         self.janela.title(titulo)
@@ -64,12 +65,22 @@ class Tela:
         def import_arquivo(tipo):
             if tipo=='csv':
                 arquivo = filedialog.askopenfilename(filetypes=[("CSV", ".csv .txt")])
-                csv = tabela_pareto.pareto()
-                matplot, tabela = csv.csv(arquivo)
-                self.instancia_com_tabela.analise_pareto(tabela=tabela, grafico=matplot)
-                
-            else:
+                if self.aba_atual == None or self.aba_atual == 0:
+                    csv = tabela_pareto.pareto()
+                    matplot, tabela = csv.csv(arquivo)
+                    self.instancia_com_tabela.analise_pareto(tabela=tabela, grafico=matplot)
+                elif self.aba_atual == 1:
+                    nome = arquivo.split("/")[-1]
+                    csv = asyncio.run(medidas.imports(arquivo, tipo='csv', nome=nome))
+                    self.instancia_com_tabela.medidas(tabela=csv)
+            elif tipo == 'xlsx':
                 arquivo = filedialog.askopenfilename(filetypes=[("Arquivos Excel", ".xlsx .xls")])
+                if self.aba_atual == 0:
+                    pass
+                elif self.aba_atual == 1:
+                    nome = arquivo.split("/")[-1]
+                    excel = asyncio.run(medidas.imports(arquivo, tipo='xlsx', nome=nome))
+                    self.instancia_com_tabela.medidas(tabela=excel)
         
         importar_menu = ttk.Menu(menu_principal, tearoff=False)
         importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))

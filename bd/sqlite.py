@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from sqlite_dump import iterdump
 from data import edit_config
 import platform
 
@@ -24,7 +25,21 @@ class tabela:
         CAMINHO_SCHEMA = os.path.join(CAMINHO_PASTA_DB,banco_de_dados)
         return CAMINHO_SCHEMA
     
-    def CriarBD(self,dados):
+    def att_config_table(self,tabela, dados):
+            CAMINHO_SCHEMA = self.CriarDirSchema(dados)
+            edit_config.EditarTabela(tabela,dados)
+            edit_config.editSchema(CAMINHO_SCHEMA)
+    
+    def DropTable(self, tabela, dados):
+        CAMINHO_SCHEMA = self.CriarDirSchema(dados)
+        conn = sqlite3.connect(CAMINHO_SCHEMA)
+        schema = edit_config.getSchema('tab')
+        schema = schema.split('.')[0]
+        cursor = conn.cursor()
+        self.dump(dados)
+        cursor.execute(f"DROP TABLE {tabela}")
+    
+    def CriarBD(self, dados):
         CAMINHO_SCHEMA = self.CriarDirSchema(dados)
         tabela = sqlite3.connect(CAMINHO_SCHEMA)
         cursor = tabela.cursor()
@@ -42,14 +57,15 @@ class tabela:
                 cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 medidas1 INTEGER)''')
-                
-            edit_config.EditarTabela(self.tabela,dados)
+            self.att_config_table(self.tabela,dados)
+            self.dump(dados)
             return 'Tabela criada'
         
     def addValor_pareto(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
         schema = self.CriarDirSchema('pareto')
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
+        self.dump(dados='pareto')
         
         tabela = edit_config.getTabela()
         
@@ -58,29 +74,33 @@ class tabela:
                 cursor.execute(f"INSERT INTO {tabela} (ocorrencias,custo) VALUES(?,?)", (ocorrencias, custo))
             else:
                 cursor.execute(f"INSERT INTO {tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
+            self.att_config_table(tabela,'pareto')
             schema.commit()
         
     def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=0):
         schema = self.CriarDirSchema('pareto')
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
+        self.dump(dados='pareto')
         
         tabela = edit_config.getTabela()
         
         if quantidade == 0:
             cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
-            schema.commit()
         else:
             cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
-            schema.commit()
+        self.att_config_table(tabela,'pareto')
+        schema.commit()
             
     def atualizar_custo(self,ocorrenciaatual,custo):
         schema = self.CriarDirSchema('pareto')
         schema = sqlite3.connect(schema)
         cursor = schema.cursor()
+        self.dump(dados='pareto')
         
         tabela = edit_config.getTabela()
         cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}'")
+        self.att_config_table(tabela,'pareto')
         schema.commit()
     
     def getTabelas(self,dados):
@@ -99,6 +119,7 @@ class tabela:
         edit_config.EditarTabela(tabela,dados)
 
     def add_valor_medidas(self, medida, conj_dados = 1):
+        
         schema = self.CriarDirSchema('medidas')
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
@@ -107,6 +128,8 @@ class tabela:
             cursor.execute(f"""PRAGMA table_info({tabela})""")
             colunas_da_tabela = [linha[1] for linha in cursor.fetchall()]
             
+            self.dump(dados='medidas')
+            
             if coluna not in colunas_da_tabela:
                 cursor.execute(f"""
                     ALTER TABLE {tabela}
@@ -114,6 +137,7 @@ class tabela:
                     """)
                 schema.commit()
             cursor.execute(f"INSERT INTO {tabela} ({coluna}) VALUES(?)", (medida,))
+            self.att_config_table(tabela,'medidas')
             schema.commit()
      
     def att_valor_medidas(self, medida_atual, nova_medida, conj_dados):
@@ -122,8 +146,10 @@ class tabela:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
             coluna = "medidas"+f'{conj_dados}'
+            self.dump(dados='medidas')
             
-            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual}'")
+            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual} LIMIT 1'")
+            self.att_config_table(tabela,'medidas')
             schema.commit()
             
     def get_TableColumns(self, medida):
@@ -132,7 +158,7 @@ class tabela:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
             # coluna = "medidas"+f'{conj_dados}'
-            cursor.execute(f"""PRAGMA table_info({tabela});""")
+            cursor.execute(f"""PRAGMA table_info({tabela})""")
             colunas_da_tabela = [linha[1] for linha in cursor.fetchall()]
         
         colunas_da_tabela.remove('id')
@@ -148,13 +174,14 @@ class tabela:
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
+            self.dump(dados='pareto')
             
             if quantidade == 0:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}'")
-                schema.commit()
             else:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}' LIMIT {quantidade}")
-                schema.commit()
+            self.att_config_table('pareto')
+            schema.commit()
                 
     def delete_valor_medidas(self, dado, conj_dados):
         schema = self.CriarDirSchema('medidas')
@@ -162,6 +189,80 @@ class tabela:
             cursor = schema.cursor()
             coluna = "medidas"+f'{conj_dados}'
             tabela = edit_config.getTabela()
+            self.dump(dados='medidas')
             
             cursor.execute(f"DELETE FROM {tabela} WHERE {coluna}='{dado}' LIMIT 1")
+            self.att_config_table(tabela,'medidas')
             schema.commit()
+
+    def dump(self, dados=''):
+        schema = self.CriarDirSchema(dados)
+        with sqlite3.connect(schema) as conn:
+            if platform.system() == 'Windows':
+                dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
+                banco_de_dados = schema.split('\\')[-1].split('.')[0]
+            else:
+                dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
+                banco_de_dados = schema.split('/')[-1].split('.')[0]
+            
+            temp = 1
+            while temp != 0:
+                banco_temp = f'{banco_de_dados}_bkp{temp}.txt'
+                temp_path = os.path.join(dump_path,banco_temp)
+                if not os.path.exists(temp_path):
+                    banco_de_dados = f'{banco_de_dados}_bkp{temp}.txt'
+                    dump_path = os.path.join(dump_path,banco_de_dados)
+                    break
+                else:
+                    temp += 1
+            
+            with open(dump_path, 'w', encoding='utf-8') as dump:
+                for line in conn.iterdump():
+                    dump.writelines(line+'\n')
+                    
+    def restore(self,dados, manual = False):
+        schema = self.CriarDirSchema('medidas')
+        
+        if os.path.exists(schema):
+            self.dump(dados)
+            os.remove(schema)
+            
+        if manual == False:
+            with sqlite3.connect(schema) as conn:
+                cursor = conn.cursor()
+                if platform.system() == 'Windows':
+                    dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
+                    banco_de_dados = schema.split('\\')[-1].split('.')[0]
+                else:
+                    dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
+                    banco_de_dados = schema.split('/')[-1].split('.')[0]
+                
+                temp = 1
+                while temp != 0:
+                    banco_temp = f'{banco_de_dados}_bkp{temp}.txt'
+                    temp_path = os.path.join(dump_path,banco_temp)
+                    if os.path.exists(temp_path):
+                        temp += 1
+                    else:
+                        temp -= 1
+                        banco_de_dados = f'{banco_de_dados}_bkp{temp}.txt'
+                        dump_path = os.path.join(dump_path,banco_de_dados)
+                        break
+                with open(dump_path, 'r', encoding='utf-8') as dump:
+                    lines = dump.readlines()
+                    incomplete_line = ''
+                    for line in lines:
+                        line = line.replace('\n','')
+                        if line[-1] != ';' or (len(incomplete_line) >1 and incomplete_line[-1] != ';'):
+                            incomplete_line += line.lstrip()
+                            if incomplete_line[-1] == ';':
+                                line = incomplete_line
+                        try:
+                            print(line)
+                            cursor.execute(f'{line}')
+                            incomplete_line = ''
+                        except:
+                            pass
+                    conn.commit()
+                while True:
+                    pass

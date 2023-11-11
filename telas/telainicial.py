@@ -21,34 +21,37 @@ class inicio:
     def __init__(self, login=''):
         self.login = login
         self.home = ttk.Toplevel()
-        tela = app.Tela(self.home, 'Peraeque - Início')
-        tela.centralizarTela(900, 600)
-        tela.menu()
-        tela.instancia_com_tabela = self
-        tela.home = self.home
+        self.app = app.Tela(self.home, 'Peraeque - Início')
+        self.app.centralizarTela(900, 600)
+        self.app.menu()
+        self.app.instancia_com_tabela = self
+        self.app.aba_atual = 0
+        self.app.home = self.home
         
         #Estilo da tela
         colors = self.login.style.colors
         self.estilo = app.Estilo()
         
         #notebook
-        notebook = ttk.Notebook(self.home)
-        notebook.pack(expand=True)
+        self.notebook = ttk.Notebook(self.home)
+        self.notebook.pack(expand=True)
         
-        self.tela_pareto = ttk.Frame(notebook, width=900, height=600)
+        self.tela_pareto = ttk.Frame(self.notebook, width=900, height=600)
         self.tela_pareto.pack(fill='both', expand=True)
-        self.tela_medidas = ttk.Frame(notebook, width=900, height=600)
+        self.tela_medidas = ttk.Frame(self.notebook, width=900, height=600)
         self.tela_medidas.pack(fill='both',expand=True)
         
-        notebook.add(self.tela_pareto, text='Pareto')
-        notebook.add(self.tela_medidas, text='Medidas')
+        self.notebook.add(self.tela_pareto, text='Pareto')
+        self.notebook.add(self.tela_medidas, text='Medidas')
         
-        self.telas_pareto(self.tela_pareto)
-        self.telas_medidas(self.tela_medidas)
+        self.notebook.bind('<ButtonRelease-1>', lambda event: self.aba_atual())
         
         self.home.protocol("WM_DELETE_WINDOW", self.fechar_login)
         
-        self.home.mainloop()   
+        self.pareto = self.telas_pareto(self.tela_pareto)
+        self.medida = self.telas_medidas(self.tela_medidas)
+        
+        self.home.mainloop()
         
     def telas_pareto(self, tela): 
         #Pegar dados para criar tabela análise de pareto
@@ -596,32 +599,32 @@ class inicio:
                 
             asyncio.run(tabelas_medidas())
         
-        async def tabelas_medidas(tabela=None, grafico=None):
-            if tabela is not None and not tabela.empty: # Caso os parametros não sejam None, chamar o comando de import
-                matriz = tabela.sort()
-                medidas_tabela = imports
+        async def tabelas_medidas(tabela=None):
+            importado = 1
+            sqlite_table
+            if tabela is None or tabela.empty:
+                importado = 0
+                tabela_desorganizada, tabela = sqlite_table()
+                global tabela_df
+                global tabela_matriz
+                tabela_desorganizada = [dado for dados in tabela_desorganizada for dado in dados] # Cria uma lista com os valores das colunas da tabela
+                tabela_matriz = [dado for dado in tabela_desorganizada if dado is not None] # Separa os valores da lista, excluindo os valores Nulos, para matriz
                 
+                if not isinstance(tabela, DataFrame):
+                    tabela_medidas_matrix.destroy()
+                    tabela_medidas_matriz()
+                    tabela_medidas_format.destroy()
+                    tabela_medidas_formatada()
+                    tabela_medidas.destroy()
+                    tabela_de_medidas()
+                    tabela_medidas_tdf.destroy()
+                    tabela_df =([],DataFrame([], columns=['', 'Freq. Relativa %']))
+                    tabela_tdf()
+                    return None
             else:
-                medidas_tabelas = sqlite_table
-            
-            global tabela_df
-            global tabela_matriz
-            tabela, tabela_formatada = medidas_tabelas()
-            if not isinstance(tabela_formatada, DataFrame):
-                tabela_medidas_matrix.destroy()
-                tabela_medidas_matriz()
-                tabela_medidas_format.destroy()
-                tabela_medidas_formatada()
-                tabela_medidas.destroy()
-                tabela_de_medidas()
-                tabela_medidas_tdf.destroy()
-                tabela_df =([],DataFrame([], columns=['', 'Freq. Relativa %']))
-                tabela_tdf()
-                return None
-            
-            tabela = [dado for dados in tabela for dado in dados] # Cria uma lista com os valores das colunas da tabela
-            tabela_matriz = [dado for dado in tabela if dado is not None] # Separa os valores da lista, excluindo os valores Nulos, para matriz
-            
+                tabela_matriz = tabela.to_numpy().tolist()
+                tabela_matriz = [dado for dados in tabela_matriz for dado in dados]
+                
             # Separa os dados em linhas de 5 valores cada
             linhas = []
             for i in range(0, len(tabela_matriz), 5):
@@ -636,9 +639,8 @@ class inicio:
             tabela_medidas_matrix.load_table_data()
             
             # Tabela formatada, com tarefas e separação de colunas etc.
-            colunas=list(tabela_formatada)
-            dados=tabela_formatada.to_numpy().tolist()
-            # dados = list(reversed(dados))
+            colunas=list(tabela)
+            dados=tabela.to_numpy().tolist()
             
             tabela_medidas_format.destroy()
             tabela_medidas_formatada()
@@ -653,17 +655,17 @@ class inicio:
             tabela_de_medidas()
             
             #chamando funções de todas as medidas
-            media_valores = await media(medidas_tabelas)
-            mediana_valores = await mediana(medidas_tabelas)
-            max_valores = await max(medidas_tabelas)
-            min_valores = await min(medidas_tabelas)
-            amplitude_valores = await amplitude(medidas_tabelas)
-            primeiro_quartil_valores = await primeiro_quartil(medidas_tabelas)
-            terceiro_quartil_valores = await terceiro_quartil(medidas_tabelas)
-            iqr_valores = await iqr(medidas_tabelas)
-            corte_inferior_valores = await corte_inferior(medidas_tabelas)
-            corte_superior_valores = await corte_superior(medidas_tabelas)
-            moda_valores = await moda(medidas_tabelas)
+            media_valores = await media(sqlite_table)
+            mediana_valores = await mediana(sqlite_table)
+            max_valores = await max(sqlite_table)
+            min_valores = await min(sqlite_table)
+            amplitude_valores = await amplitude(sqlite_table)
+            primeiro_quartil_valores = await primeiro_quartil(sqlite_table)
+            terceiro_quartil_valores = await terceiro_quartil(sqlite_table)
+            iqr_valores = await iqr(sqlite_table)
+            corte_inferior_valores = await corte_inferior(sqlite_table)
+            corte_superior_valores = await corte_superior(sqlite_table)
+            moda_valores = await moda(sqlite_table)
             
             #colunas da tabela
             colunas = ['Média', 'Mediana', 'Max', 'Min', 'Amplitude', '1ºQuartil', '3ºQuartil','IQR','Corte Inferior', 'Corte Superior', 'Moda']
@@ -679,7 +681,7 @@ class inicio:
                 tabela_medidas.load_table_data()
                 
             # Tabela de Distribuição de frequência
-            tabela_df = await tdf(medidas_tabelas)
+            tabela_df = await tdf(sqlite_table)
             
             colunas=list(tabela_df[0])
             colunas_novas = []
@@ -706,7 +708,7 @@ class inicio:
         def Histograma():
             color1 = 'royalblue'
             
-            ax1 = plt.subplots(figsize=(15,10))
+            fig,ax1 = plt.subplots(figsize=(15,10))
 
             ax1.set_title('Distribuição de Frequência')
 
@@ -738,11 +740,19 @@ class inicio:
         tabela_medidas_formatada()
         tabela_de_medidas()
         tabela_tdf()
-
-    def analise_pareto(self, tabela, grafico):
-        pareto = self.telas_pareto(self.tela_pareto)
-        pareto(tabela, grafico)
         
+        return tabelas_medidas
+    
+    def analise_pareto(self, tabela, grafico):
+        self.pareto(tabela, grafico)
+    
+    def medidas(self, tabela):
+        asyncio.run(self.medida(tabela))
+       
+    def aba_atual(self):
+        indice_notebook = self.notebook.index("current")
+        self.app.aba_atual = indice_notebook
+    
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
             edit_config.apagar_dados()

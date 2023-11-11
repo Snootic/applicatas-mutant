@@ -42,7 +42,10 @@ def EditarTabela(table,dados):
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for i in range(len(itens)):
             if itens[i][0] == 'ultimo_schema':
-                linhas[i] = 'ultimo_schema='+f'{user}'+'.db\n'
+                if dados == 'medidas':
+                    linhas[i] = 'ultimo_schema='+f'{user}_medidas.db\n'
+                else:
+                    linhas[i] = 'ultimo_schema='+f'{user}_pareto.db\n'
                 
             if itens[i][0] == 'schema_caminho':
                 linhas[i] = 'schema_caminho='+f'{CAMINHO_SCHEMA}'+'\n'
