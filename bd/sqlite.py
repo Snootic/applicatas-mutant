@@ -294,4 +294,5 @@ class tabela:
                             incomplete_line = ''
                         except Exception as e:
                             print(e)
+                            continue
                     conn.commit()

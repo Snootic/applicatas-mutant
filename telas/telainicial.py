@@ -125,6 +125,7 @@ class inicio:
             criar_tabela = criar_tabela.CriarBD('pareto')
             tabela_atual_var.set(value=criar_tabela_var.get())
             analise_pareto()
+            bloquear_entrys()
         
         criar_tabela_entry.pack(padx=(10,5),ipady=5,side=LEFT)
         criar_tabela_botao.pack(padx=(5,10),side=RIGHT)
@@ -138,6 +139,7 @@ class inicio:
             tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
             analise_pareto()
             tabela_atual_var.set(value=abrir_tabela_var.get())
+            bloquear_entrys()
         
         abrir_tabela_frame = ttk.Frame(
             tela,
@@ -171,6 +173,7 @@ class inicio:
             except:
                 tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
             analise_pareto()
+            bloquear_entrys()
         
         adicionar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         adicionar_itens_frame.place(x=225, y=510, anchor=CENTER,height=100,width=430)
@@ -237,10 +240,12 @@ class inicio:
         
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
-            tabelas.atualizar_custo(ocorrencia_atual_var.get(),alterar_custo_var.get())
+            if len(pareto_tabela.get_columns()) == 6:
+                tabelas.atualizar_custo(ocorrencia_atual_var.get(),alterar_custo_var.get())
             tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
             analise_pareto()
             att_max_att()
+            bloquear_entrys()
         
         atualizar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         atualizar_itens_frame.place(x=670, y=510, anchor=CENTER,height=100,width=430)
@@ -346,7 +351,11 @@ class inicio:
             linhas_tabela = pareto_tabela.tablerows
             for linha in linhas_tabela:
                 if linha.values[0] == ocorrencia_atual_var.get():
-                    ocorrencia_quantidade.configure(to=linha.values[2])
+                    if len(pareto_tabela.get_columns()) == 6:
+                        ocorrencia_quantidade.configure(to=linha.values[2])
+                    else:
+                        ocorrencia_quantidade.configure(to=linha.values[1])
+                    
                     
         tabela_analise_pareto()
         bloquear_entrys()
