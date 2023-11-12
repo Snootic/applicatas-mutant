@@ -6,6 +6,7 @@ teste.py
 *.txt
 *.xlsx
 *.db-journal
+*.sql
 
 !app_config.txt
 !requirements.txt
