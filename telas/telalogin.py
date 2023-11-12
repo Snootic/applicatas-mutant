@@ -109,7 +109,7 @@ class telalogin:
             if usuario == '' and senha == '':
                 pass
             else:
-                logando(usuario,senha)
+                logando(usuario,senha,manter_secao=True)
         except Exception as e:
             retorno.configure(text=e)
         

@@ -15,7 +15,7 @@ def login(usuario,senha,secao=''):
         return 'Senha incorreta'
     else:
         if secao:
-            editSenha(senha_encriptada)
+            editSenha(senha)
             editSecao('True')
         else:
             editSecao('False')
