@@ -69,11 +69,17 @@ class Tela:
             if edit_config.getSecao() == 'False':
                 edit_config.apagar_dados()
             sql = sqlite.tabela()
-            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
-            tabelas = sql.getTabelas(dados)
-            for tabela in tabelas:
+            tabelas_pareto = sql.getTabelas('pareto')
+            tabelas_medidas = sql.getTabelas('medidas')
+            
+            for tabela in tabelas_pareto:
                 if tabela[0].split('_')[-1] == 'temp':
-                    sql.DropTable(tabela[0],dados)
+                    sql.DropTable(tabela[0],'pareto')
+                    
+            for tabela in tabelas_medidas:
+                if tabela[0].split('_')[-1] == 'temp':
+                    sql.DropTable(tabela[0],'medidas')
+                    
             edit_config.limpar_temp()
         
         arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
