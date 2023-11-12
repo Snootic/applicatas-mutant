@@ -4,4 +4,7 @@ ultima_tabela=
 schema_caminho=
 user=
 senha=
+undo=
+redo=
+save=False
 manter_logado=False
