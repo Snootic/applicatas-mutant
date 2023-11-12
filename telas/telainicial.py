@@ -10,9 +10,7 @@ from bd.medidas import *
 import asyncio
 
 #TODO:
-# Funcoes de importação de xlsx
 # Salvamento de arquivos em tabelas sqlite
-# exportacao de arquivos em xlsx e csv
 
 # TRATAMENTO DE ERROS E RETORNO VISUAL PARA O USUARIO COM POPUPS - URGENTE
 
@@ -767,10 +765,15 @@ class inicio:
         sql = sqlite.tabela()
         sql.tabela = args[2]
         sql.CriarBD('pareto')
-        dados = tabela.to_numpy().tolist()
+        dados = args[0].to_numpy().tolist()
         for dado in dados:
-            sql.add_valor_medidas(dado[0])
+            try:
+                sql.add_valor_medidas(dado[0])
+            except sqlite3.OperationalError as e:
+                print(e)
+                continue
             edit_config.limpar_temp()
+            
     def medidas(self, *args):
         asyncio.run(self.medida(*args))
         
@@ -786,7 +789,6 @@ class inicio:
             elif dados == 'medidas':
                 self.data_medidas.to_excel(caminho, index=False)
         
-    
     def aba_atual(self):
         indice_notebook = self.notebook.index("current")
         self.app.aba_atual = indice_notebook

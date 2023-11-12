@@ -47,10 +47,16 @@ async def imports(dados, tipo='', nome=''):
     sql = sqlite.tabela()
     sql.tabela = nome
     sql.CriarBD('medidas')
-    dados = tabela.to_numpy().tolist()
-    for dado in dados:
-        sql.add_valor_medidas(dado[0])
-        edit_config.limpar_temp()
+    conjunto_dados = tabela.to_numpy().tolist()
+    tupla_medidas = []
+    for i in range(len(conjunto_dados[0])):
+        tupla = tuple([coluna[i] if i < len(coluna) else None for coluna in conjunto_dados])
+        tupla_medidas.append(tupla)
+   
+    for i in range(len(tupla_medidas)):
+        for dado in tupla_medidas[i]:
+            sql.add_valor_medidas(dado, conj_dados=i+1)
+            edit_config.limpar_temp()
     
     return tabela
 
@@ -280,3 +286,4 @@ async def tdf(tabela):
     tdf.loc[-1] = ['Totais', '-',total_fi, total_fr,f'{total_frp:.2f}%', '-']
     
     return tdf, matplot
+    
