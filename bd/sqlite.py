@@ -196,7 +196,7 @@ class tabela:
             self.att_config_table(tabela,'medidas')
             schema.commit()
 
-    def dump(self, dados='', redo=False):
+    def dump(self, dados='', manual=False, path=None):
         schema = self.CriarDirSchema(dados)
         if platform.system() == 'Windows':
             dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
@@ -204,36 +204,38 @@ class tabela:
         else:
             dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
             banco_de_dados = schema.split('/')[-1].split('.')[0]
-        
-        undo = 0
-        undoing = edit_config.getUndo()
-        undoing = undoing.strip('[]').replace("'", "").replace(' ','').split(',')
-        
-        redoing = edit_config.getRedo()
-        redoing = redoing.strip('[]').replace("'", "").replace(' ','').split(',')
-        
-        if undoing[0] == '':
-            undoing.remove(undoing[0])
-        if redoing[0] == '':
-            redoing.remove(redoing[0])
-        
-        while True:
-            bd = f'{banco_de_dados}_bkp{undo}.txt'
-            if any(bd in s for s in undoing) or any(bd in s for s in redoing):
-                undo +=1
-            else:
-                undoing.append(bd)
-                break
-        
-        dump_path = os.path.join(dump_path, bd)
             
-        with sqlite3.connect(schema) as conn:
-            with open(dump_path, 'w', encoding='utf-8') as dump:
-                for line in conn.iterdump():
-                    dump.writelines(line+'\n')
-                edit_config.editarUndo(undoing)
+        if manual == False:
+            undo = 0
+            undoing = edit_config.getUndo()
+            undoing = undoing.strip('[]').replace("'", "").replace(' ','').split(',')
+            
+            redoing = edit_config.getRedo()
+            redoing = redoing.strip('[]').replace("'", "").replace(' ','').split(',')
+            
+            if undoing[0] == '':
+                undoing.remove(undoing[0])
+            if redoing[0] == '':
+                redoing.remove(redoing[0])
+            
+            while True:
+                bd = f'{banco_de_dados}_bkp{undo}.sql'
+                if any(bd in s for s in undoing) or any(bd in s for s in redoing):
+                    undo +=1
+                else:
+                    undoing.append(bd)
+                    break
+            
+            dump_path = os.path.join(dump_path, bd)
+                
+            with sqlite3.connect(schema) as conn:
+                with open(dump_path, 'w', encoding='utf-8') as dump:
+                    for line in conn.iterdump():
+                        dump.writelines(line+'\n')
+                    edit_config.editarUndo(undoing)
+
                     
-    def restore(self,dados, manual = False, redo=False):
+    def restore(self,dados, manual = False, redo = False, file=None):
         schema = self.CriarDirSchema(dados)
             
         if manual == False:
@@ -273,8 +275,7 @@ class tabela:
                 with open(dump_path, 'r', encoding='utf-8') as dump:
                     edit_config.editarUndo(undoing)
                     edit_config.editarRedo(redoing)
-                    lines = dump.readlines()
-                    incomplete_line = ''
+                    lines = dump.read()
             except Exception as e:
                 print(e,': Erro')
             else:
@@ -282,17 +283,9 @@ class tabela:
                     os.remove(schema)
                 with sqlite3.connect(schema) as conn:
                     cursor = conn.cursor()
-                    for line in lines:
-                        line = line.replace('\n','')
-                        if line[-1] != ';' or (len(incomplete_line) >1 and 
-                                            incomplete_line[-1] != ';'):
-                            incomplete_line += line.lstrip()
-                            if incomplete_line[-1] == ';':
-                                line = incomplete_line
-                        try:
-                            cursor.execute(f'{line}')
-                            incomplete_line = ''
-                        except Exception as e:
-                            print(e)
-                            continue
-                    conn.commit()
+                    try:
+                        cursor.executescript(lines)
+                    except Exception as e:
+                        print(e)
+                    else:
+                        conn.commit()
