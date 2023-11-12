@@ -115,6 +115,23 @@ class Tela:
         importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))
         importar_menu.add_command(label='Importar arquivo Excel', command=lambda: import_arquivo(tipo='xlsx'))
         
+        def export_arquivo(tipo):
+            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
+            if tipo == 'csv':
+                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                                       defaultextension='.csv',
+                                                       filetypes=[("CSV", ".csv")])
+                self.instancia_com_tabela.exportar(arquivo, 'csv' ,dados)
+            else:
+                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                                       defaultextension='.xlsx',
+                                                       filetypes=[("Arquivos Excel", ".xlsx")])
+                self.instancia_com_tabela.exportar(arquivo, 'xlsx' ,dados)
+        
+        exportar_menu = ttk.Menu(menu_principal, tearoff=False)
+        exportar_menu.add_command(label='Exportar - CSV', command=lambda: export_arquivo(tipo='csv'))
+        exportar_menu.add_command(label='Exportar - Excel', command=lambda: export_arquivo(tipo='xlsx'))
+        
         programa_menu = ttk.Menu(menu_principal, tearoff=False)
         programa_menu.add_command(label='Trocar Tema', command=lambda: self.trocar_tema())
         version = os.path.abspath('VERSION')
@@ -125,6 +142,7 @@ class Tela:
         
         menu_principal.add_cascade(label='Arquivo', menu=arquivo_menu)
         menu_principal.add_cascade(label='Importar', menu=importar_menu)
+        menu_principal.add_cascade(label='Exportar', menu=exportar_menu)
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
         

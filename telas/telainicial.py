@@ -51,6 +51,9 @@ class inicio:
         self.pareto = self.telas_pareto(self.tela_pareto)
         self.medida = self.telas_medidas(self.tela_medidas)
         
+        self.data_pareto: DataFrame
+        self.data_medidas: DataFrame
+        
         self.home.mainloop()
         
     def telas_pareto(self, tela): 
@@ -93,7 +96,8 @@ class inicio:
             tabela_analise_pareto(colunas=colunas_novas)
             pareto_tabela.insert_rows(index = 'end', rowdata = dados)
             pareto_tabela.load_table_data()
-            if not grafico.empty:
+            self.data_pareto = DataFrame
+            if grafico is not None and not grafico.empty:
                 tabela_atual_var.set(value=name)
         
         #Criar uma tabela nova
@@ -637,7 +641,9 @@ class inicio:
                 tabela_matriz = tabela.to_numpy().tolist()
                 tabela_matriz = [dado for dados in tabela_matriz for dado in dados]
                 tabela_atual_var.set(value=nome)
-                
+            
+            self.data_medidas = tabela
+            
             # Separa os dados em linhas de 5 valores cada
             linhas = []
             for i in range(0, len(tabela_matriz), 5):
@@ -757,7 +763,6 @@ class inicio:
         return tabelas_medidas
     
     def analise_pareto(self, *args):
-
         self.pareto(*args)
         sql = sqlite.tabela()
         sql.tabela = args[2]
@@ -766,10 +771,22 @@ class inicio:
         for dado in dados:
             sql.add_valor_medidas(dado[0])
             edit_config.limpar_temp()
-            
     def medidas(self, *args):
         asyncio.run(self.medida(*args))
-       
+        
+    def exportar(self, caminho, tipo, dados):
+        if tipo == 'csv':
+            if dados == 'pareto':
+                self.data_pareto.to_csv(caminho, index=False)
+            elif dados == 'medidas':
+                self.data_medidas.to_csv(caminho, index=False)
+        elif tipo == 'xlsx':
+            if dados == 'pareto':
+                self.data_pareto.to_excel(caminho, index=False)
+            elif dados == 'medidas':
+                self.data_medidas.to_excel(caminho, index=False)
+        
+    
     def aba_atual(self):
         indice_notebook = self.notebook.index("current")
         self.app.aba_atual = indice_notebook
