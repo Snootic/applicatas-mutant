@@ -757,8 +757,16 @@ class inicio:
         return tabelas_medidas
     
     def analise_pareto(self, *args):
+
         self.pareto(*args)
-        
+        sql = sqlite.tabela()
+        sql.tabela = args[2]
+        sql.CriarBD('pareto')
+        dados = tabela.to_numpy().tolist()
+        for dado in dados:
+            sql.add_valor_medidas(dado[0])
+            edit_config.limpar_temp()
+            
     def medidas(self, *args):
         asyncio.run(self.medida(*args))
        

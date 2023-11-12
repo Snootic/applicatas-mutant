@@ -44,22 +44,13 @@ async def imports(dados, tipo='', nome=''):
     else:
         tabela = read_excel(dados)
     
-    nome = nome.split('.')[0]
-    temp = 1
-    nome = f'{nome}_temp{temp}'
     sql = sqlite.tabela()
-    tabelas = sql.getTabelas('medidas')
-    while temp != 0:
-        if nome not in tabelas:
-            sql.tabela = nome
-            break
-        else:
-            temp += 1
-                
+    sql.tabela = nome
     sql.CriarBD('medidas')
     dados = tabela.to_numpy().tolist()
     for dado in dados:
         sql.add_valor_medidas(dado[0])
+        edit_config.limpar_temp()
     
     return tabela
 

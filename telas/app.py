@@ -68,6 +68,12 @@ class Tela:
         def apagar_dados():
             if edit_config.getSecao() == 'False':
                 edit_config.apagar_dados()
+            sql = sqlite.tabela()
+            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
+            tabelas = sql.getTabelas(dados)
+            for tabela in tabelas:
+                if tabela[0].split('_')[-1] == 'temp':
+                    sql.DropTable(tabela[0],dados)
             edit_config.limpar_temp()
         
         arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
@@ -97,8 +103,10 @@ class Tela:
                 nome = arquivo.split("/")[-1]
                 nome = nome.split('.')[0]
                 nome = f'{nome}_temp'
+                
                 if self.aba_atual == 0:
                     pass
+                
                 elif self.aba_atual == 1:
                     excel = asyncio.run(medidas.imports(arquivo, 'xlsx', nome))
                     self.instancia_com_tabela.medidas(excel,nome)
