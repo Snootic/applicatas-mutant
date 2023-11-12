@@ -80,22 +80,28 @@ class Tela:
         def import_arquivo(tipo):
             if tipo=='csv':
                 arquivo = filedialog.askopenfilename(filetypes=[("CSV", ".csv .txt")])
+                nome = arquivo.split("/")[-1]
+                nome = nome.split('.')[0]
+                nome = f'{nome}_temp'
+                
                 if self.aba_atual == None or self.aba_atual == 0:
                     csv = tabela_pareto.pareto()
                     matplot, tabela = csv.csv(arquivo)
-                    self.instancia_com_tabela.analise_pareto(tabela=tabela, grafico=matplot)
+                    self.instancia_com_tabela.analise_pareto(tabela, matplot, nome)
+                
                 elif self.aba_atual == 1:
-                    nome = arquivo.split("/")[-1]
-                    csv = asyncio.run(medidas.imports(arquivo, tipo='csv', nome=nome))
-                    self.instancia_com_tabela.medidas(tabela=csv)
+                    csv = asyncio.run(medidas.imports(arquivo, 'csv', nome))
+                    self.instancia_com_tabela.medidas(csv,nome)
             elif tipo == 'xlsx':
                 arquivo = filedialog.askopenfilename(filetypes=[("Arquivos Excel", ".xlsx .xls")])
+                nome = arquivo.split("/")[-1]
+                nome = nome.split('.')[0]
+                nome = f'{nome}_temp'
                 if self.aba_atual == 0:
                     pass
                 elif self.aba_atual == 1:
-                    nome = arquivo.split("/")[-1]
-                    excel = asyncio.run(medidas.imports(arquivo, tipo='xlsx', nome=nome))
-                    self.instancia_com_tabela.medidas(tabela=excel)
+                    excel = asyncio.run(medidas.imports(arquivo, 'xlsx', nome))
+                    self.instancia_com_tabela.medidas(excel,nome)
         
         importar_menu = ttk.Menu(menu_principal, tearoff=False)
         importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))

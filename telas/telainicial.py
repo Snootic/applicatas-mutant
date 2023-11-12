@@ -69,7 +69,7 @@ class inicio:
             )
             pareto_tabela.place(relx=0.5,y=275,anchor=CENTER, width=900)
         
-        def analise_pareto(tabela=None, grafico=None):
+        def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
@@ -93,7 +93,8 @@ class inicio:
             tabela_analise_pareto(colunas=colunas_novas)
             pareto_tabela.insert_rows(index = 'end', rowdata = dados)
             pareto_tabela.load_table_data()
-        
+            if not grafico.empty:
+                tabela_atual_var.set(value=name)
         
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
@@ -610,7 +611,7 @@ class inicio:
                 
             asyncio.run(tabelas_medidas())
         
-        async def tabelas_medidas(tabela=None):
+        async def tabelas_medidas(tabela=None, nome=None):
             importado = 1
             sqlite_table
             if tabela is None or isinstance(tabela, str) or tabela.empty:
@@ -635,6 +636,7 @@ class inicio:
             else:
                 tabela_matriz = tabela.to_numpy().tolist()
                 tabela_matriz = [dado for dados in tabela_matriz for dado in dados]
+                tabela_atual_var.set(value=nome)
                 
             # Separa os dados em linhas de 5 valores cada
             linhas = []
@@ -754,11 +756,11 @@ class inicio:
         
         return tabelas_medidas
     
-    def analise_pareto(self, tabela='', grafico=''):
-        self.pareto(tabela, grafico)
-    
-    def medidas(self, tabela=''):
-        asyncio.run(self.medida(tabela))
+    def analise_pareto(self, *args):
+        self.pareto(*args)
+        
+    def medidas(self, *args):
+        asyncio.run(self.medida(*args))
        
     def aba_atual(self):
         indice_notebook = self.notebook.index("current")
