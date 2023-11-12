@@ -1,7 +1,7 @@
 import ttkbootstrap as ttk
 from tkinter import filedialog
 from data import edit_config
-from bd import tabela_pareto, medidas
+from bd import tabela_pareto, medidas, sqlite
 from telas.telainicial import inicio
 import os, asyncio
 
@@ -44,16 +44,31 @@ class Tela:
     def menu(self):
         menu_principal = ttk.Menu(self.janela)
         
+        def undoRedo(do):
+            sql = sqlite.tabela()
+            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
+            if do == 'undo':
+                sql.restore(dados=dados, redo=False)
+                
+            elif do == 'redo':
+                sql.restore(dados=dados, redo=True)
+            
+            if dados == 'pareto':
+                self.instancia_com_tabela.analise_pareto()
+            else:
+                self.instancia_com_tabela.medidas()
+                
         arquivo_menu = ttk.Menu(menu_principal, tearoff=False)
         arquivo_menu.add_command(label='Abrir arquivo', command=lambda: print('teste'))
         arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('teste'))
         arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('teste'))
+        arquivo_menu.add_command(label='Desfazer', command=lambda: undoRedo('undo'))
+        arquivo_menu.add_command(label='Refazer', command=lambda: undoRedo('redo'))
         
         def apagar_dados():
             if edit_config.getSecao() == 'False':
                 edit_config.apagar_dados()
-            else:
-                pass
+            edit_config.limpar_temp()
         
         arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
                                                                      tela_login.deiconify(),

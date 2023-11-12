@@ -1,3 +1,4 @@
+import glob
 from bd.sqlite import *
 import platform
 
@@ -160,7 +161,6 @@ def getSecao():
             secao = itens[i][1]
             return secao
 
-
 def apagar_dados():
     CAMINHO_CONFIG = LerConfig('config')
     itens = LerConfig('itens')
@@ -181,3 +181,61 @@ def apagar_dados():
             if itens[i][0] == 'manter_logado':
                 linhas[i] = 'manter_logado=False'+'\n'
         configuracoes.writelines(linhas)
+        edit_config.limpar_temp()
+
+def limpar_temp():
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'undo':
+                linhas[i] = 'undo=\n'
+            if itens[i][0] == 'redo':
+                linhas[i] = 'redo=\n'
+        configuracoes.writelines(linhas)
+    if platform.system() == 'Windows':
+        padrao_txt = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup\\*.txt')
+    else:
+        padrao_txt = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup/*.txt')
+    arquivos_txt = glob.glob(padrao_txt)
+    for arquivo in arquivos_txt:
+        os.remove(arquivo)
+   
+def editarUndo(undo):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'undo':
+                linhas[i] = f'undo={undo}\n'
+                configuracoes.writelines(linhas)
+
+def getUndo():
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'undo':
+            undo = itens[i][1]
+            return undo
+    
+    
+def editarRedo(redo):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'redo':
+                linhas[i] = f'redo={redo}\n'
+                configuracoes.writelines(linhas)
+
+def getRedo():
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'redo':
+            redo = itens[i][1]
+            return redo

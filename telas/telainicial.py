@@ -71,7 +71,9 @@ class inicio:
         
         def analise_pareto(tabela=None, grafico=None):
             global matplot
-            if tabela is not None and not tabela.empty:
+            if isinstance(tabela, str):
+                matplot, DataFrame= sqlite.sqlite()
+            elif tabela is not None and not tabela.empty:
                 DataFrame = tabela
                 matplot = grafico
             else:
@@ -602,7 +604,7 @@ class inicio:
         async def tabelas_medidas(tabela=None):
             importado = 1
             sqlite_table
-            if tabela is None or tabela.empty:
+            if tabela is None or isinstance(tabela, str) or tabela.empty:
                 importado = 0
                 tabela_desorganizada, tabela = sqlite_table()
                 global tabela_df
@@ -743,10 +745,10 @@ class inicio:
         
         return tabelas_medidas
     
-    def analise_pareto(self, tabela, grafico):
+    def analise_pareto(self, tabela='', grafico=''):
         self.pareto(tabela, grafico)
     
-    def medidas(self, tabela):
+    def medidas(self, tabela=''):
         asyncio.run(self.medida(tabela))
        
     def aba_atual(self):
