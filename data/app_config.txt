@@ -1,11 +1,11 @@
 tema=cyborg
-ultimo_schema=kaik_medidas.db
-ultima_tabela=gagas_temp
-schema_caminho=/home/snootic/Documentos/pareto/data/users/sqlite_databases/kaik_pareto.db
-user=kaik
-senha=kazikmen123
+ultimo_schema=
+ultima_tabela=
+schema_caminho=
+user=
+senha=
 undo=
 redo=
 save=0
 autosave=False
-manter_logado=True
+manter_logado=False
