@@ -806,5 +806,6 @@ class inicio:
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
             edit_config.apagar_dados()
+        edit_config.limpar_temp()
         self.home.destroy()
         self.login.destroy()
