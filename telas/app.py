@@ -1,4 +1,6 @@
+from re import L
 import ttkbootstrap as ttk
+from ttkbootstrap import dialogs
 from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite
@@ -45,6 +47,10 @@ class Tela:
         menu_principal = ttk.Menu(self.janela)
         
         def undoRedo(do):
+            '''
+                Do Undo and Redo of changes. 
+                do: accepts 'undo' and 'redo'
+            '''
             sql = sqlite.tabela()
             dados = 'pareto' if self.aba_atual == 0 else 'medidas'
             if do == 'undo':
@@ -55,11 +61,65 @@ class Tela:
             
             if dados == 'pareto':
                 self.instancia_com_tabela.analise_pareto()
-            else:
+            elif dados == 'medidas':
                 self.instancia_com_tabela.medidas()
+        
+        def manual_backup(do):
+            '''
+                Manual Backup of changes. Calls filedialog, sqlite dump and restore functions.
+                do: accepts 'save' and 'restore'
+            '''
+            sql = sqlite.tabela()
+            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
+            
+            if do == 'save':
+                if self.aba_atual == 0:
+                    tabela = self.instancia_com_tabela.tabela_pareto
+                elif self.aba_atual == 1:
+                    tabela = self.instancia_com_tabela.tabela_medidas
+                    
+                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                        defaultextension='.sql',
+                                        filetypes=[("SQL script file", ".sql")])
+                sql.dump(manual=True, dados=dados, path=arquivo, tabela=tabela)
+            elif do == 'restore':
+                arquivo = filedialog.askopenfilename(filetypes=[("SQL script file", ".sql")])
+                
+                def restaurar():
+                    sql.restore(manual=True, dados=dados, file=arquivo)
+                    if self.aba_atual == 0:
+                        self.instancia_com_tabela.analise_pareto()
+                    elif self.aba_atual == 1:
+                        self.instancia_com_tabela.medidas()
+                        
+                with open(arquivo, 'r', encoding='utf-8') as file:
+                    lines = file.readlines()
+                    tabela = lines[1].split(' ')
+                    tabela = tabela[-1].split('(')[0]
+                
+                tabelas = sql.getTabelas(dados)
+                for i in tabelas:
+                    if tabela in i:
+                        substituir = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
+                                                           title="Tabela já existente",
+                                                           message=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",
+                                                           buttons=["Sim:danger",
+                                                                    "Cancelar:primary"],
+                                                           alert=True)
+                        substituir.show()
+                
+                try:
+                    if substituir.result != 'Sim':
+                        return
+                    else:
+                        restaurar()
+                except UnboundLocalError:
+                    restaurar()
+                    
                 
         arquivo_menu = ttk.Menu(menu_principal, tearoff=False)
-        arquivo_menu.add_command(label='Abrir arquivo', command=lambda: print('teste'))
+        arquivo_menu.add_command(label='Restaurar Backup', command=lambda: manual_backup(do='restore'))
+        arquivo_menu.add_command(label='Salvar Backup', command=lambda: manual_backup(do='save'))
         arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('teste'))
         arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('teste'))
         arquivo_menu.add_command(label='Desfazer', command=lambda: undoRedo('undo'))

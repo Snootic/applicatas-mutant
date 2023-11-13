@@ -7,13 +7,13 @@ from bd.tabela_pareto import *
 from bd.sqlite import tabela
 import matplotlib.pyplot as plt
 from bd.medidas import *
+from data.edit_config import EditarTabela
 import asyncio
 
 #TODO:
 # Salvamento de arquivos em tabelas sqlite
 
 # TRATAMENTO DE ERROS E RETORNO VISUAL PARA O USUARIO COM POPUPS - URGENTE
-
 
 class inicio:
     def __init__(self, login=''):
@@ -51,6 +51,8 @@ class inicio:
         
         self.data_pareto: DataFrame
         self.data_medidas: DataFrame
+        self.tabela_pareto: str
+        self.tabela_medidas: str
         
         self.home.mainloop()
         
@@ -358,8 +360,11 @@ class inicio:
                         ocorrencia_quantidade.configure(to=linha.values[2])
                     else:
                         ocorrencia_quantidade.configure(to=linha.values[1])
-                    
-                    
+        
+        def set_tabela():
+            self.tabela_pareto = tabela_atual_var.get()
+        tabela_atual_var.trace('w', lambda *args: set_tabela())
+            
         tabela_analise_pareto()
         bloquear_entrys()
         return analise_pareto
@@ -752,6 +757,10 @@ class inicio:
             plt.title('Boxplot')
             
             plt.show()
+        
+        def set_tabela():
+            self.tabela_medidas = tabela_atual_var.get()
+        tabela_atual_var.trace('w', lambda *args: set_tabela())
             
         tabela_medidas_matriz()
         tabela_medidas_formatada()
@@ -762,17 +771,18 @@ class inicio:
     
     def analise_pareto(self, *args):
         self.pareto(*args)
-        sql = sqlite.tabela()
-        sql.tabela = args[2]
-        sql.CriarBD('pareto')
-        dados = args[0].to_numpy().tolist()
-        for dado in dados:
-            try:
-                sql.add_valor_medidas(dado[0])
-            except sqlite3.OperationalError as e:
-                print(e)
-                continue
-            edit_config.limpar_temp()
+        if len(args) > 0:
+            sql = sqlite.tabela()
+            sql.tabela = args[2]
+            sql.CriarBD('pareto')
+            dados = args[0].to_numpy().tolist()
+            for dado in dados:
+                try:
+                    sql.add_valor_medidas(dado[0])
+                except sqlite3.OperationalError as e:
+                    print(e)
+                    continue
+                edit_config.limpar_temp()
             
     def medidas(self, *args):
         asyncio.run(self.medida(*args))
