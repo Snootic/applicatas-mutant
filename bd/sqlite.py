@@ -196,7 +196,7 @@ class tabela:
             self.att_config_table(tabela,'medidas')
             schema.commit()
 
-    def dump(self, dados='', manual=False, path=None):
+    def dump(self, dados='', manual=False, path=None, tabela=None):
         schema = self.CriarDirSchema(dados)
         if platform.system() == 'Windows':
             dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
@@ -233,7 +233,17 @@ class tabela:
                     for line in conn.iterdump():
                         dump.writelines(line+'\n')
                     edit_config.editarUndo(undoing)
-
+        else:
+            with sqlite3.connect(schema) as conn:
+                with open(path, 'w', encoding='utf-8') as dump:
+                    for line in conn.iterdump():
+                        if line.startswith(('BEGIN',
+                                            f'CREATE TABLE {tabela}',
+                                            f'INSERT INTO {tabela}',
+                                            f'DELETE FROM',
+                                            f'INSERT INTO "{tabela}"',
+                                            f'''INSERT INTO "sqlite_sequence" VALUES('{tabela}''')):
+                            dump.writelines(line+'\n')
                     
     def restore(self,dados, manual = False, redo = False, file=None):
         schema = self.CriarDirSchema(dados)
@@ -289,3 +299,23 @@ class tabela:
                         print(e)
                     else:
                         conn.commit()
+        else:
+            try:
+                with open(file, 'r', encoding='utf-8') as dump:
+                    lines = dump.read()
+                    separated_lines = lines.split('\n')
+            except Exception as e:
+                print(e)
+            else:
+                table = separated_lines[1].split(' ')
+                table = table[-1].split('(')[0]
+                self.DropTable(dados=dados, tabela=table)
+                with sqlite3.connect(schema) as conn:
+                    cursor = conn.cursor()
+                    try:
+                        cursor.executescript(lines)
+                    except Exception as e:
+                        print(e)
+                    else:
+                        conn.commit()
+            
