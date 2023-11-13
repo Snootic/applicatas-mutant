@@ -204,7 +204,10 @@ class tabela:
         else:
             dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
             banco_de_dados = schema.split('/')[-1].split('.')[0]
-            
+        
+        if not os.path.exists(dump_path):
+            os.mkdirs(os.path.dirname(dump_path))
+
         if manual == False:
             undo = 0
             undoing = edit_config.getUndo()
@@ -225,9 +228,9 @@ class tabela:
                 else:
                     undoing.append(bd)
                     break
-            
+
             dump_path = os.path.join(dump_path, bd)
-                
+     
             with sqlite3.connect(schema) as conn:
                 with open(dump_path, 'w', encoding='utf-8') as dump:
                     for line in conn.iterdump():
@@ -250,7 +253,7 @@ class tabela:
             
         if manual == False:
             if platform.system() == 'Windows':
-                    dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
+                dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
             else:
                 dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
 
