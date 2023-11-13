@@ -180,8 +180,11 @@ def apagar_dados():
                 linhas[i] = 'schema_caminho='+'\n'
             if itens[i][0] == 'manter_logado':
                 linhas[i] = 'manter_logado=False'+'\n'
+            if itens[i][0] == 'undo':
+                linhas[i] = 'undo=\n'
+            if itens[i][0] == 'redo':
+                linhas[i] = 'redo=\n'
         configuracoes.writelines(linhas)
-        edit_config.limpar_temp()
 
 def limpar_temp():
     CAMINHO_CONFIG = LerConfig('config')
