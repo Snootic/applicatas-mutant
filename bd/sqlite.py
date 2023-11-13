@@ -1,4 +1,3 @@
-from calendar import c
 import os
 import sqlite3
 from sqlite_dump import iterdump
@@ -49,6 +48,7 @@ class tabela:
         if resultado[0] == 1:
             return 'Tabela já existe'
         else:
+            self.dump(dados)
             if dados == 'pareto':
                 cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,7 +59,6 @@ class tabela:
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 medidas1 INTEGER)''')
             self.att_config_table(self.tabela,dados)
-            self.dump(dados)
             return 'Tabela criada'
         
     def addValor_pareto(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
@@ -270,17 +269,24 @@ class tabela:
             
             if redo == False:
                 if undoing:
-                    dump_path = os.path.join(dump_path,undoing[-1])
-                    redoing.append(undoing[-1])
-                    undoing.remove(undoing[-1])
+                    try:
+                        dump_path = os.path.join(dump_path,undoing[-1])
+                    except IndexError:
+                        pass
+                    else:
+                        redoing.append(undoing[-1])
+                        undoing.remove(undoing[-1])
                 else:
                     return
                 
             else:
                 if redoing:
-                    dump_path = os.path.join(dump_path,redoing[-1]) 
-                    undoing.append(redoing[-1])
-                    redoing.remove(redoing[-1])
+                        undoing.append(redoing[-1])
+                        redoing.remove(redoing[-1])
+                        try:
+                            dump_path = os.path.join(dump_path,redoing[-1])
+                        except IndexError:
+                            pass
                 else:
                     return
                     
