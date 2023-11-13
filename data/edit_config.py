@@ -196,9 +196,9 @@ def limpar_temp():
                 linhas[i] = 'redo=\n'
         configuracoes.writelines(linhas)
     if platform.system() == 'Windows':
-        padrao_txt = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup\\*.txt')
+        padrao_txt = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup\\*.sql')
     else:
-        padrao_txt = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup/*.txt')
+        padrao_txt = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup/*.sql')
     arquivos_txt = glob.glob(padrao_txt)
     for arquivo in arquivos_txt:
         os.remove(arquivo)
