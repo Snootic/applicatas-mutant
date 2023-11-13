@@ -74,6 +74,8 @@ class inicio:
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
+            if sqlite.sqlite() == None:
+                return
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
             elif tabela is not None and not tabela.empty:
