@@ -6,6 +6,6 @@ user=
 senha=
 undo=
 redo=
-save=0
+saved=True
 autosave=False
 manter_logado=False
