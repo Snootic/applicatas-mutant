@@ -116,8 +116,16 @@ class Tela:
                     restaurar()
                     
         def save(do):
+            sql = sqlite.tabela()
+            if self.aba_atual == 0:
+                dados = 'pareto'
+            elif self.aba_atual == 1:
+                dados = 'medidas'
+                
             if do == 'save':
                 edit_config.setIsSaved(True)
+                sql.save(dados, confirm=True)
+                
             elif do == 'autosave':
                 is_saved = edit_config.getAutoSave()
                 if is_saved == 'True':
@@ -158,12 +166,7 @@ class Tela:
             '''
             is_saved = edit_config.getIsSaved()
             if is_saved == 'True':
-                if command == 'Fechar':
-                    apagar_dados()
-                elif command == 'Sair':
-                    apagar_dados('Sair')
-                    self.janela.destroy()
-                    tela_login.deiconify()
+                pass
             else:
                 confirmar = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
                                                 title="Tabela já existente",
@@ -175,20 +178,23 @@ class Tela:
                 confirmar.show()
                     
                 if confirmar.result != 'Cancelar':
-                                    
+                    sql = sqlite.tabela()
+                    if self.aba_atual == 0:
+                        dados = 'pareto'
+                    elif self.aba_atual == 1:
+                        dados = 'medidas'
+                        
+                    if confirmar.result == 'Não':
+                        sql.save(dados, confirm=False)
                     if confirmar.result == 'Sim':
-                        sql = sqlite.tabela()
-                        if self.aba_atual == 0:
-                            dados = 'pareto'
-                        elif self.aba_atual == 1:
-                            dados = 'medidas'
-                        sql.save(dados)
-                    if command == 'Fechar':
-                        apagar_dados()
-                    elif command == 'Sair':
-                        apagar_dados('Sair')
-                    self.janela.destroy()
-                    tela_login.deiconify()
+                        sql.save(dados, confirm=True)
+                        
+            if command == 'Fechar':
+                apagar_dados()
+            elif command == 'Sair':
+                apagar_dados('Sair')
+            self.janela.destroy()
+            tela_login.deiconify()
                 
         arquivo_menu.add_command(label='Sair', command=lambda: checkSave('Sair'))
         arquivo_menu.add_command(label='Fechar', command=lambda: checkSave('Fechar'))

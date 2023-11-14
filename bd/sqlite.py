@@ -337,41 +337,52 @@ class tabela:
         
         if platform.system() == 'Windows':
             dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
+            banco_de_dados = schema.split('\\')[-1].split('.')[0]
         else:
             dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
-
+            banco_de_dados = schema.split('/')[-1].split('.')[0]
+            
         redoing = edit_config.getRedo()
         redoing = redoing.strip('[]').replace("'", "").replace(' ','').split(',')
 
         undoing = edit_config.getUndo()
         undoing = undoing.strip('[]').replace("'", "").replace(' ','').split(',')
         
-        with sqlite3.connect(schema) as conn:
-            save_path = os.path.join(dump_path,'save_temp.sql')
-            with open(save_path, 'w', encoding='utf-8') as temp:
+        save_path = os.path.join(dump_path,f'{banco_de_dados}_save_temp.sql')
+        
+        if confirm == True:
+            if os.path.exists(save_path):
+                os.remove(save_path)
+            with sqlite3.connect(schema) as conn, open(save_path, 'w', encoding='utf-8') as temp:
                 for line in conn.iterdump():
                     temp.writelines(line+'\n')
-        
-        with open(save_path, 'r', encoding='utf-8') as temp:
-            temp_save = temp.read()
-        try:
-            backups = undoing + redoing
-        except Exception as e:
-            print(e)
-        
-        if confirm == False:
-            for i in range(len(backups)):
-                if backups[i] == '':
-                    return
-                dump_path_temp = os.path.join(dump_path,backups[i])
-                with open(dump_path_temp) as dump:
-                    dump_lines = dump.read()
-
-                if temp_save == dump_lines:
-                    return 0
-
-        os.remove(schema)
-        with sqlite3.connect(schema) as conn:
-            cursor = conn.cursor()
-            cursor.executescript(temp_save)
-            return
+            
+            with open(save_path, 'r', encoding='utf-8') as temp:
+                temp_save = temp.read()
+                
+            os.remove(schema)
+            with sqlite3.connect(schema) as conn:
+                cursor = conn.cursor()
+                cursor.executescript(temp_save)
+                return
+        else:
+            try:
+                with open(save_path, 'r', encoding='utf-8') as sf:
+                    last_save = sf.read()
+            except Exception as e:
+                print(e)
+                bkp_list = undoing + redoing
+                
+                for i in bkp_list:
+                    if i == f'{banco_de_dados}_bkp0.sql':
+                        bkp_file = i
+                bkp_file = os.path.join(dump_path,bkp_file)
+                
+                with open(bkp_file, 'r', encoding='utf-8') as bkp:
+                    last_save = bkp.read()
+                    
+            os.remove(schema)
+            with sqlite3.connect(schema) as conn:
+                cursor = conn.cursor()
+                cursor.executescript(last_save)
+                return
