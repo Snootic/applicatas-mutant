@@ -75,6 +75,7 @@ class inicio:
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
             if sqlite.sqlite() == None:
+                edit_config.setIsSaved(False)
                 return
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
@@ -101,6 +102,7 @@ class inicio:
             self.data_pareto = DataFrame
             if grafico is not None and not grafico.empty:
                 tabela_atual_var.set(value=name)
+            edit_config.setIsSaved(False)
         
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
@@ -721,6 +723,7 @@ class inicio:
             tabela_tdf(colunas=colunas_novas)
             tabela_medidas_tdf.insert_rows(index = 'end', rowdata = dados)
             tabela_medidas_tdf.load_table_data()
+            edit_config.setIsSaved(False)
 
         def grafico():
             popup = ttk.Toplevel(self.home)

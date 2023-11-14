@@ -115,17 +115,26 @@ class Tela:
                 except UnboundLocalError:
                     restaurar()
                     
-                
+        def save(do):
+            if do == 'save':
+                edit_config.setIsSaved(True)
+            elif do == 'autosave':
+                is_saved = edit_config.getAutoSave()
+                if is_saved == 'True':
+                    edit_config.setAutoSave(False)
+                else:
+                    edit_config.setAutoSave(True)
+               
         arquivo_menu = ttk.Menu(menu_principal, tearoff=False)
         arquivo_menu.add_command(label='Restaurar Backup', command=lambda: manual_backup(do='restore'))
         arquivo_menu.add_command(label='Salvar Backup', command=lambda: manual_backup(do='save'))
-        arquivo_menu.add_command(label='Salvar arquivo', command=lambda: print('teste'))
-        arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: print('teste'))
+        arquivo_menu.add_command(label='Salvar arquivo', command=lambda: save('save'))
+        arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: save('autosave'))
         arquivo_menu.add_command(label='Desfazer', command=lambda: undoRedo('undo'))
         arquivo_menu.add_command(label='Refazer', command=lambda: undoRedo('redo'))
         
-        def apagar_dados():
-            if edit_config.getSecao() == 'False':
+        def apagar_dados(command=''):
+            if edit_config.getSecao() == 'False' or command == 'Sair':
                 edit_config.apagar_dados()
             sql = sqlite.tabela()
             tabelas_pareto = sql.getTabelas('pareto')
@@ -138,15 +147,50 @@ class Tela:
             for tabela in tabelas_medidas:
                 if tabela[0].split('_')[-1] == 'temp':
                     sql.DropTable(tabela[0],'medidas')
-                    
+            
+            edit_config.setIsSaved(True)
             edit_config.limpar_temp()
         
-        arquivo_menu.add_command(label='Sair', command=lambda: (self.janela.destroy(),
-                                                                     tela_login.deiconify(),
-                                                                     edit_config.apagar_dados()))
-        arquivo_menu.add_command(label='Fechar', command=lambda: (self.janela.destroy(),
-                                                                       tela_login.destroy(),
-                                                                       apagar_dados()))
+        def checkSave(command):
+            '''
+                Checa se o arquivo foi salvo ao fechar o programa. Se não, pergunta se o usuário deseja salvar.
+            '''
+            is_saved = edit_config.getIsSaved()
+            if is_saved == 'True':
+                if command == 'Fechar':
+                    apagar_dados()
+                elif command == 'Sair':
+                    apagar_dados('Sair')
+                    self.janela.destroy()
+                    tela_login.deiconify()
+            else:
+                confirmar = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
+                                                title="Tabela já existente",
+                                                message=f"Há alterações não salvas, deseja salvar?",
+                                                buttons=["Não:danger",
+                                                        "Sim:primary",
+                                                        "Cancelar:primary"],
+                                                alert=True)
+                confirmar.show()
+                    
+                if confirmar.result != 'Cancelar':
+                                    
+                    if confirmar.result == 'Sim':
+                        sql = sqlite.tabela()
+                        if self.aba_atual == 0:
+                            dados = 'pareto'
+                        elif self.aba_atual == 1:
+                            dados = 'medidas'
+                        sql.save(dados)
+                    if command == 'Fechar':
+                        apagar_dados()
+                    elif command == 'Sair':
+                        apagar_dados('Sair')
+                    self.janela.destroy()
+                    tela_login.deiconify()
+                
+        arquivo_menu.add_command(label='Sair', command=lambda: checkSave('Sair'))
+        arquivo_menu.add_command(label='Fechar', command=lambda: checkSave('Fechar'))
         
         def import_arquivo(tipo):
             try:

@@ -184,6 +184,10 @@ def apagar_dados():
                 linhas[i] = 'undo=\n'
             if itens[i][0] == 'redo':
                 linhas[i] = 'redo=\n'
+            if itens[i][0] == 'saved':
+                linhas[i] = 'saved=True\n'
+            if itens[i][0] == 'autosave':
+                linhas[i] = 'autosave=False\n'
         configuracoes.writelines(linhas)
 
 def limpar_temp():
@@ -242,3 +246,39 @@ def getRedo():
         if itens[i][0] == 'redo':
             redo = itens[i][1]
             return redo
+
+def setIsSaved(saved: bool):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'saved':
+                linhas[i] = f'saved={saved}\n'
+                configuracoes.writelines(linhas)
+   
+def getIsSaved() -> str:
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'saved':
+            saved = itens[i][1]
+            return saved
+
+def setAutoSave(auto_save: bool):
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+    
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'autosave':
+                linhas[i] = f'autosave={auto_save}\n'
+                configuracoes.writelines(linhas)
+
+def getAutoSave() -> str: 
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'autosave':
+            auto_save = itens[i][1]
+            return auto_save

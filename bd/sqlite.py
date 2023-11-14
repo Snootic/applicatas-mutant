@@ -247,9 +247,13 @@ class tabela:
                                             f'''INSERT INTO "sqlite_sequence" VALUES('{tabela}''')):
                             dump.writelines(line+'\n')
                     
-    def restore(self,dados, manual = False, redo = False, file=None):
+    def restore(self,
+                dados,
+                manual = False,
+                redo = False,
+                file=None):
         schema = self.CriarDirSchema(dados)
-            
+        
         if manual == False:
             if platform.system() == 'Windows':
                 dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
@@ -327,4 +331,47 @@ class tabela:
                         print(e)
                     else:
                         conn.commit()
-            
+
+    def save(self, dados, confirm=False):
+        schema = self.CriarDirSchema(dados)
+        
+        if platform.system() == 'Windows':
+            dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
+        else:
+            dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
+
+        redoing = edit_config.getRedo()
+        redoing = redoing.strip('[]').replace("'", "").replace(' ','').split(',')
+
+        undoing = edit_config.getUndo()
+        undoing = undoing.strip('[]').replace("'", "").replace(' ','').split(',')
+        
+        with sqlite3.connect(schema) as conn:
+            save_path = os.path.join(dump_path,'save_temp.sql')
+            with open(save_path, 'w', encoding='utf-8') as temp:
+                for line in conn.iterdump():
+                    temp.writelines(line+'\n')
+        
+        with open(save_path, 'r', encoding='utf-8') as temp:
+            temp_save = temp.read()
+        try:
+            backups = undoing + redoing
+        except Exception as e:
+            print(e)
+        
+        if confirm == False:
+            for i in range(len(backups)):
+                if backups[i] == '':
+                    return
+                dump_path_temp = os.path.join(dump_path,backups[i])
+                with open(dump_path_temp) as dump:
+                    dump_lines = dump.read()
+
+                if temp_save == dump_lines:
+                    return 0
+
+        os.remove(schema)
+        with sqlite3.connect(schema) as conn:
+            cursor = conn.cursor()
+            cursor.executescript(temp_save)
+            return
