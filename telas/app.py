@@ -191,10 +191,13 @@ class Tela:
                         
             if command == 'Fechar':
                 apagar_dados()
+                tela_login.destroy()
             elif command == 'Sair':
                 apagar_dados('Sair')
-            self.janela.destroy()
-            tela_login.deiconify()
+                self.janela.destroy()
+                tela_login.deiconify()
+            
+            
                 
         arquivo_menu.add_command(label='Sair', command=lambda: checkSave('Sair'))
         arquivo_menu.add_command(label='Fechar', command=lambda: checkSave('Fechar'))
