@@ -46,6 +46,7 @@ class tabela:
         cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
         resultado = cursor.fetchone()
         if resultado[0] == 1:
+            self.att_config_table(self.tabela,dados)
             return 'Tabela já existe'
         else:
             self.dump(dados)
