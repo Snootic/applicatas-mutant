@@ -16,3 +16,5 @@ class user_table:
         usuario VARCHAR UNIQUE,
         email VARCHAR UNIQUE,
         senha VARCHAR)''')
+        usuarios.close()
+        
