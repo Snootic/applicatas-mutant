@@ -3,6 +3,7 @@ import sqlite3
 from sqlite_dump import iterdump
 from data import edit_config
 import platform
+from time import sleep
 
 class tabela:
     def __init__(self, table=''):
@@ -32,89 +33,89 @@ class tabela:
     
     def DropTable(self, tabela, dados):
         CAMINHO_SCHEMA = self.CriarDirSchema(dados)
-        conn = sqlite3.connect(CAMINHO_SCHEMA)
-        schema = edit_config.getSchema('tab')
-        schema = schema.split('.')[0]
-        cursor = conn.cursor()
-        self.dump(dados)
-        cursor.execute(f"DROP TABLE {tabela}")
+        with sqlite3.connect(CAMINHO_SCHEMA) as conn:
+            schema = edit_config.getSchema('tab')
+            schema = schema.split('.')[0]
+            cursor = conn.cursor()
+            self.dump(dados)
+            cursor.execute(f"DROP TABLE {tabela}")
     
     def CriarBD(self, dados):
         CAMINHO_SCHEMA = self.CriarDirSchema(dados)
-        tabela = sqlite3.connect(CAMINHO_SCHEMA)
-        cursor = tabela.cursor()
-        cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
-        resultado = cursor.fetchone()
-        if resultado[0] == 1:
-            self.att_config_table(self.tabela,dados)
-            return 'Tabela já existe'
-        else:
-            self.dump(dados)
-            if dados == 'pareto':
-                cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                ocorrencias VARCHAR,
-                                custo REAL DEFAULT NULL)''')
-            elif dados == 'medidas':
-                cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                medidas1 INTEGER)''')
-            self.att_config_table(self.tabela,dados)
-            return 'Tabela criada'
+        with sqlite3.connect(CAMINHO_SCHEMA) as tabela:
+            cursor = tabela.cursor()
+            cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
+            resultado = cursor.fetchone()
+            if resultado[0] == 1:
+                self.att_config_table(self.tabela,dados)
+                return 'Tabela já existe'
+            else:
+                self.dump(dados)
+                if dados == 'pareto':
+                    cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    ocorrencias VARCHAR,
+                                    custo REAL DEFAULT NULL)''')
+                elif dados == 'medidas':
+                    cursor.execute(f'''CREATE TABLE if not exists {self.tabela}(
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    medidas1 INTEGER)''')
+                self.att_config_table(self.tabela,dados)
+                return 'Tabela criada'
         
     def addValor_pareto(self, ocorrencias, custo='', quantidade=1): #Tabela, ocorrencias e custo (opcional)
         schema = self.CriarDirSchema('pareto')
-        schema = sqlite3.connect(schema)
-        cursor = schema.cursor()
-        self.dump(dados='pareto')
-        
-        tabela = edit_config.getTabela()
-        
-        for i in range(quantidade):
-            if custo != '':
-                cursor.execute(f"INSERT INTO {tabela} (ocorrencias,custo) VALUES(?,?)", (ocorrencias, custo))
-            else:
-                cursor.execute(f"INSERT INTO {tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
-            self.att_config_table(tabela,'pareto')
-            schema.commit()
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            self.dump(dados='pareto')
+            
+            tabela = edit_config.getTabela()
+            
+            for i in range(quantidade):
+                if custo != '':
+                    cursor.execute(f"INSERT INTO {tabela} (ocorrencias,custo) VALUES(?,?)", (ocorrencias, custo))
+                else:
+                    cursor.execute(f"INSERT INTO {tabela} (ocorrencias) VALUES(?)", (ocorrencias,))
+                self.att_config_table(tabela,'pareto')
+                schema.commit()
         
     def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=0):
         schema = self.CriarDirSchema('pareto')
-        schema = sqlite3.connect(schema)
-        cursor = schema.cursor()
-        self.dump(dados='pareto')
-        
-        tabela = edit_config.getTabela()
-        
-        if quantidade == 0:
-            cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
-        else:
-            cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
-        self.att_config_table(tabela,'pareto')
-        schema.commit()
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            self.dump(dados='pareto')
+            
+            tabela = edit_config.getTabela()
+            
+            if quantidade == 0:
+                cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
+            else:
+                cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
+            self.att_config_table(tabela,'pareto')
+            schema.commit()
             
     def atualizar_custo(self,ocorrenciaatual,custo):
         schema = self.CriarDirSchema('pareto')
-        schema = sqlite3.connect(schema)
-        cursor = schema.cursor()
-        self.dump(dados='pareto')
-        
-        tabela = edit_config.getTabela()
-        cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}'")
-        self.att_config_table(tabela,'pareto')
-        schema.commit()
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            self.dump(dados='pareto')
+            
+            tabela = edit_config.getTabela()
+            cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}'")
+            self.att_config_table(tabela,'pareto')
+            schema.commit()
     
     def getTabelas(self,dados):
         schema = self.CriarDirSchema(dados)
-        schema = sqlite3.connect(schema)
-        cursor = schema.cursor()
+        with sqlite3.connect(schema) as schema:
+            cursor = schema.cursor()
+            
+            cursor.execute(f"SELECT name FROM sqlite_master")
+            resultado = cursor.fetchall()
+            
+            resultado = [tabela for tabela in resultado if tabela[0] != 'sqlite_sequence']
         
-        cursor.execute(f"SELECT name FROM sqlite_master")
-        resultado = cursor.fetchall()
-        
-        resultado = [tabela for tabela in resultado if tabela[0] != 'sqlite_sequence']
-                
-        return resultado
+            return resultado
     
     def SelectTabela(self, tabela, dados):
         edit_config.EditarTabela(tabela,dados)
@@ -313,6 +314,7 @@ class tabela:
                         print(e)
                     else:
                         conn.commit()
+    
         else:
             try:
                 with open(file, 'r', encoding='utf-8') as dump:
@@ -329,6 +331,7 @@ class tabela:
                     try:
                         cursor.executescript(lines)
                     except Exception as e:
+    
                         print(e)
                     else:
                         conn.commit()
@@ -357,11 +360,15 @@ class tabela:
             with sqlite3.connect(schema) as conn, open(save_path, 'w', encoding='utf-8') as temp:
                 for line in conn.iterdump():
                     temp.writelines(line+'\n')
+                conn.close()
             
             with open(save_path, 'r', encoding='utf-8') as temp:
                 temp_save = temp.read()
-                
+
+            sleep(5)
+
             os.remove(schema)
+
             with sqlite3.connect(schema) as conn:
                 cursor = conn.cursor()
                 cursor.executescript(temp_save)
@@ -381,7 +388,7 @@ class tabela:
                 
                 with open(bkp_file, 'r', encoding='utf-8') as bkp:
                     last_save = bkp.read()
-                    
+
             os.remove(schema)
             with sqlite3.connect(schema) as conn:
                 cursor = conn.cursor()
