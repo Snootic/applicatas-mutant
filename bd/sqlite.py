@@ -31,13 +31,14 @@ class tabela:
             edit_config.EditarTabela(tabela,dados)
             edit_config.editSchema(CAMINHO_SCHEMA)
     
-    def DropTable(self, tabela, dados):
+    def DropTable(self, tabela, dados, dump=True):
         CAMINHO_SCHEMA = self.CriarDirSchema(dados)
         with sqlite3.connect(CAMINHO_SCHEMA) as conn:
             schema = edit_config.getSchema('tab')
             schema = schema.split('.')[0]
             cursor = conn.cursor()
-            self.dump(dados)
+            if dump == True:
+                self.dump(dados)
             cursor.execute(f"DROP TABLE {tabela}")
     
     def CriarBD(self, dados):
@@ -199,15 +200,11 @@ class tabela:
 
     def dump(self, dados='', manual=False, path=None, tabela=None):
         schema = self.CriarDirSchema(dados)
-        if platform.system() == 'Windows':
-            dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
-            banco_de_dados = schema.split('\\')[-1].split('.')[0]
-        else:
-            dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
-            banco_de_dados = schema.split('/')[-1].split('.')[0]
+        dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup/')
+        banco_de_dados = schema.replace('\\','/').split('/')[-1].split('.')[0]
         
         if not os.path.exists(dump_path):
-            os.mkdirs(os.path.dirname(dump_path))
+            os.makedirs(os.path.dirname(dump_path))
 
         if manual == False:
             undo = 0
@@ -257,10 +254,7 @@ class tabela:
         schema = self.CriarDirSchema(dados)
         
         if manual == False:
-            if platform.system() == 'Windows':
-                dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
-            else:
-                dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
+            dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
 
             redoing = edit_config.getRedo()
             redoing = redoing.strip('[]').replace("'", "").replace(' ','').split(',')
@@ -287,15 +281,22 @@ class tabela:
                 
             else:
                 if redoing:
-                        undoing.append(redoing[-1])
-                        redoing.remove(redoing[-1])
                         try:
-                            dump_path = os.path.join(dump_path,redoing[-1])
+                            if len(redoing) > 1:
+                                undoing.append(redoing[-1])
+                                redoing.remove(redoing[-1])
+                                dump_path = os.path.join(dump_path,redoing[-1])
+                            else:
+                                dump_path = os.path.join(dump_path,redoing[0])
+                                undoing.append(redoing[-1])
+                                redoing.remove(redoing[-1])
+                                
                         except IndexError:
                             pass
+                        
                 else:
                     return
-                    
+                
             try:   
                 with open(dump_path, 'r', encoding='utf-8') as dump:
                     edit_config.editarUndo(undoing)
@@ -304,8 +305,12 @@ class tabela:
             except Exception as e:
                 print(e,': Erro')
             else:
-                if os.path.exists(schema):
-                    os.remove(schema)
+                for i in self.getTabelas(dados):
+                    try:
+                        self.DropTable(dados=dados,tabela=i, dump=False)
+                    except:
+                        self.DropTable(dados=dados,tabela=i[0], dump=False)
+                    
                 with sqlite3.connect(schema) as conn:
                     cursor = conn.cursor()
                     try:
@@ -336,61 +341,3 @@ class tabela:
                     else:
                         conn.commit()
 
-    def save(self, dados, confirm=False):
-        schema = self.CriarDirSchema(dados)
-        
-        if platform.system() == 'Windows':
-            dump_path = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup')
-            banco_de_dados = schema.split('\\')[-1].split('.')[0]
-        else:
-            dump_path = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup')
-            banco_de_dados = schema.split('/')[-1].split('.')[0]
-            
-        redoing = edit_config.getRedo()
-        redoing = redoing.strip('[]').replace("'", "").replace(' ','').split(',')
-
-        undoing = edit_config.getUndo()
-        undoing = undoing.strip('[]').replace("'", "").replace(' ','').split(',')
-        
-        save_path = os.path.join(dump_path,f'{banco_de_dados}_save_temp.sql')
-        
-        if confirm == True:
-            if os.path.exists(save_path):
-                os.remove(save_path)
-            with sqlite3.connect(schema) as conn, open(save_path, 'w', encoding='utf-8') as temp:
-                for line in conn.iterdump():
-                    temp.writelines(line+'\n')
-                conn.close()
-            
-            with open(save_path, 'r', encoding='utf-8') as temp:
-                temp_save = temp.read()
-
-            sleep(5)
-
-            os.remove(schema)
-
-            with sqlite3.connect(schema) as conn:
-                cursor = conn.cursor()
-                cursor.executescript(temp_save)
-                return
-        else:
-            try:
-                with open(save_path, 'r', encoding='utf-8') as sf:
-                    last_save = sf.read()
-            except Exception as e:
-                print(e)
-                bkp_list = undoing + redoing
-                
-                for i in bkp_list:
-                    if i == f'{banco_de_dados}_bkp0.sql':
-                        bkp_file = i
-                bkp_file = os.path.join(dump_path,bkp_file)
-                
-                with open(bkp_file, 'r', encoding='utf-8') as bkp:
-                    last_save = bkp.read()
-
-            os.remove(schema)
-            with sqlite3.connect(schema) as conn:
-                cursor = conn.cursor()
-                cursor.executescript(last_save)
-                return

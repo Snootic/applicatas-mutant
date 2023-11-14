@@ -2,7 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap import dialogs
 from tkinter import filedialog
 from data import edit_config
-from bd import tabela_pareto, medidas, sqlite
+from bd import tabela_pareto, medidas, sqlite, save
 from telas.telainicial import inicio
 import os, asyncio
 
@@ -73,9 +73,9 @@ class Tela:
             
             if do == 'save':
                 if self.aba_atual == 0:
-                    tabela = self.instancia_com_tabela.tabela_pareto
+                    tabela = self.instancia_com_tabela.tabela_pareto()
                 elif self.aba_atual == 1:
-                    tabela = self.instancia_com_tabela.tabela_medidas
+                    tabela = self.instancia_com_tabela.tabela_medidas()
                     
                 arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
                                         defaultextension='.sql',
@@ -115,16 +115,11 @@ class Tela:
                 except UnboundLocalError:
                     restaurar()
                     
-        def save(do):
-            sql = sqlite.tabela()
-            if self.aba_atual == 0:
-                dados = 'pareto'
-            elif self.aba_atual == 1:
-                dados = 'medidas'
-                
+        def salvar(do):
+            saves = save.Salvar()
             if do == 'save':
                 edit_config.setIsSaved(True)
-                sql.save(dados, confirm=True)
+                saves.save()
                 
             elif do == 'autosave':
                 is_saved = edit_config.getAutoSave()
@@ -136,8 +131,8 @@ class Tela:
         arquivo_menu = ttk.Menu(menu_principal, tearoff=False)
         arquivo_menu.add_command(label='Restaurar Backup', command=lambda: manual_backup(do='restore'))
         arquivo_menu.add_command(label='Salvar Backup', command=lambda: manual_backup(do='save'))
-        arquivo_menu.add_command(label='Salvar arquivo', command=lambda: save('save'))
-        arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: save('autosave'))
+        arquivo_menu.add_command(label='Salvar arquivo', command=lambda: salvar('save'))
+        arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: salvar('autosave'))
         arquivo_menu.add_command(label='Desfazer', command=lambda: undoRedo('undo'))
         arquivo_menu.add_command(label='Refazer', command=lambda: undoRedo('redo'))
         
@@ -178,24 +173,19 @@ class Tela:
                 confirmar.show()
                     
                 if confirmar.result != 'Cancelar':
-                    sql = sqlite.tabela()
-                    if self.aba_atual == 0:
-                        dados = 'pareto'
-                    elif self.aba_atual == 1:
-                        dados = 'medidas'
-                        
+                    saves = save.Salvar()
                     if confirmar.result == 'Não':
-                        sql.save(dados, confirm=False)
+                        saves.dontSave()
                     if confirmar.result == 'Sim':
-                        sql.save(dados, confirm=True)
+                        saves.save()
                         
-            if command == 'Fechar':
-                apagar_dados()
-                tela_login.destroy()
-            elif command == 'Sair':
-                apagar_dados('Sair')
-                self.janela.destroy()
-                tela_login.deiconify()
+                if command == 'Fechar':
+                    apagar_dados()
+                    tela_login.destroy()
+                elif command == 'Sair':
+                    apagar_dados('Sair')
+                    self.janela.destroy()
+                    tela_login.deiconify()
             
             
                 
