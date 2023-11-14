@@ -134,8 +134,6 @@ class Tela:
         arquivo_menu.add_command(label='Refazer', command=lambda: undoRedo('redo'))
         
         def apagar_dados(command=''):
-            if edit_config.getSecao() == 'False' or command == 'Sair':
-                edit_config.apagar_dados()
             sql = sqlite.tabela()
             tabelas_pareto = sql.getTabelas('pareto')
             tabelas_medidas = sql.getTabelas('medidas')
@@ -147,6 +145,9 @@ class Tela:
             for tabela in tabelas_medidas:
                 if tabela[0].split('_')[-1] == 'temp':
                     sql.DropTable(tabela[0],'medidas')
+                    
+            if edit_config.getSecao() == 'False' or command == 'Sair':
+                edit_config.apagar_dados()
             
             edit_config.setIsSaved(True)
             edit_config.limpar_temp()
