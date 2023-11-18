@@ -3,5 +3,4 @@ ttkbootstrap
 pandas
 validate_email
 matplotlib
-sqlite_dump
 openpyxl

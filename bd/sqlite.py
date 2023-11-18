@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from sqlite_dump import iterdump
+# from sqlite_dump import iterdump
 from data import edit_config
 import platform
 from time import sleep
