@@ -77,7 +77,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            pareto_tabela.place(relx=0.5,rely=0.5,anchor=CENTER, width=self.width)
+            pareto_tabela.place(relx=0.5,rely=0.49,anchor=CENTER, relheight=0.65, width=self.width)
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
@@ -320,7 +320,7 @@ class inicio:
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
         tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
         tabela_atual.lower()
-        tabela_atual.place(relx=0.5,y=85,anchor=CENTER)
+        tabela_atual.place(relx=0.5,rely=0.15,anchor=CENTER)
         tabela_atual_var.trace("w", lambda *args: bloquear_entrys())
         
         # Gerar gráfico com matplotlib
