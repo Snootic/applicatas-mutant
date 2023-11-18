@@ -106,7 +106,7 @@ class pareto:
                     total_ocorrencias = tabela['No. Ocorrências'].sum()
                     total_custos_unitarios = tabela['Custo Un.'].sum()
                     total_custos = tabela['Custo Total'].sum()
-                    matplot.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, total_custos, np.nan, np.nan]
+                    matplot.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, np.nan, np.nan, np.nan]
                     
                     tabela["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
                     tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
