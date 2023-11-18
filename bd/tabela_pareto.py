@@ -95,11 +95,11 @@ class pareto:
                     
                     tabela['Custo Total'] = tabela['Custo Un.'] * tabela['No. Ocorrências']
                     
-                    tabela['Freq. Relativa'] = tabela['No. Ocorrências'] / tabela['No. Ocorrências'].sum() * 100
+                    tabela = tabela.sort_values(by=['Custo Total'],ascending=False)
+                    
+                    tabela['Freq. Relativa'] = tabela['Custo Total'] / tabela['Custo Total'].sum() * 100
                     
                     tabela['Freq. Acumulada'] = tabela['Freq. Relativa'].cumsum()/tabela['Freq. Relativa'].sum() * 100
-                    
-                    tabela = tabela.sort_values(by=['Custo Total'],ascending=False)
                     
                     matplot = tabela[:].copy()
                     
