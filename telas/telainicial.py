@@ -77,7 +77,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            pareto_tabela.place(relx=0.5,rely=0.49,anchor=CENTER, relheight=0.65, width=self.width)
+            pareto_tabela.place(relx=0.5,rely=0.5,anchor=CENTER, relheight=0.65, width=self.width)
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
@@ -192,13 +192,13 @@ class inicio:
             bloquear_entrys()
         
         adicionar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
-        adicionar_itens_frame.place(relx=0.165, rely=0.9, anchor=CENTER, relheight=0.16, relwidth=0.33)
+        adicionar_itens_frame.place(relx=0.165, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         adicionar_itens_var = ttk.StringVar(value='Ocorrência')
         adicionar_itens = ttk.Entry(adicionar_itens_frame,
                                     textvariable=adicionar_itens_var,
                                     font=self.estilo.fonte)
-        adicionar_itens.place(relx=0.02,rely=0.1, relwidth=0.72)
+        adicionar_itens.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.72)
         adicionar_itens.bind(
             '<FocusIn>',
             lambda event: (adicionar_itens_var.set(value=''),
@@ -208,7 +208,7 @@ class inicio:
         adicionar_custo = ttk.Spinbox(adicionar_itens_frame,
                                     textvariable=adicionar_custo_var,
                                     font=self.estilo.fonte)
-        adicionar_custo.place(relx=0.02, rely=0.55, relwidth=0.72)
+        adicionar_custo.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.72)
         adicionar_custo.bind(
             '<FocusIn>',
             lambda event: (adicionar_custo_var.set(value=''),
@@ -242,14 +242,14 @@ class inicio:
                                             textvariable=quantidade_ocorrencia_var,
                                             from_=1,
                                             to=10000)
-        quantidade_ocorrencia.place(relx=0.78,rely=0.1, relwidth=0.2)
+        quantidade_ocorrencia.place(relx=0.78,rely=0.1, relheight=0.35, relwidth=0.2)
         
         adicionar_itens_plus = ttk.Button(adicionar_itens_frame,
                                           text= 'Adicionar',
                                           width=9,
                                           style='Estilo1.TButton',
                                           command=adicionar_itens_funcao)
-        adicionar_itens_plus.place(relx=0.78, rely=0.55, relwidth=0.2)
+        adicionar_itens_plus.place(relx=0.78, rely=0.55, relheight=0.35, relwidth=0.2)
         
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
@@ -261,14 +261,14 @@ class inicio:
             bloquear_entrys()
         
         atualizar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
-        atualizar_itens_frame.place(relx=0.5, rely=0.9, anchor=CENTER, relheight=0.16, relwidth=0.33)
+        atualizar_itens_frame.place(relx=0.5, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         ocorrencia_atual_var = ttk.StringVar(value='Ocorrência atual')
         ocorrencia_atual = ttk.Entry(atualizar_itens_frame,
                                     textvariable=ocorrencia_atual_var,
                                     width=30,
                                     font=self.estilo.fonte)
-        ocorrencia_atual.place(relx=0.02,rely=0.1, relwidth=0.72)
+        ocorrencia_atual.place(relx=0.02,rely=0.1, relheight=0.35,relwidth=0.72)
         ocorrencia_atual.bind(
             '<FocusIn>',
             lambda event: (ocorrencia_atual_var.set(value=''),
@@ -280,7 +280,7 @@ class inicio:
                                             width=10,
                                             from_=1,
                                             to=10000)
-        ocorrencia_quantidade.place(relx=0.78,rely=0.1, relwidth=0.2)
+        ocorrencia_quantidade.place(relx=0.78,rely=0.1, relheight=0.35, relwidth=0.2)
         
         ocorrencia_nova_var = ttk.StringVar(value='Nova ocorrência')
         ocorrencia_nova = ttk.Entry(atualizar_itens_frame,
@@ -291,7 +291,7 @@ class inicio:
             '<FocusIn>',
             lambda event: (ocorrencia_nova_var.set(value=''),
                            ocorrencia_nova.unbind('<FocusIn>')))
-        ocorrencia_nova.place(relx=0.02, rely=0.55, relwidth=0.36)
+        ocorrencia_nova.place(relx=0.02, rely=0.55, relheight=0.35, relwidth=0.36)
         
         alterar_custo_var = StringVar(value='Custo Unitário')
         alterar_custo = ttk.Spinbox(atualizar_itens_frame,
@@ -299,7 +299,7 @@ class inicio:
                                     width=10,
                                     from_=1,
                                     font=self.estilo.fonte)
-        alterar_custo.place(relx=0.385, rely=0.55, relwidth=0.36)
+        alterar_custo.place(relx=0.385, rely=0.55, relheight=0.35,relwidth=0.36)
         alterar_custo.bind(
             '<FocusIn>',
             lambda event: (alterar_custo_var.set(value=''),
@@ -310,10 +310,10 @@ class inicio:
                                           width=9,
                                           style='Estilo1.TButton',
                                           command=atualizar_itens_funcao)
-        atualizar_itens_plus.place(relx=0.78, rely=0.55, relwidth=0.2)
+        atualizar_itens_plus.place(relx=0.78, rely=0.55, relheight=0.35,relwidth=0.2)
         
         delete_itens_frame = ttk.Frame(tela, style='custom.TFrame')
-        delete_itens_frame.place(relx=0.835, rely=0.9, anchor=CENTER, relheight=0.16, relwidth=0.33)
+        delete_itens_frame.place(relx=0.835, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         
         # Display tabela atual
