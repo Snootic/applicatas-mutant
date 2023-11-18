@@ -77,7 +77,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            pareto_tabela.place(relx=0.5,rely=0.5,anchor=CENTER, relheight=0.65, width=self.width)
+            pareto_tabela.place(relx=0.5,rely=0.5,anchor=CENTER, relheight=0.65, relwidth=1)
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
