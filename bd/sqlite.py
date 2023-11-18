@@ -12,9 +12,9 @@ class tabela:
         
         usuario = edit_config.getUser()
         if platform.system() == 'Windows':
-            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),'data\\users\\sqlite_databases')
+            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data\\users\\sqlite_databases\\{usuario}')
         else:
-            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),'data/users/sqlite_databases')
+            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data/users/sqlite_databases/{usuario}')
         
         if not os.path.exists(CAMINHO_PASTA_DB):
             os.mkdir(CAMINHO_PASTA_DB)
