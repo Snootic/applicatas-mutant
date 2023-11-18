@@ -324,17 +324,37 @@ class inicio:
             fig,ax1 = plt.subplots(figsize=(15,10))
 
             ax1.set_title('Pareto')
+            
+            try:
+                ax1.set_ylabel('Custo',color=color1)
+                
+                ax1.bar(matplot['Ocorrências'], matplot['Custo Total'], color=color1, edgecolor='orange', linewidth=2)
 
-            ax1.set_ylabel('Frequência (%)',color=color1)
+                ax1.tick_params(axis = 'y', labelcolor = color1)
+                
+                for i, valor in enumerate(matplot['Custo Total']):
+                    ax1.annotate(f'R$ {valor:.2f}', (i, valor))
+                
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('%', color=color2)
 
-            ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
+                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
 
-            ax1.tick_params(axis = 'y', labelcolor = color1)
+            except Exception as e:
 
-            ax2 = ax1.twinx()
-            ax2.set_ylabel('%', color=color2)
+                ax1.set_ylabel('Frequência (%)',color=color1)
+                
+                ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
 
-            ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+                ax1.tick_params(axis = 'y', labelcolor = color1)
+                
+                for i, valor in enumerate(matplot['Freq. Relativa']):
+                    ax1.annotate(f'{valor:.2f} %', (i, valor))
+                
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('%', color=color2)
+
+                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
 
             ax2.tick_params(axis='y',labelcolor=color2)
             ax2.set_ylim([0,120])

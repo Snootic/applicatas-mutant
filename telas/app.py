@@ -161,7 +161,13 @@ class Tela:
             '''
             is_saved = edit_config.getIsSaved()
             if is_saved == 'True':
-                pass
+                if command == 'Fechar':
+                        apagar_dados()
+                        tela_login.destroy()
+                elif command == 'Sair':
+                    apagar_dados('Sair')
+                    self.janela.destroy()
+                    tela_login.deiconify()
             else:
                 confirmar = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
                                                 title="Tabela já existente",
@@ -179,13 +185,13 @@ class Tela:
                     if confirmar.result == 'Sim':
                         saves.save()
                         
-                if command == 'Fechar':
-                    apagar_dados()
-                    tela_login.destroy()
-                elif command == 'Sair':
-                    apagar_dados('Sair')
-                    self.janela.destroy()
-                    tela_login.deiconify()
+                    if command == 'Fechar':
+                        apagar_dados()
+                        tela_login.destroy()
+                    elif command == 'Sair':
+                        apagar_dados('Sair')
+                        self.janela.destroy()
+                        tela_login.deiconify()
             
             
                 

@@ -93,11 +93,11 @@ class pareto:
                     tabela['No. Ocorrências'] = tabela.groupby('Ocorrências')['Ocorrências'].transform('count')
                     tabela.drop_duplicates(subset='Ocorrências', keep='first', inplace=True)
                     
-                    tabela = tabela.sort_values(by=['No. Ocorrências'],ascending=False)
-                    
                     tabela['Custo Total'] = tabela['Custo Un.'] * tabela['No. Ocorrências']
                     
-                    tabela['Freq. Relativa'] = tabela['No. Ocorrências'] / tabela['No. Ocorrências'].sum() * 100
+                    tabela = tabela.sort_values(by=['Custo Total'],ascending=False)
+                    
+                    tabela['Freq. Relativa'] = tabela['Custo Total'] / tabela['Custo Total'].sum() * 100
                     
                     tabela['Freq. Acumulada'] = tabela['Freq. Relativa'].cumsum()/tabela['Freq. Relativa'].sum() * 100
                     
@@ -106,7 +106,7 @@ class pareto:
                     total_ocorrencias = tabela['No. Ocorrências'].sum()
                     total_custos_unitarios = tabela['Custo Un.'].sum()
                     total_custos = tabela['Custo Total'].sum()
-                    matplot.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, total_custos, np.nan, np.nan]
+                    matplot.loc[-1] = ['Total', total_ocorrencias, total_custos_unitarios, np.nan, np.nan, np.nan]
                     
                     tabela["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
                     tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
