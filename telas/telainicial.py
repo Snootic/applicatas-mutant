@@ -26,6 +26,9 @@ class inicio:
         self.app.aba_atual = 0
         self.app.home = self.home
         
+        self.width = self.home.winfo_screenwidth()
+        self.height = self.home.winfo_screenheight()
+        
         #Estilo da tela
         colors = self.login.style.colors
         self.estilo = app.Estilo()
@@ -34,13 +37,16 @@ class inicio:
         self.notebook = ttk.Notebook(self.home)
         self.notebook.pack(expand=True)
         
-        self.tela_pareto = ttk.Frame(self.notebook, width=900, height=600)
+        self.tela_pareto = ttk.Frame(self.notebook, width=self.width,  height=self.height)
         self.tela_pareto.pack(fill='both', expand=True)
-        self.tela_medidas = ttk.Frame(self.notebook, width=900, height=600)
+        self.tela_medidas = ttk.Frame(self.notebook, width=self.width,  height=self.height)
         self.tela_medidas.pack(fill='both',expand=True)
+        self.tela_binomial = ttk.Frame(self.notebook, width=self.width,  height=self.height)
+        self.tela_binomial.pack(fill='both', expand=True)
         
         self.notebook.add(self.tela_pareto, text='Pareto')
         self.notebook.add(self.tela_medidas, text='Medidas')
+        self.notebook.add(self.tela_binomial, text='Binomial')
         
         self.notebook.bind('<ButtonRelease-1>', lambda event: self.aba_atual())
         
@@ -48,6 +54,7 @@ class inicio:
         
         self.pareto = self.telas_pareto(self.tela_pareto)
         self.medida = self.telas_medidas(self.tela_medidas)
+        # self.binomial = self.telas_binomiais(self.tela_binomial)
         
         self.data_pareto: DataFrame
         self.data_medidas: DataFrame
@@ -70,7 +77,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            pareto_tabela.place(relx=0.5,y=275,anchor=CENTER, width=900)
+            pareto_tabela.place(relx=0.5,rely=0.5,anchor=CENTER, width=self.width)
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
