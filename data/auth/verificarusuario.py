@@ -18,9 +18,9 @@ class usuario:
         self.cursor.execute(f'SELECT COUNT(usuario) FROM credenciais WHERE usuario="{(self.usuario).lower()}"')
         verificar = self.cursor.fetchone()
         if verificar[0] == 1:
-            return False
-        else:
             return True
+        else:
+            return False
         
     def verificarEmail(self):
         """Verifica se o email digitado já está cadastrado
@@ -28,9 +28,9 @@ class usuario:
         self.cursor.execute(f'SELECT COUNT(email) FROM credenciais WHERE email="{(self.email).lower()}"')
         verificar = self.cursor.fetchone()
         if verificar[0] == 1:
-            return False
-        else:
             return True
+        else:
+            return False
         
     def verificarSenha(self):
         '''Verifica se a senha digitada está correta
@@ -44,3 +44,14 @@ class usuario:
             return False
         else:
             return True
+        
+    def getUser(self):
+        ''' Retorna o usuário indicado '''
+        self.cursor.execute(f'SELECT usuario FROM credenciais WHERE email="{(self.email).lower()}"')
+        usuario = self.cursor.fetchone()
+        if usuario != None:
+            return usuario[0]
+        else:
+            self.cursor.execute(f'SELECT usuario FROM credenciais WHERE usuario="{(self.usuario).lower()}"')
+            usuario = self.cursor.fetchone()
+            return usuario[0]
