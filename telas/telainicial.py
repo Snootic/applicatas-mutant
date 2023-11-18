@@ -114,15 +114,12 @@ class inicio:
         #Criar uma tabela nova
         criar_tabela_frame = ttk.Frame(
             tela,
-            style='custom.TFrame',
-            width=500,
-            height=200)
+            style='custom.TFrame')
         
         criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
         criar_tabela_entry = ttk.Entry(
             criar_tabela_frame,
             textvariable=criar_tabela_var,
-            width=30,
             font=self.estilo.fonte)
         criar_tabela_entry.bind(
             '<FocusIn>',
@@ -143,9 +140,9 @@ class inicio:
             analise_pareto()
             bloquear_entrys()
         
-        criar_tabela_entry.pack(padx=(10,5),ipady=5,side=LEFT)
-        criar_tabela_botao.pack(padx=(5,10),side=RIGHT)
-        criar_tabela_frame.place(x=240, y=40, anchor='center', height=60)
+        criar_tabela_entry.place(relx=0.015, rely=0.1, relheight=0.7, relwidth=0.7)
+        criar_tabela_botao.place(relx=0.735, rely=0.1, relheight=0.7, relwidth=0.25)
+        criar_tabela_frame.place(relx=0.2, rely=0.06, anchor='center', relheight=0.12, relwidth=0.4)
         
         
         #Abrir tabelas já existentes
@@ -158,13 +155,10 @@ class inicio:
             bloquear_entrys()
         
         abrir_tabela_frame = ttk.Frame(
-            tela,
-            width=500,
-            height=200)
+            tela,style='custom.TFrame')
     
         abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
         abrir_tabela = ttk.Combobox(abrir_tabela_frame,
-                                    width=30,
                                     textvariable=abrir_tabela_var,
                                     font=self.estilo.fonte)
         
@@ -175,9 +169,59 @@ class inicio:
                                       style='Estilo1.TButton',
                                       command=abrir_tabela_selecionada)
         
-        abrir_tabela_btn.pack(side=RIGHT,padx=5)
-        abrir_tabela.pack(side=LEFT,padx=5)
-        abrir_tabela_frame.place(x=670,y=25, anchor='center')
+        abrir_tabela_frame.place(relx=0.8,rely=0.07, anchor='center',relheight=0.14, relwidth=0.4)
+        abrir_tabela_btn.place(relx=0.735, rely=0.08, relheight=0.4, relwidth=0.25)
+        abrir_tabela.place(relx=0.015, rely=0.08, relwidth=0.7)
+        
+        def grafico():
+            
+            color1 = 'royalblue'
+            color2 = 'black'
+
+            fig,ax1 = plt.subplots(figsize=(15,10))
+
+            ax1.set_title('Pareto')
+            
+            try:
+                ax1.set_ylabel('Custo',color=color1)
+                
+                ax1.bar(matplot['Ocorrências'], matplot['Custo Total'], color=color1, edgecolor='orange', linewidth=2)
+
+                ax1.tick_params(axis = 'y', labelcolor = color1)
+                
+                for i, valor in enumerate(matplot['Custo Total']):
+                    ax1.annotate(f'R$ {valor:.2f}', (i, valor))
+                
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('%', color=color2)
+
+                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+
+            except Exception as e:
+
+                ax1.set_ylabel('Frequência (%)',color=color1)
+                
+                ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
+
+                ax1.tick_params(axis = 'y', labelcolor = color1)
+                
+                for i, valor in enumerate(matplot['Freq. Relativa']):
+                    ax1.annotate(f'{valor:.2f} %', (i, valor))
+                
+                ax2 = ax1.twinx()
+                ax2.set_ylabel('%', color=color2)
+
+                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+
+            ax2.tick_params(axis='y',labelcolor=color2)
+            ax2.set_ylim([0,120])
+
+            for i in ax1.get_xticklabels():
+                i.set_rotation(45)
+            plt.show()
+        
+        gerar_grafico = ttk.Button(abrir_tabela_frame,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
+        gerar_grafico.place(relx=0.735, rely=0.53, relheight=0.4, relwidth=0.25)
         
         #Adicionar ocorrencias na tabela aberta
         
@@ -320,59 +364,11 @@ class inicio:
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
         tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
         tabela_atual.lower()
-        tabela_atual.place(relx=0.5,rely=0.15,anchor=CENTER)
+        tabela_atual.place(relx=0.5,rely=0.16,anchor=CENTER)
         tabela_atual_var.trace("w", lambda *args: bloquear_entrys())
         
         # Gerar gráfico com matplotlib
-        def grafico():
-            
-            color1 = 'royalblue'
-            color2 = 'black'
 
-            fig,ax1 = plt.subplots(figsize=(15,10))
-
-            ax1.set_title('Pareto')
-            
-            try:
-                ax1.set_ylabel('Custo',color=color1)
-                
-                ax1.bar(matplot['Ocorrências'], matplot['Custo Total'], color=color1, edgecolor='orange', linewidth=2)
-
-                ax1.tick_params(axis = 'y', labelcolor = color1)
-                
-                for i, valor in enumerate(matplot['Custo Total']):
-                    ax1.annotate(f'R$ {valor:.2f}', (i, valor))
-                
-                ax2 = ax1.twinx()
-                ax2.set_ylabel('%', color=color2)
-
-                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
-
-            except Exception as e:
-
-                ax1.set_ylabel('Frequência (%)',color=color1)
-                
-                ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
-
-                ax1.tick_params(axis = 'y', labelcolor = color1)
-                
-                for i, valor in enumerate(matplot['Freq. Relativa']):
-                    ax1.annotate(f'{valor:.2f} %', (i, valor))
-                
-                ax2 = ax1.twinx()
-                ax2.set_ylabel('%', color=color2)
-
-                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
-
-            ax2.tick_params(axis='y',labelcolor=color2)
-            ax2.set_ylim([0,120])
-
-            for i in ax1.get_xticklabels():
-                i.set_rotation(45)
-            plt.show()
-        
-        gerar_grafico = ttk.Button(tela,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
-        gerar_grafico.place(x=795,y=65,anchor=CENTER)
 
         ocorrencia_atual_var.trace("w", lambda *args: alterar_custos())
         
