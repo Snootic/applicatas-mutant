@@ -973,5 +973,6 @@ class inicio:
         if edit_config.getSecao() == 'False':
             edit_config.apagar_dados()
         edit_config.limpar_temp()
+        edit_config.setIsSaved(True)
         self.home.destroy()
         self.login.destroy()
