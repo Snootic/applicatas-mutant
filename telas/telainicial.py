@@ -77,7 +77,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            pareto_tabela.place(relx=0.4,rely=0.45,anchor=CENTER, relheight=0.75, relwidth=0.8)
+            pareto_tabela.place(relx=0.405,rely=0.45,anchor=CENTER, relheight=0.75, relwidth=0.815)
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
@@ -146,11 +146,11 @@ class inicio:
             analise_pareto()
             bloquear_entrys()
         
-        tabela_func_frame.place(relx=0.9, rely=0.45, anchor='center', relheight=0.75, relwidth=0.2)
+        tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
         
-        criar_tabela_label.place(relx=0.13, rely=0.03)
-        criar_tabela_entry.place(relx=0.025, rely=0.08, relheight=0.1, relwidth=0.95)
-        criar_tabela_botao.place(relx=0.25, rely=0.2, relheight=0.1, relwidth=0.5)
+        criar_tabela_label.place(relx=0.5, rely=0.05, anchor=CENTER)
+        criar_tabela_entry.place(relx=0.5, rely=0.13, relheight=0.1, relwidth=0.95,anchor=CENTER)
+        criar_tabela_botao.place(relx=0.5, rely=0.24, relheight=0.1, relwidth=0.5,anchor=CENTER)
         
         #Abrir tabelas já existentes
         tabelas = tabela()
@@ -179,9 +179,9 @@ class inicio:
             style='Comum.TLabel',
         )
         
-        abrir_tabela_label.place(relx=0.06, rely=0.35)
-        abrir_tabela_btn.place(relx=0.25, rely=0.495, relheight=0.1, relwidth=0.5)
-        abrir_tabela.place(relx=0.025, rely=0.4, relwidth=0.95)
+        abrir_tabela_label.place(relx=0.5, rely=0.43,anchor=CENTER)
+        abrir_tabela_btn.place(relx=0.5, rely=0.599, relheight=0.1, relwidth=0.5,anchor=CENTER)
+        abrir_tabela.place(relx=0.5, rely=0.5, relwidth=0.95,anchor=CENTER)
         
         def grafico():
             
@@ -235,9 +235,9 @@ class inicio:
             text='Gerar gráfico de Pareto',
             style='Comum.TLabel',
         )
-        gerar_grafico_label.place(relx=0.1, rely=0.75)
+        gerar_grafico_label.place(relx=0.5, rely=0.81,anchor=CENTER)
         gerar_grafico = ttk.Button(tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
-        gerar_grafico.place(relx=0.2, rely=0.8, relheight=0.1, relwidth=0.6)
+        gerar_grafico.place(relx=0.5, rely=0.9, relheight=0.1, relwidth=0.7,anchor=CENTER)
         
         #Adicionar ocorrencias na tabela aberta
         
