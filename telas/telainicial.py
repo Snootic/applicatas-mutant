@@ -3,6 +3,7 @@ from tkinter import *
 import ttkbootstrap as ttk
 from ttkbootstrap.tableview import Tableview
 from ttkbootstrap.constants import *
+from ttkbootstrap import dialogs
 from bd.tabela_pareto import *
 from bd.sqlite import tabela
 import matplotlib.pyplot as plt
@@ -81,9 +82,8 @@ class inicio:
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
-            # if sqlite.sqlite() == None:
-            #     edit_config.setIsSaved(False)
-            #     return None
+            if sqlite.sqlite() == None:
+                return None
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
             elif tabela is not None and not tabela.empty:
@@ -259,6 +259,27 @@ class inicio:
         gerar_grafico = ttk.Button(tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
         gerar_grafico.place(relx=0.5, rely=0.66, relheight=0.1, relwidth=0.7,anchor=CENTER)
         
+        def delete_tabela():
+            confirmar = dialogs.MessageDialog(parent=self.home,
+                                    title="Deletar?",
+                                    message=f"Deseja realmente deletar a tabela: {delete_tabela_var.get()}?\n As informações podem ser perdidas.",
+                                    buttons=["Sim:danger",
+                                            "Não:primary"],
+                                    alert=True)
+            confirmar.show()
+            if confirmar.result == 'Sim':
+                try:
+                    tabelas.DropTable(tabela = delete_tabela_var.get(),dados = 'pareto')
+                except Exception as e:
+                    print(e)
+                    delete_tabela_entry.configure(bootstyle = 'Danger')
+                    self.home.after(3000, lambda: delete_tabela_entry.configure(bootstyle = 'Default'))
+                else:
+                    pareto_tabela.destroy()
+                    tabela_analise_pareto()
+                    att_max_att()
+                    bloquear_entrys()
+            
         delete_tabela_label = ttk.Label(
             tabela_func_frame,
             text='Deletar Tabela',
@@ -279,7 +300,7 @@ class inicio:
             tabela_func_frame,
             text='Deletar',
             style='Estilo1.TButton',
-            command=lambda: criar_tabela()
+            command=delete_tabela
         )
         
         delete_tabela_label.place(relx=0.5, rely=0.75, anchor=CENTER)
@@ -302,7 +323,8 @@ class inicio:
                 else:
                     analise_pareto()
                     bloquear_entrys()
-            else:
+                    return 
+            if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 4:
                 try:    
                     tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
                 except:
@@ -462,6 +484,17 @@ class inicio:
         atualizar_itens_plus.place(relx=0.78, rely=0.55, relheight=0.35,relwidth=0.2)
         
         # Deletar Item da tabela
+        def delete_item():
+            if not tabelas.delete_valor_pareto(delete_itens_var.get(), delete_quantidade_var.get()):
+                delete_itens.configure(bootstyle='Danger')
+                delete_quantidade.configure(bootstyle='Danger')
+                self.home.after(3000, lambda: (delete_itens.configure(bootstyle='Default'),
+                delete_quantidade.configure(bootstyle='Default')))
+                return
+            analise_pareto()
+            att_max_att()
+            bloquear_entrys()
+        
         delete_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         delete_itens_frame.place(relx=0.835, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
@@ -479,7 +512,7 @@ class inicio:
         delete_quantidade = ttk.Spinbox(delete_itens_frame,
                                             textvariable=delete_quantidade_var,
                                             width=10,
-                                            from_=1,
+                                            from_=0,
                                             to=10000)
         delete_quantidade.place(relx=0.375,rely=0.75, relheight=0.35, relwidth=0.72, anchor=CENTER)
         
@@ -487,7 +520,7 @@ class inicio:
                                           text= 'Deletar',
                                           width=9,
                                           style='Estilo1.TButton',
-                                          command=adicionar_itens_funcao)
+                                          command=delete_item)
         delete_itens_plus.place(relx=0.86, rely=0.5, relheight=0.35, relwidth=0.23, anchor=CENTER)
         
         
