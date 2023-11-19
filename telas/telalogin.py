@@ -103,6 +103,9 @@ class telalogin:
         registrar_label.place(x=210,y=550,anchor='center')
         registrar.place(x=365, y=550, anchor='center')
         
+        trocar_tema = ttk.Checkbutton(self.login, bootstyle="info-round-toggle", text='Tema', command=tela.trocar_tema)
+        trocar_tema.place(relx=0.85,rely=0.96)
+        
         self.login.protocol("WM_DELETE_WINDOW", self.login.destroy)
         try:
             usuario = getUser()
@@ -268,5 +271,5 @@ class telalogin:
         confirmar.pack(ipady=10,pady=5)
         
         retorno.pack(before=confirmar)
-
+        
         registro.mainloop()
