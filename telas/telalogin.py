@@ -8,8 +8,6 @@ import os
 
 #TODO:
 # melhorar a segurança do login automatico
-# mudar a cor das bordas das entry em caso de erro
-
 
 class telalogin:
     def __init__(self):
@@ -136,11 +134,29 @@ class telalogin:
         
         retorno = ttk.Label(registro, style='Comum.TLabel', text='')
 
+        def user_error():
+            user_entry.configure(bootstyle="Danger")
+            registro.after(3000,lambda: user_entry.configure(bootstyle="default"))
+        def email_error():
+            email_entry.configure(bootstyle="Danger")
+            registro.after(3000,lambda: email_entry.configure(bootstyle="default"))
+        def senha_error(same=False):
+            if same == True:
+                confirmar_senha_entry.configure(bootstyle="Danger")
+                registro.after(3000,lambda: confirmar_senha_entry.configure(bootstyle="default"))
+                senha_entry.configure(bootstyle="Danger")
+                registro.after(3000,lambda: senha_entry.configure(bootstyle="default"))
+            else:
+                senha_entry.configure(bootstyle="Danger")
+                registro.after(3000,lambda: senha_entry.configure(bootstyle="default"))
+        
+        
         def usuario():
             usuario = cadastro.credenciais(usuario=user_var.get())
             usuario = usuario.user()
             if usuario != True:
                 retorno.configure(text=usuario)
+                user_error()
                 return False
             else:
                 retorno.configure(text='')
@@ -163,6 +179,7 @@ class telalogin:
             email = email.Email()
             if email != True:
                 retorno.configure(text=email)
+                email_error()
                 return False
             else:
                 retorno.configure(text='')
@@ -185,6 +202,7 @@ class telalogin:
             senha = senha.passw()
             if senha != True:
                 retorno.configure(text=senha)
+                senha_error()
                 return False
             else:
                 retorno.configure(text='')
@@ -257,12 +275,16 @@ class telalogin:
         def cadastrar():
             if not confirmar_senha():
                 retorno.configure(text='As senhas não coincidem')
+                senha_error(same=True)
             elif not senha():
                 retorno.configure(text='Senha inválida')
+                senha_error()
             elif not email():
                 retorno.configure(text='E-mail inválido')
+                email_error()
             elif not usuario():
                 retorno.configure(text='Usuário Inválido')
+                user_error()
             else:
                 cadastrar = cadastro.credenciais(user_var.get(),email_var.get(),senha_var.get())
                 cadastrar = cadastrar.cadastrar()
