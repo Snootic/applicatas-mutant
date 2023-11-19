@@ -84,7 +84,6 @@ class tabela:
         schema = self.CriarDirSchema('pareto')
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
-            self.dump(dados='pareto')
             
             tabela = edit_config.getTabela()
             
@@ -94,6 +93,8 @@ class tabela:
                 return False
             if novaocorrencia == '' or novaocorrencia == ' ':
                 return False
+            
+            self.dump(dados='pareto')
             if custo == 0:
                 if quantidade == 0:
                     cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
@@ -156,11 +157,17 @@ class tabela:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
             coluna = "medidas"+f'{conj_dados}'
-            self.dump(dados='medidas')
             
+            cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{medida_atual}'")
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            
+            self.dump(dados='medidas')
             cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual} LIMIT 1'")
             self.att_config_table(tabela,'medidas')
             schema.commit()
+            return True
             
     def get_TableColumns(self, medida):
         schema = self.CriarDirSchema('medidas')
@@ -184,14 +191,20 @@ class tabela:
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
-            self.dump(dados='pareto')
             
+            cursor.execute(f"SELECT * FROM {tabela} WHERE ocorrencias='{ocorrencia}'")
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            
+            self.dump(dados='pareto')
             if quantidade == 0:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}'")
             else:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}' LIMIT {quantidade}")
-            self.att_config_table('pareto')
+            self.att_config_table(tabela,'pareto')
             schema.commit()
+            return True
                 
     def delete_valor_medidas(self, dado, conj_dados):
         schema = self.CriarDirSchema('medidas')
@@ -199,11 +212,17 @@ class tabela:
             cursor = schema.cursor()
             coluna = "medidas"+f'{conj_dados}'
             tabela = edit_config.getTabela()
-            self.dump(dados='medidas')
             
+            cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{dado}'")
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            
+            self.dump(dados='medidas')
             cursor.execute(f"DELETE FROM {tabela} WHERE {coluna}='{dado}' LIMIT 1")
             self.att_config_table(tabela,'medidas')
             schema.commit()
+            return True
 
     def dump(self, dados='', manual=False, path=None, tabela=None):
         schema = self.CriarDirSchema(dados)
