@@ -415,16 +415,16 @@ class inicio:
     def telas_medidas(self, tela):
         #Notebok tabelas
         notebook = ttk.Notebook(tela)
-        notebook.place(relx=0.5, y=290, anchor='center')
+        notebook.place(relx=0.405,rely=0.45, anchor=CENTER, relheight=0.75, relwidth=0.815)
         
-        dados_matriz = ttk.Frame(notebook, width=900, height=350)
-        dados_matriz.pack(fill='both',expand=True)
-        medidas_dados = ttk.Frame(notebook, width=900, height=350)
-        medidas_dados.pack(fill='both', expand=True)
-        tabela_formatada = ttk.Frame(notebook, width=900, height=350)
-        tabela_formatada.pack(fill='both', expand=True)
-        tdf_frame = ttk.Frame(notebook, width=900, height=350)
-        tdf_frame.pack(fill='both', expand=True)
+        dados_matriz = ttk.Frame(notebook)
+        dados_matriz.pack()
+        medidas_dados = ttk.Frame(notebook)
+        medidas_dados.pack()
+        tabela_formatada = ttk.Frame(notebook)
+        tabela_formatada.pack()
+        tdf_frame = ttk.Frame(notebook)
+        tdf_frame.pack()
         
         notebook.add(dados_matriz, text='Matriz de dados')
         notebook.add(tabela_formatada, text='Tabela formatada')
@@ -441,7 +441,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas_matrix.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas_matrix.pack(fill=BOTH, expand=True)
             
         def tabela_medidas_formatada():
             global tabela_medidas_format
@@ -452,7 +452,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas_format.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas_format.pack(fill=BOTH, expand=True)
             
         def tabela_de_medidas(colunas = ''):
             global tabela_medidas
@@ -463,7 +463,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas.pack(fill=BOTH, expand=True)
             
         def tabela_tdf(colunas = ''):
             global tabela_medidas_tdf
@@ -474,20 +474,17 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            tabela_medidas_tdf.place(relx=0.5,rely=0.5,width=900,anchor='center')
+            tabela_medidas_tdf.pack(fill=BOTH, expand=True)
         
         #Criar uma tabela nova
-        criar_tabela_frame = ttk.Frame(
+        tabela_func_frame = ttk.Frame(
             tela,
-            style='custom.TFrame',
-            width=500,
-            height=200)
+            style='custom.TFrame')
         
         criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
         criar_tabela_entry = ttk.Entry(
-            criar_tabela_frame,
+            tabela_func_frame,
             textvariable=criar_tabela_var,
-            width=30,
             font=self.estilo.fonte)
         criar_tabela_entry.bind(
             '<FocusIn>',
@@ -495,57 +492,70 @@ class inicio:
                            criar_tabela_entry.unbind('<FocusIn>')))
         
         criar_tabela_botao = ttk.Button(
-            criar_tabela_frame,
+            tabela_func_frame,
             text='Criar',
             style='Estilo1.TButton',
             command=lambda: criar_tabela()
         )
         
-        criar_tabela_entry.pack(padx=(10,5),ipady=5,side=LEFT)
-        criar_tabela_botao.pack(padx=(5,10),side=RIGHT)
-        criar_tabela_frame.place(x=240, y=40, anchor='center', height=60)
+        criar_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Criar uma nova tabela',
+            style='Comum.TLabel',
+        )
+        
+        tabela_func_frame.place(relx=0.91, rely=0.475, anchor='center', relheight=0.7, relwidth=0.18)
+        
+        criar_tabela_label.place(relx=0.5, rely=0.05, anchor=CENTER)
+        criar_tabela_entry.place(relx=0.5, rely=0.13, relheight=0.1, relwidth=0.95,anchor=CENTER)
+        criar_tabela_botao.place(relx=0.5, rely=0.24, relheight=0.1, relwidth=0.5,anchor=CENTER)
 
         #Abri tabela existente
-        abrir_tabela_frame = ttk.Frame(
-            tela,
-            width=500,
-            height=200)
-    
         abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
-        abrir_tabela = ttk.Combobox(abrir_tabela_frame,
+        abrir_tabela = ttk.Combobox(tabela_func_frame,
                                     width=30,
                                     textvariable=abrir_tabela_var,
                                     font=self.estilo.fonte)
         
-        abrir_tabela_btn = ttk.Button(abrir_tabela_frame,
+        abrir_tabela_btn = ttk.Button(tabela_func_frame,
                                       text='Abrir',
                                       style='Estilo1.TButton',
                                       command= lambda: abrir_tabela_selecionada()
                                     )
         
-        abrir_tabela_btn.pack(side=RIGHT,padx=5)
-        abrir_tabela.pack(side=LEFT,padx=5)
-        abrir_tabela_frame.place(x=670,y=25, anchor='center')
+        abrir_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Abrir uma tabela existente',
+            style='Comum.TLabel',
+        )
         
-        gerar_grafico = ttk.Button(tela,text='Gerar gráfico',style='Estilo1.TButton', command= lambda: grafico())
-        gerar_grafico.place(x=785,y=65,anchor=CENTER)
+        abrir_tabela_label.place(relx=0.5, rely=0.43,anchor=CENTER)
+        abrir_tabela_btn.place(relx=0.5, rely=0.599, relheight=0.1, relwidth=0.5,anchor=CENTER)
+        abrir_tabela.place(relx=0.5, rely=0.5, relwidth=0.95,anchor=CENTER)
+        
+        gerar_grafico_label = ttk.Label(
+            tabela_func_frame,
+            text='Gerar gráfico de Pareto',
+            style='Comum.TLabel',
+        )
+        gerar_grafico_label.place(relx=0.5, rely=0.81,anchor=CENTER)
+        gerar_grafico = ttk.Button(tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton', command= lambda: grafico())
+        gerar_grafico.place(relx=0.5, rely=0.9, relheight=0.1, relwidth=0.7,anchor=CENTER)
         
         # Display tabela atual
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
         tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
-        tabela_atual.lower()
-        tabela_atual.place(relx=0.5,y=85,anchor=CENTER)
+        tabela_atual.place(relx=0.35,rely=0.05,anchor=CENTER)
         
         #Adicionar medidas
         conjunto_de_dados_frame = ttk.Frame(tela, style='custom.TFrame')
-        conjunto_de_dados_frame.place(x=225, y=520, anchor=CENTER,height=55,width=430)
+        conjunto_de_dados_frame.place(relx=0.165, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         dados_var = ttk.StringVar(value='Insira o dado')
         dados = ttk.Entry(conjunto_de_dados_frame,
                                     textvariable=dados_var,
-                                    width=19,
                                     font=self.estilo.fonte)
-        dados.place(x=10,y=10)
+        dados.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.65)
         dados.bind(
             '<FocusIn>',
             lambda event: (dados_var.set(value=''),
@@ -556,7 +566,7 @@ class inicio:
                                       textvariable=conjunto_dados_var,
                                       width=15,
                                       font=self.estilo.fonte)
-        conjunto_dados.place(x=180, y=10)
+        conjunto_dados.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.65)
         conjunto_dados.bind('<FocusIn>', lambda event: (conjunto_dados_var.set(value=''), conjunto_dados.unbind('<FocusIn>')))
         
         inserir_dados_btn = ttk.Button(conjunto_de_dados_frame,
@@ -564,18 +574,18 @@ class inicio:
                                           width=8,
                                           style='Estilo1.TButton',
                                           command= lambda: add_valor_tabela())
-        inserir_dados_btn.place(x=330,y=10)
+        inserir_dados_btn.place(relx=0.83, rely=0.5, relheight=0.35, relwidth=0.3, anchor=CENTER)
         
         #Atualizar dados
         atualizar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
-        atualizar_itens_frame.place(x=670, y=520, anchor=CENTER,height=55,width=430)
+        atualizar_itens_frame.place(relx=0.5, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         medida_atual_var = ttk.StringVar(value='Dado atual')
         medida_atual = ttk.Entry(atualizar_itens_frame,
                                     textvariable=medida_atual_var,
                                     width=10,
                                     font=self.estilo.fonte)
-        medida_atual.place(x=13,y=10)
+        medida_atual.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.475)
         medida_atual.bind(
             '<FocusIn>',
             lambda event: (medida_atual_var.set(value=''),
@@ -586,7 +596,7 @@ class inicio:
                                     textvariable=medida_nova_var,
                                     width=10,
                                     font=self.estilo.fonte)
-        medida_nova.place(x=112,y=10)
+        medida_nova.place(relx=0.505, rely=0.1, relheight=0.35, relwidth=0.475)
         medida_nova.bind(
             '<FocusIn>',
             lambda event: (medida_nova_var.set(value=''),
@@ -597,7 +607,7 @@ class inicio:
                                       textvariable=conjunto_dados_new_var,
                                       width=10,
                                       font=self.estilo.fonte)
-        conjunto_dados_new.place(x=210, y=10)
+        conjunto_dados_new.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.65)
         conjunto_dados_new.bind('<FocusIn>', lambda event: (conjunto_dados_new_var.set(value=''),
                                                             conjunto_dados_new.unbind('<FocusIn>')))
         
@@ -606,9 +616,12 @@ class inicio:
                                           width=9,
                                           style='Estilo1.TButton',
                                           command= lambda: att_valor_tabela())
-        atualizar_itens_plus.place(x=325,y=10)
+        atualizar_itens_plus.place(relx=0.68, rely=0.55, relheight=0.35,relwidth=0.3)
         
         medida_atual_var.trace('w', lambda *args: mudar_conj_dados())
+        
+        delete_itens_frame = ttk.Frame(tela, style='custom.TFrame')
+        delete_itens_frame.place(relx=0.835, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         def mudar_conj_dados():
             conjunto_dados_new['value'] = tabelas.get_TableColumns('medidas')
