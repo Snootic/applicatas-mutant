@@ -377,8 +377,34 @@ class inicio:
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
             if len(pareto_tabela.get_columns()) == 6:
-                tabelas.atualizar_custo(ocorrencia_atual_var.get(),alterar_custo_var.get())
-            tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),ocorrencia_nova_var.get(),ocorrencia_quantidade_var.get())
+                try:
+                    custo = float(alterar_custo_var.get())
+                except:
+                    alterar_custo.config(bootstyle='Danger')
+                    self.home.after(3000,lambda: alterar_custo.config(bootstyle='Default'))
+                    return
+                else:
+                    if not tabelas.atualizar_ocorrencia(ocorrencia_atual_var.get(),
+                                                ocorrencia_nova_var.get(),
+                                                custo,
+                                                ocorrencia_quantidade_var.get()):
+                        
+                        ocorrencia_atual.config(bootstyle='Danger')
+                        ocorrencia_nova.config(bootstyle='Danger')
+                        self.home.after(3000,lambda: (ocorrencia_atual.config(bootstyle='Default'),
+                                                      ocorrencia_nova.config(bootstyle='Default')))
+                        return
+            else:
+                if not tabelas.atualizar_ocorrencia(ocorrenciaatual=ocorrencia_atual_var.get(),
+                                                novaocorrencia=ocorrencia_nova_var.get(),
+                                                quantidade=ocorrencia_quantidade_var.get()):
+                    
+                    ocorrencia_atual.config(bootstyle='Danger')
+                    ocorrencia_nova.config(bootstyle='Danger')
+                    self.home.after(3000,lambda: (ocorrencia_atual.config(bootstyle='Default'),
+                                                ocorrencia_nova.config(bootstyle='Default')))
+                    return
+                    
             analise_pareto()
             att_max_att()
             bloquear_entrys()
