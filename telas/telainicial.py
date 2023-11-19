@@ -410,11 +410,19 @@ class inicio:
         delete_itens = ttk.Entry(delete_itens_frame,
                                     textvariable=delete_itens_var,
                                     font=self.estilo.fonte)
-        delete_itens.place(relx=0.375,rely=0.5, relheight=0.35, relwidth=0.72, anchor=CENTER)
+        delete_itens.place(relx=0.375,rely=0.29, relheight=0.35, relwidth=0.72, anchor=CENTER)
         delete_itens.bind(
             '<FocusIn>',
             lambda event: (delete_itens_var.set(value=''),
                            delete_itens.unbind('<FocusIn>')))
+        
+        delete_quantidade_var = ttk.IntVar()
+        delete_quantidade = ttk.Spinbox(delete_itens_frame,
+                                            textvariable=delete_quantidade_var,
+                                            width=10,
+                                            from_=1,
+                                            to=10000)
+        delete_quantidade.place(relx=0.375,rely=0.75, relheight=0.35, relwidth=0.72, anchor=CENTER)
         
         delete_itens_plus = ttk.Button(delete_itens_frame,
                                           text= 'Deletar',
