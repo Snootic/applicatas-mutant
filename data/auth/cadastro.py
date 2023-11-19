@@ -49,7 +49,7 @@ class credenciais:
             return 'Digite um usuário entre 3 e 16 caracteres'
         
         verificar = verificarusuario.usuario(self.usuario, self.email, self.senha)
-        if not verificar.verificarUsuario():
+        if verificar.verificarUsuario():
             return 'Usuário já cadastrado'
         else:
             return True
@@ -59,7 +59,7 @@ class credenciais:
             return "Digite um e-mail válido!"
         
         verificar = verificarusuario.usuario(self.usuario, self.email, self.senha)
-        if not verificar.verificarEmail():
+        if verificar.verificarEmail():
             return 'E-mail já cadastrado'
         else:
             return True
