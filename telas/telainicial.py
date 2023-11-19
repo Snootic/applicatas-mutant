@@ -189,10 +189,17 @@ class inicio:
         
         def criar_tabela():
             criar_tabela = tabela(criar_tabela_var.get())
-            criar_tabela = criar_tabela.CriarBD('pareto')
-            tabela_atual_var.set(value=criar_tabela_var.get())
-            analise_pareto()
-            bloquear_entrys()
+            
+            try:
+                criar_tabela = criar_tabela.CriarBD('pareto')
+                tabela_atual_var.set(value=criar_tabela_var.get())
+                analise_pareto()
+                bloquear_entrys()
+            except Exception as e:
+                self.error_screen(text=f'{e}: Nome da tabela inválido')
+                criar_tabela_entry.config(bootstyle="Danger")
+                self.home.after(3000,lambda: criar_tabela_entry.config(bootstyle="Default"))
+                return
         
         tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
         
@@ -989,11 +996,11 @@ class inicio:
         indice_notebook = self.notebook.index("current")
         self.app.aba_atual = indice_notebook
     
-    def error_screen(self,text):
+    def error_screen(self,text, x=200, y=70):
         error = ttk.Toplevel()
         apps = app.Tela(error, 'Erro')
-        apps.centralizarTela(200,70)
-        error_label = ttk.Label(error, style='Error.TLabel')
+        apps.centralizarTela(x,y)
+        error_label = ttk.Label(error, style='Error.TLabel',wraplength=200)
         error_label.config(text=text)
         error_label.pack()
         sair_button = ttk.Button(error,text='OK', command=error.destroy, style='Estilo1.danger.TButton')
