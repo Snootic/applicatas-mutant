@@ -81,9 +81,9 @@ class inicio:
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
-            if sqlite.sqlite() == None:
-                edit_config.setIsSaved(False)
-                return
+            # if sqlite.sqlite() == None:
+            #     edit_config.setIsSaved(False)
+            #     return None
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
             elif tabela is not None and not tabela.empty:
@@ -204,10 +204,16 @@ class inicio:
         tabelas = tabela()
         
         def abrir_tabela_selecionada():
-            tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
-            analise_pareto()
-            tabela_atual_var.set(value=abrir_tabela_var.get())
-            bloquear_entrys()
+            try:
+                tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
+                analise_pareto()
+                tabela_atual_var.set(value=abrir_tabela_var.get())
+                bloquear_entrys()
+            except Exception as e:
+                print(e)
+                self.error_screen(text='Nenhuma tabela selecionada')
+                abrir_tabela.config(bootstyle="Danger")
+                self.home.after(3000,lambda: abrir_tabela.config(bootstyle="Default"))
     
         abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
         abrir_tabela = ttk.Combobox(tabela_func_frame,
@@ -271,13 +277,27 @@ class inicio:
         
         def adicionar_itens_funcao():
             custo = adicionar_custo_var.get()
-            try:
-                float(custo)
-                tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
-            except:
-                tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
-            analise_pareto()
-            bloquear_entrys()
+            if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 6:
+                try:
+                    float(custo)
+                    tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get(), custo=custo)
+                except:
+                    adicionar_itens.configure(bootstyle="Danger")
+                    adicionar_custo.configure(bootstyle="Danger")
+                    self.home.after(3000, lambda: (adicionar_custo.configure(bootstyle="Default"), 
+                                               adicionar_itens.configure(bootstyle="Default")))
+                else:
+                    analise_pareto()
+                    bloquear_entrys()
+            else:
+                try:    
+                    tabelas.addValor_pareto(adicionar_itens_var.get(), quantidade=quantidade_ocorrencia_var.get())
+                except:
+                    adicionar_itens.configure(bootstyle="Danger")
+                    self.home.after(3000, lambda: adicionar_itens.configure(bootstyle="Default"))
+                else:
+                    analise_pareto()
+                    bloquear_entrys()
         
         adicionar_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         adicionar_itens_frame.place(relx=0.165, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
@@ -968,6 +988,16 @@ class inicio:
     def aba_atual(self):
         indice_notebook = self.notebook.index("current")
         self.app.aba_atual = indice_notebook
+    
+    def error_screen(self,text):
+        error = ttk.Toplevel()
+        apps = app.Tela(error, 'Erro')
+        apps.centralizarTela(200,70)
+        error_label = ttk.Label(error, style='Error.TLabel')
+        error_label.config(text=text)
+        error_label.pack()
+        sair_button = ttk.Button(error,text='OK', command=error.destroy, style='Estilo1.danger.TButton')
+        sair_button.pack()
     
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
