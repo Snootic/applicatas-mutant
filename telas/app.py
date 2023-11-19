@@ -279,6 +279,7 @@ class Estilo:
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
         self.style.configure('Estilo1.info.TButton', font=self.fonte)
+        self.style.configure('Estilo1.danger.TButton', font=self.fonte)
         self.style.configure('Estilo1.Link.TButton', font=self.Sfonte,
                             focuscolor=cores.colors.primary,
                             foreground=cores.colors.primary,)
@@ -288,6 +289,7 @@ class Estilo:
                              )
         self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=cores.colors.info)
         self.style.configure('Comum.TLabel', font=self.fonte)
+        self.style.configure('Error.TLabel', font=self.fonte, foreground=cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('TCombobox', font=self.fonte)
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
