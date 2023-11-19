@@ -83,7 +83,7 @@ class inicio:
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
             if sqlite.sqlite() == None:
-                return None
+                return False
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
             elif tabela is not None and not tabela.empty:
@@ -219,7 +219,7 @@ class inicio:
         def abrir_tabela_selecionada():
             try:
                 tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
-                if analise_pareto() == None: raise Exception("None")
+                if analise_pareto() == False: raise Exception("None")
                 tabela_atual_var.set(value=abrir_tabela_var.get())
                 bloquear_entrys()
             except Exception as e:
