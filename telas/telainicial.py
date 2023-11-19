@@ -111,78 +111,6 @@ class inicio:
                 tabela_atual_var.set(value=name)
             edit_config.setIsSaved(False)
         
-        #Criar uma tabela nova
-        tabela_func_frame = ttk.Frame(
-            tela,
-            style='custom.TFrame')
-        
-        criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
-        criar_tabela_entry = ttk.Entry(
-            tabela_func_frame,
-            textvariable=criar_tabela_var,
-            font=self.estilo.fonte)
-        criar_tabela_entry.bind(
-            '<FocusIn>',
-            lambda event: (criar_tabela_var.set(value=''),
-                           criar_tabela_entry.unbind('<FocusIn>')))
-        
-        criar_tabela_botao = ttk.Button(
-            tabela_func_frame,
-            text='Criar',
-            style='Estilo1.TButton',
-            command=lambda: criar_tabela()
-        )
-        
-        criar_tabela_label = ttk.Label(
-            tabela_func_frame,
-            text='Criar uma nova tabela',
-            style='Comum.TLabel',
-        )
-        
-        def criar_tabela():
-            criar_tabela = tabela(criar_tabela_var.get())
-            criar_tabela = criar_tabela.CriarBD('pareto')
-            tabela_atual_var.set(value=criar_tabela_var.get())
-            analise_pareto()
-            bloquear_entrys()
-        
-        tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
-        
-        criar_tabela_label.place(relx=0.5, rely=0.05, anchor=CENTER)
-        criar_tabela_entry.place(relx=0.5, rely=0.13, relheight=0.1, relwidth=0.95,anchor=CENTER)
-        criar_tabela_botao.place(relx=0.5, rely=0.24, relheight=0.1, relwidth=0.5,anchor=CENTER)
-        
-        #Abrir tabelas já existentes
-        tabelas = tabela()
-        
-        def abrir_tabela_selecionada():
-            tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
-            analise_pareto()
-            tabela_atual_var.set(value=abrir_tabela_var.get())
-            bloquear_entrys()
-    
-        abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
-        abrir_tabela = ttk.Combobox(tabela_func_frame,
-                                    textvariable=abrir_tabela_var,
-                                    font=self.estilo.fonte)
-        
-        abrir_tabela['value'] = tabelas.getTabelas('pareto')
-        
-        abrir_tabela_btn = ttk.Button(tabela_func_frame,
-                                      text='Abrir',
-                                      style='Estilo1.TButton',
-                                      command=abrir_tabela_selecionada)
-        
-        abrir_tabela_label = ttk.Label(
-            tabela_func_frame,
-            text='Abrir uma tabela existente',
-            style='Comum.TLabel',
-        )
-        
-        abrir_tabela_label.place(relx=0.5, rely=0.43,anchor=CENTER)
-        abrir_tabela_btn.place(relx=0.5, rely=0.599, relheight=0.1, relwidth=0.5,anchor=CENTER)
-        abrir_tabela.place(relx=0.5, rely=0.5, relwidth=0.95,anchor=CENTER)
-        
         def grafico():
             
             color1 = 'royalblue'
@@ -230,14 +158,113 @@ class inicio:
                 i.set_rotation(45)
             plt.show()
         
+        #Criar uma tabela nova
+        tabela_func_frame = ttk.Frame(
+            tela,
+            style='custom.TFrame')
+        
+        criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
+        criar_tabela_entry = ttk.Entry(
+            tabela_func_frame,
+            textvariable=criar_tabela_var,
+            font=self.estilo.fonte)
+        criar_tabela_entry.bind(
+            '<FocusIn>',
+            lambda event: (criar_tabela_var.set(value=''),
+                           criar_tabela_entry.unbind('<FocusIn>')))
+        
+        criar_tabela_botao = ttk.Button(
+            tabela_func_frame,
+            text='Criar',
+            style='Estilo1.TButton',
+            command=lambda: criar_tabela()
+        )
+        
+        criar_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Criar uma nova tabela',
+            style='Comum.TLabel',
+        )
+        
+        def criar_tabela():
+            criar_tabela = tabela(criar_tabela_var.get())
+            criar_tabela = criar_tabela.CriarBD('pareto')
+            tabela_atual_var.set(value=criar_tabela_var.get())
+            analise_pareto()
+            bloquear_entrys()
+        
+        tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
+        
+        criar_tabela_label.place(relx=0.5, rely=0.04, anchor=CENTER)
+        criar_tabela_entry.place(relx=0.5, rely=0.12, relheight=0.1, relwidth=0.95,anchor=CENTER)
+        criar_tabela_botao.place(relx=0.5, rely=0.23, relheight=0.1, relwidth=0.5,anchor=CENTER)
+        
+        #Abrir tabelas já existentes
+        tabelas = tabela()
+        
+        def abrir_tabela_selecionada():
+            tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
+            analise_pareto()
+            tabela_atual_var.set(value=abrir_tabela_var.get())
+            bloquear_entrys()
+    
+        abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
+        abrir_tabela = ttk.Combobox(tabela_func_frame,
+                                    textvariable=abrir_tabela_var,
+                                    font=self.estilo.fonte)
+        
+        abrir_tabela['value'] = tabelas.getTabelas('pareto')
+        
+        abrir_tabela_btn = ttk.Button(tabela_func_frame,
+                                      text='Abrir',
+                                      style='Estilo1.TButton',
+                                      command=abrir_tabela_selecionada)
+        
+        abrir_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Abrir uma tabela existente',
+            style='Comum.TLabel',
+        )
+        
+        abrir_tabela_label.place(relx=0.5, rely=0.33,anchor=CENTER)
+        abrir_tabela_btn.place(relx=0.5, rely=0.49, relheight=0.1, relwidth=0.5,anchor=CENTER)
+        abrir_tabela.place(relx=0.5, rely=0.395, relwidth=0.95,anchor=CENTER)
+        
         gerar_grafico_label = ttk.Label(
             tabela_func_frame,
             text='Gerar gráfico de Pareto',
-            style='Comum.TLabel',
+            style='Comum.TLabel'
         )
-        gerar_grafico_label.place(relx=0.5, rely=0.81,anchor=CENTER)
+        gerar_grafico_label.place(relx=0.5, rely=0.58,anchor=CENTER)
         gerar_grafico = ttk.Button(tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
-        gerar_grafico.place(relx=0.5, rely=0.9, relheight=0.1, relwidth=0.7,anchor=CENTER)
+        gerar_grafico.place(relx=0.5, rely=0.66, relheight=0.1, relwidth=0.7,anchor=CENTER)
+        
+        delete_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Deletar Tabela',
+            style='Comum.TLabel'
+        )
+        
+        delete_tabela_var = ttk.StringVar(value='Deletar Tabela')
+        delete_tabela_entry = ttk.Entry(
+            tabela_func_frame,
+            textvariable=delete_tabela_var,
+            font=self.estilo.fonte)
+        delete_tabela_entry.bind(
+            '<FocusIn>',
+            lambda event: (delete_tabela_var.set(value=''),
+                           delete_tabela_entry.unbind('<FocusIn>')))
+        
+        delete_tabela_botao = ttk.Button(
+            tabela_func_frame,
+            text='Deletar',
+            style='Estilo1.TButton',
+            command=lambda: criar_tabela()
+        )
+        
+        delete_tabela_label.place(relx=0.5, rely=0.75, anchor=CENTER)
+        delete_tabela_entry.place(relx=0.5, rely=0.82, relheight=0.1, relwidth=0.95,anchor=CENTER)
+        delete_tabela_botao.place(relx=0.5, rely=0.93, relheight=0.1, relwidth=0.5,anchor=CENTER)
         
         #Adicionar ocorrencias na tabela aberta
         
@@ -504,11 +531,11 @@ class inicio:
             style='Comum.TLabel',
         )
         
-        tabela_func_frame.place(relx=0.91, rely=0.475, anchor='center', relheight=0.7, relwidth=0.18)
+        tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
         
-        criar_tabela_label.place(relx=0.5, rely=0.05, anchor=CENTER)
-        criar_tabela_entry.place(relx=0.5, rely=0.13, relheight=0.1, relwidth=0.95,anchor=CENTER)
-        criar_tabela_botao.place(relx=0.5, rely=0.24, relheight=0.1, relwidth=0.5,anchor=CENTER)
+        criar_tabela_label.place(relx=0.5, rely=0.04, anchor=CENTER)
+        criar_tabela_entry.place(relx=0.5, rely=0.12, relheight=0.1, relwidth=0.95,anchor=CENTER)
+        criar_tabela_botao.place(relx=0.5, rely=0.23, relheight=0.1, relwidth=0.5,anchor=CENTER)
 
         #Abri tabela existente
         abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
@@ -529,18 +556,45 @@ class inicio:
             style='Comum.TLabel',
         )
         
-        abrir_tabela_label.place(relx=0.5, rely=0.43,anchor=CENTER)
-        abrir_tabela_btn.place(relx=0.5, rely=0.599, relheight=0.1, relwidth=0.5,anchor=CENTER)
-        abrir_tabela.place(relx=0.5, rely=0.5, relwidth=0.95,anchor=CENTER)
+        abrir_tabela_label.place(relx=0.5, rely=0.33,anchor=CENTER)
+        abrir_tabela_btn.place(relx=0.5, rely=0.49, relheight=0.1, relwidth=0.5,anchor=CENTER)
+        abrir_tabela.place(relx=0.5, rely=0.395, relwidth=0.95,anchor=CENTER)
         
         gerar_grafico_label = ttk.Label(
             tabela_func_frame,
-            text='Gerar gráfico de Pareto',
-            style='Comum.TLabel',
+            text='Gerar gráficos',
+            style='Comum.TLabel'
         )
-        gerar_grafico_label.place(relx=0.5, rely=0.81,anchor=CENTER)
+        gerar_grafico_label.place(relx=0.5, rely=0.58,anchor=CENTER)
         gerar_grafico = ttk.Button(tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton', command= lambda: grafico())
-        gerar_grafico.place(relx=0.5, rely=0.9, relheight=0.1, relwidth=0.7,anchor=CENTER)
+        gerar_grafico.place(relx=0.5, rely=0.66, relheight=0.1, relwidth=0.7,anchor=CENTER)
+        
+        delete_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Deletar Tabela',
+            style='Comum.TLabel'
+        )
+        
+        delete_tabela_var = ttk.StringVar(value='Deletar Tabela')
+        delete_tabela_entry = ttk.Entry(
+            tabela_func_frame,
+            textvariable=delete_tabela_var,
+            font=self.estilo.fonte)
+        delete_tabela_entry.bind(
+            '<FocusIn>',
+            lambda event: (delete_tabela_var.set(value=''),
+                           delete_tabela_entry.unbind('<FocusIn>')))
+        
+        delete_tabela_botao = ttk.Button(
+            tabela_func_frame,
+            text='Deletar',
+            style='Estilo1.TButton',
+            command=lambda: criar_tabela()
+        )
+        
+        delete_tabela_label.place(relx=0.5, rely=0.75, anchor=CENTER)
+        delete_tabela_entry.place(relx=0.5, rely=0.82, relheight=0.1, relwidth=0.95,anchor=CENTER)
+        delete_tabela_botao.place(relx=0.5, rely=0.93, relheight=0.1, relwidth=0.5,anchor=CENTER)
         
         # Display tabela atual
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
