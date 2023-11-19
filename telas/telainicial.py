@@ -111,6 +111,7 @@ class inicio:
                 tabela_atual_var.set(value=name)
             edit_config.setIsSaved(False)
         
+        # Gerar gráfico com matplotlib
         def grafico():
             
             color1 = 'royalblue'
@@ -317,12 +318,14 @@ class inicio:
                 ocorrencia_nova.configure(state='disabled')
                 adicionar_custo.configure(state="disabled")
                 alterar_custo.configure(state='disabled')
+                delete_itens.configure(state='disabled')
             else:
                 adicionar_itens.configure(state='normal')
                 quantidade_ocorrencia.configure(state='normal')
                 ocorrencia_atual.configure(state='normal')
                 ocorrencia_quantidade.configure(state='normal')
                 ocorrencia_nova.configure(state='normal')
+                delete_itens.configure(state='normal')
                     
         quantidade_ocorrencia_var = ttk.IntVar(value=1)
         quantidade_ocorrencia = ttk.Spinbox(adicionar_itens_frame,
@@ -399,8 +402,26 @@ class inicio:
                                           command=atualizar_itens_funcao)
         atualizar_itens_plus.place(relx=0.78, rely=0.55, relheight=0.35,relwidth=0.2)
         
+        # Deletar Item da tabela
         delete_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         delete_itens_frame.place(relx=0.835, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
+        
+        delete_itens_var = ttk.StringVar(value='Ocorrência')
+        delete_itens = ttk.Entry(delete_itens_frame,
+                                    textvariable=delete_itens_var,
+                                    font=self.estilo.fonte)
+        delete_itens.place(relx=0.375,rely=0.5, relheight=0.35, relwidth=0.72, anchor=CENTER)
+        delete_itens.bind(
+            '<FocusIn>',
+            lambda event: (delete_itens_var.set(value=''),
+                           delete_itens.unbind('<FocusIn>')))
+        
+        delete_itens_plus = ttk.Button(delete_itens_frame,
+                                          text= 'Deletar',
+                                          width=9,
+                                          style='Estilo1.TButton',
+                                          command=adicionar_itens_funcao)
+        delete_itens_plus.place(relx=0.86, rely=0.5, relheight=0.35, relwidth=0.23, anchor=CENTER)
         
         
         # Display tabela atual
@@ -409,9 +430,7 @@ class inicio:
         tabela_atual.place(relx=0.35,rely=0.05,anchor=CENTER)
         tabela_atual_var.trace("w", lambda *args: bloquear_entrys())
         
-        # Gerar gráfico com matplotlib
-
-
+        
         ocorrencia_atual_var.trace("w", lambda *args: alterar_custos())
         
         def alterar_custos():
@@ -674,8 +693,35 @@ class inicio:
         
         medida_atual_var.trace('w', lambda *args: mudar_conj_dados())
         
+        # Deletar item da tabela
         delete_itens_frame = ttk.Frame(tela, style='custom.TFrame')
         delete_itens_frame.place(relx=0.835, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
+        
+        medida_delete_var = ttk.StringVar(value='Dado')
+        medida_delete = ttk.Entry(delete_itens_frame,
+                                    textvariable=medida_delete_var,
+                                    width=10,
+                                    font=self.estilo.fonte)
+        medida_delete.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.65)
+        medida_delete.bind(
+            '<FocusIn>',
+            lambda event: (medida_delete_var.set(value=''),
+                           medida_delete.unbind('<FocusIn>')))
+        
+        conjunto_de_dados_var = ttk.StringVar(value='Coluna de dados')
+        conjunto_de_dados = ttk.Combobox(delete_itens_frame,
+                                      textvariable=conjunto_de_dados_var,
+                                      width=15,
+                                      font=self.estilo.fonte)
+        conjunto_de_dados.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.65)
+        conjunto_de_dados.bind('<FocusIn>', lambda event: (conjunto_de_dados_var.set(value=''), conjunto_de_dados.unbind('<FocusIn>')))
+        
+        delete_dados_btn = ttk.Button(delete_itens_frame,
+                                          text= 'Deletar',
+                                          width=8,
+                                          style='Estilo1.TButton',
+                                          command= lambda: add_valor_tabela())
+        delete_dados_btn.place(relx=0.83, rely=0.5, relheight=0.35, relwidth=0.3, anchor=CENTER)
         
         def mudar_conj_dados():
             conjunto_dados_new['value'] = tabelas.get_TableColumns('medidas')
@@ -830,7 +876,8 @@ class inicio:
             tabela_medidas_tdf.insert_rows(index = 'end', rowdata = dados)
             tabela_medidas_tdf.load_table_data()
             edit_config.setIsSaved(False)
-
+        
+        # Gerar gráfico com matplotlib
         def grafico():
             popup = ttk.Toplevel(self.home)
             histograma = ttk.Button(popup, text='Histograma', command=lambda: Histograma())
