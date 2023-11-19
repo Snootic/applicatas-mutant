@@ -154,7 +154,7 @@ class inicio:
 
                     ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
             except Exception as e:
-                self.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=100)
+                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=100)
                 gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -202,7 +202,7 @@ class inicio:
                 analise_pareto()
                 bloquear_entrys()
             except Exception as e:
-                self.error_screen(text=f'{e}: Nome da tabela inválido')
+                self.app.error_screen(text=f'{e}: Nome da tabela inválido')
                 criar_tabela_entry.config(bootstyle="Danger")
                 self.home.after(3000,lambda: criar_tabela_entry.config(bootstyle="Default"))
                 return
@@ -219,12 +219,12 @@ class inicio:
         def abrir_tabela_selecionada():
             try:
                 tabelas.SelectTabela(abrir_tabela_var.get(), 'pareto')
-                analise_pareto()
+                if analise_pareto() == None: raise Exception("None")
                 tabela_atual_var.set(value=abrir_tabela_var.get())
                 bloquear_entrys()
             except Exception as e:
                 print(e)
-                self.error_screen(text='Nenhuma tabela selecionada')
+                self.app.error_screen(text='Nenhuma tabela selecionada')
                 abrir_tabela.config(bootstyle="Danger")
                 self.home.after(3000,lambda: abrir_tabela.config(bootstyle="Default"))
     
@@ -1060,16 +1060,6 @@ class inicio:
     def aba_atual(self):
         indice_notebook = self.notebook.index("current")
         self.app.aba_atual = indice_notebook
-    
-    def error_screen(self,text, x=200, y=70):
-        error = ttk.Toplevel()
-        apps = app.Tela(error, 'Erro')
-        apps.centralizarTela(x,y)
-        error_label = ttk.Label(error, style='Error.TLabel',wraplength=200)
-        error_label.config(text=text)
-        error_label.pack()
-        sair_button = ttk.Button(error,text='OK', command=error.destroy, style='Estilo1.danger.TButton')
-        sair_button.pack()
     
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
