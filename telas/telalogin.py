@@ -70,7 +70,13 @@ class telalogin:
             global inicio
             log = login.login(user,senha,manter_secao)
             retorno.configure(text=log)
-            if log == 'Logado':
+            if log == 'Senha incorreta':
+                self.senha_entry.configure(bootstyle="danger")
+                self.login.after(3000,lambda: self.senha_entry.configure(bootstyle="default"))
+            elif log == 'Usuário ou E-mail não cadastrados':
+                self.user_entry.configure(bootstyle="danger")
+                self.login.after(3000,lambda: self.user_entry.configure(bootstyle="default"))
+            elif log == 'Logado':
                 retorno.configure(text='')
                 self.senha_entry.destroy()
                 self.user_entry.destroy()
