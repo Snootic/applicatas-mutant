@@ -22,14 +22,16 @@ class Tela:
         self.TELA_LARGURA = self.janela.winfo_screenwidth()
         self.TELA_ALTURA = self.janela.winfo_screenheight()
 
-    def centralizarTela(self,largura,altura):
+    def centralizarTela(self,largura,altura, janela=''):
             janela_largura = largura
             janela_altura = altura
             MONITOR_HORIZONTAL = int(self.TELA_LARGURA /2 - janela_largura / 2)
             MONITOR_VERTICAL = int(self.TELA_ALTURA /2 - janela_altura /2)
-            
-            self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
-    
+            if janela == '':
+                self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
+            else:
+                janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
+                
     def trocar_tema(self):
         if tela_login.style.theme.type == 'dark':
             tela_login.style.theme_use("journal")
@@ -266,6 +268,16 @@ class Tela:
         menu_principal.add_cascade(label='Exportar', menu=exportar_menu)
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
+        
+    def error_screen(self,text, x=210, y=70):
+        error = ttk.Toplevel()
+        error.title('Erro')
+        self.centralizarTela(x,y,error)
+        error_label = ttk.Label(error, style='Error.TLabel',wraplength=200)
+        error_label.config(text=text)
+        error_label.pack()
+        sair_button = ttk.Button(error,text='OK', command=error.destroy, style='Estilo1.danger.TButton')
+        sair_button.pack()
         
 class Estilo:
     tema = edit_config.getTema()
