@@ -113,52 +113,58 @@ class inicio:
         
         # Gerar gráfico com matplotlib
         def grafico():
-            
-            color1 = 'royalblue'
-            color2 = 'black'
-
-            fig,ax1 = plt.subplots(figsize=(15,10))
-
-            ax1.set_title('Pareto')
-            
             try:
-                ax1.set_ylabel('Custo',color=color1)
+                print(matplot.head(0))
                 
-                ax1.bar(matplot['Ocorrências'], matplot['Custo Total'], color=color1, edgecolor='orange', linewidth=2)
+                color1 = 'royalblue'
+                color2 = 'black'
 
-                ax1.tick_params(axis = 'y', labelcolor = color1)
+                fig,ax1 = plt.subplots(figsize=(15,10))
+
+                ax1.set_title('Pareto')
                 
-                for i, valor in enumerate(matplot['Custo Total']):
-                    ax1.annotate(f'R$ {valor:.2f}', (i, valor))
-                
-                ax2 = ax1.twinx()
-                ax2.set_ylabel('%', color=color2)
+                if len(pareto_tabela.get_columns()) == 6:
+                    ax1.set_ylabel('Custo',color=color1)
+                    
+                    ax1.bar(matplot['Ocorrências'], matplot['Custo Total'], color=color1, edgecolor='orange', linewidth=2)
 
-                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+                    ax1.tick_params(axis = 'y', labelcolor = color1)
+                    
+                    for i, valor in enumerate(matplot['Custo Total']):
+                        ax1.annotate(f'R$ {valor:.2f}', (i, valor))
+                    
+                    ax2 = ax1.twinx()
+                    ax2.set_ylabel('%', color=color2)
 
+                    ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+
+                else:
+
+                    ax1.set_ylabel('Frequência (%)',color=color1)
+                    
+                    ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
+
+                    ax1.tick_params(axis = 'y', labelcolor = color1)
+                    
+                    for i, valor in enumerate(matplot['Freq. Relativa']):
+                        ax1.annotate(f'{valor:.2f} %', (i, valor))
+                    
+                    ax2 = ax1.twinx()
+                    ax2.set_ylabel('%', color=color2)
+
+                    ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
             except Exception as e:
+                self.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=100)
+                gerar_grafico.configure(style="Estilo1.danger.TButton")
+                self.home.after(3000, lambda: gerar_grafico.configure(style="Estilo1.TButton"))
+            else:
+                ax2.tick_params(axis='y',labelcolor=color2)
+                ax2.set_ylim([0,120])
 
-                ax1.set_ylabel('Frequência (%)',color=color1)
+                for i in ax1.get_xticklabels():
+                    i.set_rotation(45)
+                plt.show()
                 
-                ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
-
-                ax1.tick_params(axis = 'y', labelcolor = color1)
-                
-                for i, valor in enumerate(matplot['Freq. Relativa']):
-                    ax1.annotate(f'{valor:.2f} %', (i, valor))
-                
-                ax2 = ax1.twinx()
-                ax2.set_ylabel('%', color=color2)
-
-                ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
-
-            ax2.tick_params(axis='y',labelcolor=color2)
-            ax2.set_ylim([0,120])
-
-            for i in ax1.get_xticklabels():
-                i.set_rotation(45)
-            plt.show()
-        
         #Criar uma tabela nova
         tabela_func_frame = ttk.Frame(
             tela,
