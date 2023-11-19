@@ -77,7 +77,7 @@ class inicio:
                 autofit=True,
                 autoalign=False,
             )
-            pareto_tabela.place(relx=0.5,rely=0.5,anchor=CENTER, relheight=0.65, relwidth=1)
+            pareto_tabela.place(relx=0.4,rely=0.45,anchor=CENTER, relheight=0.75, relwidth=0.8)
         
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
@@ -112,13 +112,13 @@ class inicio:
             edit_config.setIsSaved(False)
         
         #Criar uma tabela nova
-        criar_tabela_frame = ttk.Frame(
+        tabela_func_frame = ttk.Frame(
             tela,
             style='custom.TFrame')
         
         criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
         criar_tabela_entry = ttk.Entry(
-            criar_tabela_frame,
+            tabela_func_frame,
             textvariable=criar_tabela_var,
             font=self.estilo.fonte)
         criar_tabela_entry.bind(
@@ -127,10 +127,16 @@ class inicio:
                            criar_tabela_entry.unbind('<FocusIn>')))
         
         criar_tabela_botao = ttk.Button(
-            criar_tabela_frame,
+            tabela_func_frame,
             text='Criar',
             style='Estilo1.TButton',
             command=lambda: criar_tabela()
+        )
+        
+        criar_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Criar uma nova tabela',
+            style='Comum.TLabel',
         )
         
         def criar_tabela():
@@ -140,10 +146,11 @@ class inicio:
             analise_pareto()
             bloquear_entrys()
         
-        criar_tabela_entry.place(relx=0.015, rely=0.1, relheight=0.7, relwidth=0.7)
-        criar_tabela_botao.place(relx=0.735, rely=0.1, relheight=0.7, relwidth=0.25)
-        criar_tabela_frame.place(relx=0.2, rely=0.06, anchor='center', relheight=0.12, relwidth=0.4)
+        tabela_func_frame.place(relx=0.9, rely=0.45, anchor='center', relheight=0.75, relwidth=0.2)
         
+        criar_tabela_label.place(relx=0.13, rely=0.03)
+        criar_tabela_entry.place(relx=0.025, rely=0.08, relheight=0.1, relwidth=0.95)
+        criar_tabela_botao.place(relx=0.25, rely=0.2, relheight=0.1, relwidth=0.5)
         
         #Abrir tabelas já existentes
         tabelas = tabela()
@@ -153,25 +160,28 @@ class inicio:
             analise_pareto()
             tabela_atual_var.set(value=abrir_tabela_var.get())
             bloquear_entrys()
-        
-        abrir_tabela_frame = ttk.Frame(
-            tela,style='custom.TFrame')
     
         abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
-        abrir_tabela = ttk.Combobox(abrir_tabela_frame,
+        abrir_tabela = ttk.Combobox(tabela_func_frame,
                                     textvariable=abrir_tabela_var,
                                     font=self.estilo.fonte)
         
         abrir_tabela['value'] = tabelas.getTabelas('pareto')
         
-        abrir_tabela_btn = ttk.Button(abrir_tabela_frame,
+        abrir_tabela_btn = ttk.Button(tabela_func_frame,
                                       text='Abrir',
                                       style='Estilo1.TButton',
                                       command=abrir_tabela_selecionada)
         
-        abrir_tabela_frame.place(relx=0.8,rely=0.07, anchor='center',relheight=0.14, relwidth=0.4)
-        abrir_tabela_btn.place(relx=0.735, rely=0.08, relheight=0.4, relwidth=0.25)
-        abrir_tabela.place(relx=0.015, rely=0.08, relwidth=0.7)
+        abrir_tabela_label = ttk.Label(
+            tabela_func_frame,
+            text='Abrir uma tabela existente',
+            style='Comum.TLabel',
+        )
+        
+        abrir_tabela_label.place(relx=0.06, rely=0.35)
+        abrir_tabela_btn.place(relx=0.25, rely=0.495, relheight=0.1, relwidth=0.5)
+        abrir_tabela.place(relx=0.025, rely=0.4, relwidth=0.95)
         
         def grafico():
             
@@ -220,8 +230,14 @@ class inicio:
                 i.set_rotation(45)
             plt.show()
         
-        gerar_grafico = ttk.Button(abrir_tabela_frame,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
-        gerar_grafico.place(relx=0.735, rely=0.53, relheight=0.4, relwidth=0.25)
+        gerar_grafico_label = ttk.Label(
+            tabela_func_frame,
+            text='Gerar gráfico de Pareto',
+            style='Comum.TLabel',
+        )
+        gerar_grafico_label.place(relx=0.1, rely=0.75)
+        gerar_grafico = ttk.Button(tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton', command=grafico)
+        gerar_grafico.place(relx=0.2, rely=0.8, relheight=0.1, relwidth=0.6)
         
         #Adicionar ocorrencias na tabela aberta
         
@@ -363,8 +379,7 @@ class inicio:
         # Display tabela atual
         tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
         tabela_atual = ttk.Label(tela,textvariable=tabela_atual_var,style='Titulo.TLabel')
-        tabela_atual.lower()
-        tabela_atual.place(relx=0.5,rely=0.16,anchor=CENTER)
+        tabela_atual.place(relx=0.35,rely=0.05,anchor=CENTER)
         tabela_atual_var.trace("w", lambda *args: bloquear_entrys())
         
         # Gerar gráfico com matplotlib
