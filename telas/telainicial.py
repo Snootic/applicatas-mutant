@@ -176,10 +176,14 @@ class inicio:
         #Adicionar ocorrencias na tabela aberta
         def adicionar_itens_funcao():
             custo = adicionar_custo_var.get()
-            if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 6:
+            custos = ''
+            for caractere in custo:
+                if caractere.isdigit() or caractere in ',.':
+                    if caractere == ',': caractere.replace(',','.')
+                    custos += caractere
+            if len(pareto_tabela.get_columns()) == 6:
                 try:
-                    float(custo)
-                    tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get(), custo=custo)
+                    tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get(), custo=custos)
                 except:
                     adicionar.configure(bootstyle="Danger")
                     adicionar_custo.configure(bootstyle="Danger")
@@ -190,8 +194,11 @@ class inicio:
                     bloquear_entrys()
                     return 
             if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 4:
-                try:    
-                    tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get())
+                try:
+                    if custos != '':
+                        tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get(), custo=custos)
+                    else:
+                        tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get())
                 except:
                     adicionar.configure(bootstyle="Danger")
                     self.home.after(3000, lambda: adicionar.configure(bootstyle="Default"))
