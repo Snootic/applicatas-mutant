@@ -8,15 +8,18 @@ from bd import sqlite
 def sqlite_table():
     dir_schema = edit_config.getSchema('dir')
     tabela = edit_config.getTabela()
-    with sqlite3.connect(dir_schema) as schema:
-        cursor = schema.cursor()
-        coluna_id = 'id'
-        cursor.execute(f"PRAGMA table_info({tabela})")
-        colunas_da_tabela = cursor.fetchall()
-        nomes_de_colunas = [coluna[1] for coluna in colunas_da_tabela if coluna[1] != coluna_id]
-        cursor.execute(f"SELECT {', '.join(nomes_de_colunas)} FROM {tabela}")
-        matriz = cursor.fetchall()
-    
+    try:
+        with sqlite3.connect(dir_schema) as schema:
+            cursor = schema.cursor()
+            coluna_id = 'id'
+            cursor.execute(f"PRAGMA table_info({tabela})")
+            colunas_da_tabela = cursor.fetchall()
+            nomes_de_colunas = [coluna[1] for coluna in colunas_da_tabela if coluna[1] != coluna_id]
+            cursor.execute(f"SELECT {', '.join(nomes_de_colunas)} FROM {tabela}")
+            matriz = cursor.fetchall()
+    except:
+        return False
+        
     if len(matriz) == 0:
         return matriz, None
     
@@ -213,9 +216,9 @@ async def moda(tabela):
         
     return lista_medidas
 
-async def tdf(tabela):
+def tdf(tabela):
     matriz, dataframe = tabela()
-    amp = await amplitude(tabela)
+    amp = asyncio.run(amplitude(tabela))
     
     # calcula quantidade de linhas e colunas do dataframe
     qtd_linhas_dataframe = len(dataframe['1ª'])
@@ -237,7 +240,10 @@ async def tdf(tabela):
     
     # Arredonda o tamanho das classes
     try:
-        tamanho_classe= round(tamanho_classe)
+        if tamanho_classe < 0.51:
+            tamanho_classe = 1
+        else:
+            tamanho_classe = round(tamanho_classe)
     except:
         pass
     
