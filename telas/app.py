@@ -3,14 +3,18 @@ from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.telainicial import inicio
-import os, asyncio
+import os, asyncio, ctypes
 from functools import partial
 
 class Tela:
     instancia_com_tabela=None
     aba_atual = None
     def __init__(self, janela='', titulo=''):
-        ttk.utility.enable_high_dpi_awareness(root=janela, scaling=1.3)
+        try:
+            scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
+        except:
+            scale = 1
+        ttk.utility.enable_high_dpi_awareness(root=janela,scaling=scale)
         self.janela = janela
         self.janela.title(titulo)
         icone_caminho= os.path.abspath('data/icone.png')
@@ -339,10 +343,10 @@ class Tela:
 
 class Estilo:
     tema = edit_config.getTema()
-    Tfonte = f'Roboto 14'
-    gfonte= f'Roboto 11'
-    fonte = f'Roboto 9'
-    Sfonte = f'Roboto 8'
+    Tfonte = f'Roboto 16'
+    gfonte= f'Roboto 12'
+    fonte = f'Roboto 10'
+    Sfonte = f'Roboto 9'
     def __init__(self):
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
