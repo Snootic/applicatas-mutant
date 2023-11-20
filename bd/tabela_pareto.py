@@ -127,29 +127,12 @@ class pareto:
             tabela = read_excel(arquivo)
         matplot = ''
         if len(tabela.columns) > 2:
-            try:
-                tabela["Freq. Acumulada"] = tabela['Freq. Acumulada'].str.replace('%', '')
-                tabela['Freq. Relativa'] = tabela['Freq. Relativa'].str.replace('%', '')
-            except AttributeError as e:
-                print(e)
             matplot = tabela[:]
-            matplot["Freq. Acumulada"] = to_numeric(tabela["Freq. Acumulada"], errors='coerce')
-            matplot["Freq. Relativa"] = to_numeric(tabela["Freq. Relativa"], errors='coerce')
-            matplot.at[matplot.shape[0] - 1, "Freq. Acumulada"] = np.nan
-            matplot.at[matplot.shape[0] - 1, "Freq. Relativa"] = np.nan
-            
-            tabela_total = tabela.iloc[-1:].copy()
-            tabela_total = tabela_total.to_numpy().tolist()
-            tabela_total[0][2] = '100.00%'
-            tabela = tabela.iloc[:-1]
-            try:
-                tabela["Freq. Acumulada"] = tabela['Freq. Acumulada'].str.replace('%', '').astype(float)
-                tabela['Freq. Relativa'] = tabela['Freq. Relativa'].str.replace('%', '').astype(float)
-            except AttributeError as e:
-                print(e)
-            tabela["Freq. Relativa"] = tabela["Freq. Relativa"].round(2).apply(lambda x: f"{x:.2f}%")
-            tabela["Freq. Acumulada"] = tabela["Freq. Acumulada"].round(2).apply(lambda x: f"{x:.2f}%")
-            tabela.loc[-1] = tabela_total[0]
+            matplot = matplot.iloc[:-1]
+            matplot = matplot.applymap(lambda x: x.replace('%', '') if isinstance(x, str) else x)
+            matplot.iloc[:,-1] = to_numeric(matplot.iloc[:,-1], errors='coerce')
+            matplot.iloc[:,-2] = to_numeric(matplot.iloc[:,-2], errors='coerce')
+            matplot.iloc[:,-3] = to_numeric(matplot.iloc[:,-3], errors='coerce')
             
         elif len(tabela.columns) == 2:
             pass
