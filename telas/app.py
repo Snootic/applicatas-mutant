@@ -253,8 +253,7 @@ class Tela:
                                                         filetypes=[("Arquivos Excel", ".xlsx")])
                     self.instancia_com_tabela.exportar(arquivo, 'xlsx' ,dados)
             except Exception as e:
-                print(type(e))
-                if isinstance(e, ValueError) or isinstance(e, AttributeError):
+                if isinstance(e, ValueError):
                     print(e)
                 else:
                     self.error_screen(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
