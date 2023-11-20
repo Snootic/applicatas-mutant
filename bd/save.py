@@ -55,10 +55,13 @@ class Salvar():
                 for i in bkp_list:
                     if i == f'{self.user}_{valor}_bkp0.sql':
                         bkp_file = i
-                bkp_file = os.path.join(self.dump_path,bkp_file)
-                
-                with open(bkp_file, 'r', encoding='utf-8') as bkp:
-                    last_save = bkp.read()
+                try:
+                    bkp_file = os.path.join(self.dump_path,bkp_file)
+                    
+                    with open(bkp_file, 'r', encoding='utf-8') as bkp:
+                        last_save = bkp.read()
+                except:
+                    return
             
             for i in schema.getTabelas(valor):
                 schema.DropTable(i[0],valor)
