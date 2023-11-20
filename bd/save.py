@@ -27,8 +27,6 @@ class Salvar():
         schema = tabela()
         
         for index, valor in enumerate(self.schemas):
-            print(valor)
-            print(self.save_path[index])
             database = schema.CriarDirSchema(valor)
             
             if os.path.exists(self.save_path[index]):
@@ -52,15 +50,15 @@ class Salvar():
                 print(e)
                 bkp_list = self.undoing + self.redoing
                 
-                for i in bkp_list:
-                    if i == f'{self.user}_{valor}_bkp0.sql':
-                        bkp_file = i
+                if f'{self.user}_{valor}_bkp0.sql' in bkp_list:
+                    bkp_file = f'{self.user}_{valor}_bkp0.sql'
                 try:
                     bkp_file = os.path.join(self.dump_path,bkp_file)
                     
                     with open(bkp_file, 'r', encoding='utf-8') as bkp:
                         last_save = bkp.read()
-                except:
+                except Exception as e:
+                    print(e)
                     return
             
             for i in schema.getTabelas(valor):
