@@ -164,7 +164,7 @@ class inicio:
                     ax2.set_ylabel('%', color=color2)
                     ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
             except Exception as e:
-                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=100)
+                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 ep.gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: ep.gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -448,7 +448,7 @@ class inicio:
                 color1 = 'royalblue'
                 fig,ax1 = plt.subplots(figsize=(15,10))
             except Exception as e:
-                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=100)
+                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 em.gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: em.gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -464,7 +464,7 @@ class inicio:
             try:
                 print(tabela_df[0])
             except Exception as e:
-                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=100)
+                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 em.gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: em.gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -959,7 +959,7 @@ class Esqueleto():
     # Deletar Tabela
     def delete_tabela(self,*args, **kwargs):
         confirmar = self.aplicativo.error_screen(text=f'Deseja realmente deletar a tabela: {self.delete_tabela_var.get()}?\nAs informações podem ser perdidas.',
-                                                 buttons=["Sim:danger","Não:primary"], y=110, x=220)
+                                                 buttons=["Sim:danger","Não:primary"], y=120, x=220)
         if confirmar == 'Sim':
             try:
                 self.tabelas.DropTable(tabela = self.delete_tabela_var.get(),dados = self.aba)
