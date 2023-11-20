@@ -47,6 +47,7 @@ class tabela:
             cursor = tabela.cursor()
             cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
             resultado = cursor.fetchone()
+
             if resultado[0] == 1:
                 self.att_config_table(self.tabela,dados)
                 return 'Tabela já existe'
@@ -157,16 +158,19 @@ class tabela:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
             coluna = "medidas"+f'{conj_dados}'
-            
-            cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{medida_atual}'")
+            try:
+                cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{medida_atual}'")
+            except:
+                return False
             result = cursor.fetchone()
             if result == None:
                 return False
             
             self.dump(dados='medidas')
-            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual} LIMIT 1'")
-            self.att_config_table(tabela,'medidas')
+            
+            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual}' LIMIT 1")
             schema.commit()
+            self.att_config_table(tabela,'medidas')
             return True
             
     def get_TableColumns(self, medida):
@@ -213,7 +217,10 @@ class tabela:
             coluna = "medidas"+f'{conj_dados}'
             tabela = edit_config.getTabela()
             
-            cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{dado}'")
+            try:
+                cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{dado}'")
+            except:
+                return False
             result = cursor.fetchone()
             if result == None:
                 return False
