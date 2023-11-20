@@ -257,8 +257,8 @@ class Tela:
                     print(e)
                 else:
                     self.error_screen(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
-                                      x=270,
-                                      y=155,
+                                      x=275,
+                                      y=200,
                                       wrap=268)
         exportar_menu = ttk.Menu(menu_principal, tearoff=False)
         exportar_menu.add_command(label='Exportar - CSV', command=lambda: export_arquivo(tipo='csv'))
@@ -278,12 +278,12 @@ class Tela:
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
         
-    def error_screen(self, text, x=210, y=70, wrap=200, buttons='OK') -> str:
+    def error_screen(self, text, x=210, y=100, wrap=200, buttons='OK') -> str:
             '''
                 Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
                 text: str = texto a ser exibido no popup
                 x: int =  tamanho horizontal do popup em pixels(padrao 200)
-                y: int = tamanho vertical do popup em pixels (padrao 70)
+                y: int = tamanho vertical do popup em pixels (padrao 100)
                 wrap: int = quantos pixels até o texto quebrar uma linha (padrao 200)
                 buttons: str | list = valores aceitos são 'OK' ou uma lista contendo o 
                 texto do botão e seu estilo separados por ':'. ex: ['Sim:primary','Não:Danger']
@@ -293,7 +293,7 @@ class Tela:
             error = ttk.Toplevel()
             error.title('Erro')
             self.centralizarTela(x, y, error)
-            error_label = ttk.Label(error, style='Error.TLabel', wraplength=wrap)
+            error_label = ttk.Label(error, style='Grande.TLabel', wraplength=wrap)
             error_label.config(text=text)
             error_label.pack(fill='both', expand=True)
             button_frame = ttk.Frame(error, padding=(5, 5))
@@ -332,6 +332,7 @@ class Tela:
 class Estilo:
     tema = edit_config.getTema()
     Tfonte = f'Roboto 14'
+    gfonte= f'Roboto 11'
     fonte = f'Roboto 9'
     Sfonte = f'Roboto 8'
     def __init__(self):
@@ -363,6 +364,7 @@ class Estilo:
         self.style.configure('Comum2.TLabel', font=self.fonte, background=self.background_1)
         self.style.configure('Error.TLabel', font=self.fonte, foreground=self.cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
+        self.style.configure('Grande.TLabel', font=self.gfonte)
         self.style.configure('TCombobox', font=self.fonte)
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
         self.style.configure('Table.Treeview.Heading', font=self.Sfonte)
