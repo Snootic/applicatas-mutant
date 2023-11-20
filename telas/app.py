@@ -41,8 +41,7 @@ class Tela:
             tela_login.style.theme_use("cyborg")
             edit_config.editTema('cyborg')
             Estilo.tema = 'cyborg'
-        
-        estilo = Estilo()
+        Estilo()
 
     def menu(self):
         menu_principal = ttk.Menu(self.janela)
@@ -297,6 +296,10 @@ class Estilo:
     def __init__(self):
         self.style = ttk.Style(self.tema)
         cores = self.style._theme_definitions.get(self.tema)
+        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
+        self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
+        
         self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
@@ -310,10 +313,22 @@ class Estilo:
                              foreground=cores.colors.primary,
                              )
         self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=cores.colors.info)
+        self.style.configure('Titulo2.TLabel', font=self.Tfonte, foreground=cores.colors.info, background=self.background_2)
         self.style.configure('Comum.TLabel', font=self.fonte)
+        self.style.configure('Comum2.TLabel', font=self.fonte, background=self.background_1)
         self.style.configure('Error.TLabel', font=self.fonte, foreground=cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('TCombobox', font=self.fonte)
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
         self.style.configure('Table.Treeview.Heading', font=self.fonte)
         self.style.configure('custom.TFrame', relief='solid')
+        self.style.configure('custom2.TFrame', background=self.background_2)
+        self.style.configure('custom3.TFrame', background=self.background_1, relief='solid')
+        self.style.configure('custom.TNotebook',
+                             background=self.background_2,
+                             foreground=self.background_2)
+        self.style.configure('custom2.TNotebook')
+        self.style.map('custom.TNotebook.Tab',
+                             background=[("selected", self.tab_background_1),("!selected", self.background_2) ],)
+        self.style.map('custom2.TNotebook.Tab',
+                             background=[("selected", self.background_2)],)

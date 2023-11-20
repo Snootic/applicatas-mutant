@@ -31,14 +31,14 @@ class inicio:
         self.estilo = app.Estilo()
         
         #notebook
-        self.notebook = ttk.Notebook(self.home)
+        self.notebook = ttk.Notebook(self.home, style='custom2.TNotebook')
         self.notebook.pack(expand=True)
         
-        self.tela_pareto = ttk.Frame(self.notebook, width=self.width,  height=self.height)
+        self.tela_pareto = ttk.Frame(self.notebook, width=self.width, height=self.height,style='custom2.TFrame')
         self.tela_pareto.pack(fill='both', expand=True)
-        self.tela_medidas = ttk.Frame(self.notebook, width=self.width,  height=self.height)
+        self.tela_medidas = ttk.Frame(self.notebook, width=self.width, height=self.height,style='custom2.TFrame')
         self.tela_medidas.pack(fill='both',expand=True)
-        self.tela_binomial = ttk.Frame(self.notebook, width=self.width,  height=self.height)
+        self.tela_binomial = ttk.Frame(self.notebook, width=self.width, height=self.height,style='custom2.TFrame')
         self.tela_binomial.pack(fill='both', expand=True)
         
         self.notebook.add(self.tela_pareto, text='Pareto')
@@ -660,7 +660,7 @@ class inicio:
             tabela_medidas_tdf.load_table_data()
             edit_config.setIsSaved(False)
         #Notebok tabelas
-        notebook = ttk.Notebook(tela)
+        notebook = ttk.Notebook(tela, style='custom.TNotebook')
         notebook.place(relx=0.405,rely=0.45, anchor=CENTER, relheight=0.75, relwidth=0.815)
         
         dados_matriz = ttk.Frame(notebook)
@@ -824,7 +824,7 @@ class Esqueleto():
         
         self.tabela_func_frame = ttk.Frame(
             tela,
-            style='custom.TFrame')
+            style='custom3.TFrame')
         
         self.tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
         
@@ -847,7 +847,7 @@ class Esqueleto():
         self.criar_tabela_label = ttk.Label(
             self.tabela_func_frame,
             text='Criar uma nova tabela',
-            style='Comum.TLabel',
+            style='Comum2.TLabel',
         )
         
         self.criar_tabela_label.place(relx=0.5, rely=0.04, anchor=CENTER)
@@ -867,7 +867,7 @@ class Esqueleto():
         self.abrir_tabela_label = ttk.Label(
             self.tabela_func_frame,
             text='Abrir uma tabela existente',
-            style='Comum.TLabel',
+            style='Comum2.TLabel',
         )
         
         self.abrir_tabela_label.place(relx=0.5, rely=0.33,anchor=CENTER)
@@ -877,7 +877,7 @@ class Esqueleto():
         self.gerar_grafico_label = ttk.Label(
             self.tabela_func_frame,
             text='Gerar gráfico de Pareto',
-            style='Comum.TLabel'
+            style='Comum2.TLabel'
         )
         self.gerar_grafico_label.place(relx=0.5, rely=0.58,anchor=CENTER)
         self.gerar_grafico = ttk.Button(self.tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton')
@@ -886,7 +886,7 @@ class Esqueleto():
         self.delete_tabela_label = ttk.Label(
             self.tabela_func_frame,
             text='Deletar Tabela',
-            style='Comum.TLabel'
+            style='Comum2.TLabel'
         )
         
         self.delete_tabela_var = ttk.StringVar(value='Deletar Tabela')
@@ -909,17 +909,17 @@ class Esqueleto():
         self.delete_tabela_entry.place(relx=0.5, rely=0.82, relheight=0.1, relwidth=0.95,anchor=CENTER)
         self.delete_tabela_botao.place(relx=0.5, rely=0.93, relheight=0.1, relwidth=0.5,anchor=CENTER)
         
-        self.adicionar_frame = ttk.Frame(tela, style='custom.TFrame')
+        self.adicionar_frame = ttk.Frame(tela, style='custom3.TFrame')
         self.adicionar_frame.place(relx=0.165, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
-        self.atualizar_frame = ttk.Frame(tela, style='custom.TFrame')
+        self.atualizar_frame = ttk.Frame(tela, style='custom3.TFrame')
         self.atualizar_frame.place(relx=0.5, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
-        self.delete_frame = ttk.Frame(tela, style='custom.TFrame')
+        self.delete_frame = ttk.Frame(tela, style='custom3.TFrame')
         self.delete_frame.place(relx=0.835, rely=0.915, anchor=CENTER, relheight=0.16, relwidth=0.33)
         
         self.tabela_atual_var = StringVar(value='SELECIONE UMA TABELA')
-        self.tabela_atual = ttk.Label(tela,textvariable=self.tabela_atual_var,style='Titulo.TLabel')
+        self.tabela_atual = ttk.Label(tela,textvariable=self.tabela_atual_var,style='Titulo2.TLabel')
         self.tabela_atual.place(relx=0.35,rely=0.05,anchor=CENTER)
         
         def set_tabela():
