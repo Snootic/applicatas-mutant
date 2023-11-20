@@ -16,7 +16,7 @@ class telalogin:
         tela.centralizarTela(600,600)
         self.login.resizable(False,False)
         
-        self.estilo = Estilo()
+        self.estilo = tela.estilo
 
         titulo = ttk.Label(self.login,
                            text='Applicatas Mutant',

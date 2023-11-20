@@ -15,6 +15,7 @@ class Tela:
         self.janela.title(titulo)
         icone_caminho= os.path.abspath('data/icone.png')
         self.janela.iconphoto(False, ttk.PhotoImage(file=icone_caminho))
+        self.estilo = Estilo()
         
         if (self.janela.title()) == 'Peraeque - Login':
             global tela_login
@@ -42,7 +43,7 @@ class Tela:
             tela_login.style.theme_use("cyborg")
             edit_config.editTema('cyborg')
             Estilo.tema = 'cyborg'
-        Estilo()
+        self.estilo.refresh()
 
     def menu(self):
         menu_principal = ttk.Menu(self.janela)
@@ -89,7 +90,6 @@ class Tela:
                 arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
                                         defaultextension='.sql',
                                         filetypes=[("SQL script file", ".sql")])
-                print(tabela)
                 sql.dump(manual=True, dados=dados, path=arquivo, tabela=tabela)
             elif do == 'restore':
                 arquivo = filedialog.askopenfilename(filetypes=[("SQL script file", ".sql")])
@@ -337,11 +337,14 @@ class Estilo:
     Sfonte = f'Roboto 8'
     def __init__(self):
         self.style = ttk.Style(self.tema)
-        cores = self.style._theme_definitions.get(self.tema)
+        self.cores = self.style._theme_definitions.get(self.tema)
         self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
         self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
         self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
         
+        self.load_styles()
+        
+    def load_styles(self):
         self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
@@ -349,17 +352,17 @@ class Estilo:
         self.style.configure('Estilo1.info.TButton', font=self.fonte)
         self.style.configure('Estilo1.danger.TButton', font=self.fonte)
         self.style.configure('Estilo1.Link.TButton', font=self.Sfonte,
-                            focuscolor=cores.colors.primary,
-                            foreground=cores.colors.primary,)
+                            focuscolor=self.cores.colors.primary,
+                            foreground=self.cores.colors.primary,)
         self.style.configure('Estilo2.Link.TButton', font=self.fonte,
-                             focuscolor=cores.colors.primary,
-                             foreground=cores.colors.primary,
+                             focuscolor=self.cores.colors.primary,
+                             foreground=self.cores.colors.primary,
                              )
-        self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=cores.colors.info)
-        self.style.configure('Titulo2.TLabel', font=self.Tfonte, foreground=cores.colors.info, background=self.background_2)
+        self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=self.cores.colors.info)
+        self.style.configure('Titulo2.TLabel', font=self.Tfonte, foreground=self.cores.colors.info, background=self.background_2)
         self.style.configure('Comum.TLabel', font=self.fonte)
         self.style.configure('Comum2.TLabel', font=self.fonte, background=self.background_1)
-        self.style.configure('Error.TLabel', font=self.fonte, foreground=cores.colors.danger)
+        self.style.configure('Error.TLabel', font=self.fonte, foreground=self.cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('TCombobox', font=self.fonte)
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
@@ -375,3 +378,12 @@ class Estilo:
                              background=[("selected", self.tab_background_1),("!selected", self.background_2) ],)
         self.style.map('custom2.TNotebook.Tab',
                              background=[("selected", self.background_2)],)
+    
+    def refresh(self):
+        self.style = ttk.Style(self.tema)
+        self.cores = self.style._theme_definitions.get(self.tema)
+        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
+        self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
+        
+        self.load_styles()
