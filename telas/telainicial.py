@@ -107,6 +107,8 @@ class inicio:
             self.data_pareto = DataFrame
             if grafico is not None and not grafico.empty:
                 ep.tabela_atual_var.set(value=name)
+            else:
+                ep.tabela_atual_var.set(value=edit_config.getTabela())
             edit_config.setIsSaved(False)
         # Realiza o bloqueio das entries de dados de acordo com a tabela atual
         def bloquear_entrys():
@@ -665,6 +667,7 @@ class inicio:
             tabela_tdf(colunas=colunas_novas)
             tabela_medidas_tdf.insert_rows(index = 'end', rowdata = dados)
             tabela_medidas_tdf.load_table_data()
+            em.tabela_atual_var.set(value=edit_config.getTabela())
             edit_config.setIsSaved(False)
         #Notebok tabelas
         notebook = ttk.Notebook(tela, style='custom.TNotebook')
