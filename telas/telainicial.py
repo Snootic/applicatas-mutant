@@ -218,6 +218,14 @@ class inicio:
                         bloquear_entrys()
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
+            if len(pareto_tabela.get_columns()) < 1:
+                alterar_custo.config(bootstyle='Danger')
+                alterar_atual.config(bootstyle='Danger')
+                alterar_novo.config(bootstyle='Danger')
+                self.home.after(3000,lambda: (alterar_atual.config(bootstyle='Default'),
+                                                alterar_novo.config(bootstyle='Default'),
+                                                alterar_custo.config(bootstyle='Default')))
+                return
             if len(pareto_tabela.get_columns()) == 6:
                 try:
                     custo = float(alterar_custo_var.get())
@@ -252,7 +260,10 @@ class inicio:
             bloquear_entrys() 
         # Deletar Item da tabela
         def delete_item():
-            if not tabelas.delete_valor_pareto(delete_var.get(), delete_quantidade_var.get()):
+            if len(pareto_tabela.get_columns()) < 1 or not tabelas.delete_valor_pareto(
+                delete_var.get(),
+                delete_quantidade_var.get()):
+                
                 delete.configure(bootstyle='Danger')
                 delete_quantidade.configure(bootstyle='Danger')
                 self.home.after(3000, lambda: (delete.configure(bootstyle='Default'),
