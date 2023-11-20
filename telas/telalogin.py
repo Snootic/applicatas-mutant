@@ -82,7 +82,7 @@ class telalogin:
                 user_entry(self)
                 senha_entry(self)
                 self.login.withdraw()
-                inicio = telainicial.inicio(self.login)
+                inicio = telainicial.inicio(self.login,self.estilo)
                 
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
