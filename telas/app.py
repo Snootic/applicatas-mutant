@@ -194,9 +194,7 @@ class Tela:
                         apagar_dados('Sair')
                         self.janela.destroy()
                         tela_login.deiconify()
-            
-            
-                
+                  
         arquivo_menu.add_command(label='Sair', command=lambda: checkSave('Sair'))
         arquivo_menu.add_command(label='Fechar', command=lambda: checkSave('Fechar'))
         
@@ -232,7 +230,10 @@ class Tela:
                         excel = asyncio.run(medidas.imports(arquivo, 'xlsx', nome))
                         self.instancia_com_tabela.medidas(excel,nome)
             except Exception as e:
-                print(e)
+                if isinstance(e, FileNotFoundError):
+                    print(e)
+                else:
+                    self.error_screen(text='''Ocorreu um erro ao importar. Verifique se eu arquivo está devidamente formatado. Para mais informações acesse no menu superior: Programa -> Como usar.''', y=150)
         
         importar_menu = ttk.Menu(menu_principal, tearoff=False)
         importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))
@@ -240,17 +241,26 @@ class Tela:
         
         def export_arquivo(tipo):
             dados = 'pareto' if self.aba_atual == 0 else 'medidas'
-            if tipo == 'csv':
-                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
-                                                       defaultextension='.csv',
-                                                       filetypes=[("CSV", ".csv")])
-                self.instancia_com_tabela.exportar(arquivo, 'csv' ,dados)
-            else:
-                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
-                                                       defaultextension='.xlsx',
-                                                       filetypes=[("Arquivos Excel", ".xlsx")])
-                self.instancia_com_tabela.exportar(arquivo, 'xlsx' ,dados)
-        
+            try:
+                if tipo == 'csv':
+                    arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                                        defaultextension='.csv',
+                                                        filetypes=[("CSV", ".csv")])
+                    self.instancia_com_tabela.exportar(arquivo, 'csv' ,dados)
+                else:
+                    arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                                        defaultextension='.xlsx',
+                                                        filetypes=[("Arquivos Excel", ".xlsx")])
+                    self.instancia_com_tabela.exportar(arquivo, 'xlsx' ,dados)
+            except Exception as e:
+                print(type(e))
+                if isinstance(e, ValueError) or isinstance(e, AttributeError):
+                    print(e)
+                else:
+                    self.error_screen(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
+                                      x=270,
+                                      y=155,
+                                      wrap=268)
         exportar_menu = ttk.Menu(menu_principal, tearoff=False)
         exportar_menu.add_command(label='Exportar - CSV', command=lambda: export_arquivo(tipo='csv'))
         exportar_menu.add_command(label='Exportar - Excel', command=lambda: export_arquivo(tipo='xlsx'))
@@ -269,11 +279,11 @@ class Tela:
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
         
-    def error_screen(self,text, x=210, y=70):
+    def error_screen(self,text, x=210, y=70, wrap=200):
         error = ttk.Toplevel()
         error.title('Erro')
         self.centralizarTela(x,y,error)
-        error_label = ttk.Label(error, style='Error.TLabel',wraplength=200)
+        error_label = ttk.Label(error, style='Error.TLabel',wraplength=wrap)
         error_label.config(text=text)
         error_label.pack()
         sair_button = ttk.Button(error,text='OK', command=error.destroy, style='Estilo1.danger.TButton')
