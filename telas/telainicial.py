@@ -858,7 +858,7 @@ class Esqueleto():
             tela,
             style='custom3.TFrame')
         
-        self.tabela_func_frame.place(relx=0.91, rely=0.45, anchor='center', relheight=0.75, relwidth=0.18)
+        self.tabela_func_frame.place(relx=0.907, rely=0.4165, anchor='center', relheight=0.833, relwidth=0.185)
         
         self.criar_tabela_var = ttk.StringVar(value='Criar nova Tabela')
         self.criar_tabela_entry = ttk.Entry(
