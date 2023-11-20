@@ -34,9 +34,9 @@ class Tela:
                 
     def trocar_tema(self):
         if tela_login.style.theme.type == 'dark':
-            tela_login.style.theme_use("journal")
-            edit_config.editTema('journal')
-            Estilo.tema = 'journal'
+            tela_login.style.theme_use("litera")
+            edit_config.editTema('litera')
+            Estilo.tema = 'litera'
         else:
             tela_login.style.theme_use("cyborg")
             edit_config.editTema('cyborg')
