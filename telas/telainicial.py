@@ -80,7 +80,7 @@ class inicio:
         # Função para inserir os dados da tabela
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
-            if sqlite.sqlite() == None:
+            if sqlite.sqlite() == None and tabela is None:
                 return False
             if isinstance(tabela, str):
                 matplot, DataFrame= sqlite.sqlite()
@@ -785,18 +785,6 @@ class inicio:
     
     def analise_pareto(self, *args):
         self.pareto(*args)
-        if len(args) > 0:
-            sql = sqlite.tabela()
-            sql.tabela = args[2]
-            sql.CriarBD('pareto')
-            dados = args[0].to_numpy().tolist()
-            for dado in dados:
-                try:
-                    sql.add_valor_medidas(dado[0])
-                except sqlite3.OperationalError as e:
-                    print(e)
-                    continue
-                edit_config.limpar_temp()
             
     def medidas(self, *args):
         self.medida(*args)
