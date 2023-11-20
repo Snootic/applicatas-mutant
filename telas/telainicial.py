@@ -3,7 +3,6 @@ from tkinter import *
 import ttkbootstrap as ttk
 from ttkbootstrap.tableview import Tableview
 from ttkbootstrap.constants import *
-from ttkbootstrap import dialogs
 from bd.tabela_pareto import *
 from bd.sqlite import tabela
 import matplotlib.pyplot as plt
@@ -22,6 +21,7 @@ class inicio:
         self.app.instancia_com_tabela = self
         self.app.aba_atual = 0
         self.app.home = self.home
+        self.aba = 0
         
         self.width = self.home.winfo_screenwidth()
         self.height = self.home.winfo_screenheight()
@@ -61,7 +61,7 @@ class inicio:
         self.home.mainloop()
    
     def telas_pareto(self, tela):
-        ep = Esqueleto(tela, 'pareto', self.app, self.home)
+        ep = Esqueleto(tela, 'pareto', self.app, self)
         tabelas = tabela()
         sqlite = pareto()
         
@@ -387,7 +387,7 @@ class inicio:
         return analise_pareto
         
     def telas_medidas(self, tela):
-        em = Esqueleto(tela, 'medidas', self.app, self.home)
+        em = Esqueleto(tela, 'medidas', self.app, self)
         tabelas = tabela()
         em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
         
@@ -804,6 +804,8 @@ class inicio:
     def aba_atual(self):
         indice_notebook = self.notebook.index("current")
         self.app.aba_atual = indice_notebook
+        self.aba = indice_notebook
+        return indice_notebook
     
     def fechar_login(self):
         if edit_config.getSecao() == 'False':
@@ -820,7 +822,7 @@ class Esqueleto():
         self.aba = aba
         self.tela = tela
         self.aplicativo = aplicativo
-        self.home = home 
+        self.home = home.home
         
         self.tabela_func_frame = ttk.Frame(
             tela,
@@ -922,9 +924,13 @@ class Esqueleto():
         self.tabela_atual = ttk.Label(tela,textvariable=self.tabela_atual_var,style='Titulo2.TLabel')
         self.tabela_atual.place(relx=0.35,rely=0.05,anchor=CENTER)
         
-        def set_tabela():
-            tabela = self.tabela_atual_var.get()
-        self.tabela_atual_var.trace('w', lambda *args: set_tabela())
+        def set_tabela(dados):
+            if dados == 0:
+                home.tabela_pareto = self.tabela_atual_var.get()
+            elif dados == 1:
+                home.tabela_medidas = self.tabela_atual_var.get()
+                
+        self.tabela_atual_var.trace('w', lambda *args: set_tabela(home.aba))
     
     #Criar uma tabela nova
     def criar_tabela(self,*args, **kwargs):
@@ -947,14 +953,9 @@ class Esqueleto():
                 x
     # Deletar Tabela
     def delete_tabela(self,*args, **kwargs):
-        confirmar = dialogs.MessageDialog(parent=self.home,
-                                title="Deletar?",
-                                message=f"Deseja realmente deletar a tabela: {self.delete_tabela_var.get()}?\n As informações podem ser perdidas.",
-                                buttons=["Sim:danger",
-                                        "Não:primary"],
-                                alert=True)
-        confirmar.show()
-        if confirmar.result == 'Sim':
+        confirmar = self.aplicativo.error_screen(text=f'Deseja realmente deletar a tabela: {self.delete_tabela_var.get()}?\nAs informações podem ser perdidas.',
+                                                 buttons=["Sim:danger","Não:primary"], y=110, x=220)
+        if confirmar == 'Sim':
             try:
                 self.tabelas.DropTable(tabela = self.delete_tabela_var.get(),dados = self.aba)
             except Exception as e:
