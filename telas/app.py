@@ -1,15 +1,16 @@
 import ttkbootstrap as ttk
-from ttkbootstrap import dialogs
 from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.telainicial import inicio
 import os, asyncio
+from functools import partial
 
 class Tela:
     instancia_com_tabela=None
     aba_atual = None
     def __init__(self, janela='', titulo=''):
+        ttk.utility.enable_high_dpi_awareness(root=janela, scaling=1.3) 
         self.janela = janela
         self.janela.title(titulo)
         icone_caminho= os.path.abspath('data/icone.png')
@@ -70,17 +71,25 @@ class Tela:
                 do: accepts 'save' and 'restore'
             '''
             sql = sqlite.tabela()
-            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
-            
+            if self.aba_atual == 0:
+                dados = 'pareto'
+            elif self.aba_atual == 1:
+                dados = 'medidas'
+            elif self.aba_atual == 2:
+                dados = 'binomial'
+            else:
+                dados = 'calculadora'
+                
             if do == 'save':
                 if self.aba_atual == 0:
-                    tabela = self.instancia_com_tabela.tabela_pareto()
+                    tabela = self.instancia_com_tabela.tabela_pareto
                 elif self.aba_atual == 1:
-                    tabela = self.instancia_com_tabela.tabela_medidas()
+                    tabela = self.instancia_com_tabela.tabela_medidas
                     
                 arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
                                         defaultextension='.sql',
                                         filetypes=[("SQL script file", ".sql")])
+                print(tabela)
                 sql.dump(manual=True, dados=dados, path=arquivo, tabela=tabela)
             elif do == 'restore':
                 arquivo = filedialog.askopenfilename(filetypes=[("SQL script file", ".sql")])
@@ -98,18 +107,14 @@ class Tela:
                     tabela = tabela[-1].split('(')[0]
                 
                 tabelas = sql.getTabelas(dados)
+                
                 for i in tabelas:
                     if tabela in i:
-                        substituir = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
-                                                           title="Tabela já existente",
-                                                           message=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",
-                                                           buttons=["Sim:danger",
-                                                                    "Cancelar:primary"],
-                                                           alert=True)
-                        substituir.show()
+                        substituir = self.error_screen(text=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",y=80,
+                                                       buttons=["Sim:Danger","Cancelar:primary"])
                 
                 try:
-                    if substituir.result != 'Sim':
+                    if substituir != 'Sim':
                         return
                     else:
                         restaurar()
@@ -170,20 +175,16 @@ class Tela:
                     self.janela.destroy()
                     tela_login.deiconify()
             else:
-                confirmar = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
-                                                title="Tabela já existente",
-                                                message=f"Há alterações não salvas, deseja salvar?",
+                confirmar = self.error_screen(text=f"Há alterações não salvas, deseja salvar?",
                                                 buttons=["Não:danger",
                                                         "Sim:primary",
-                                                        "Cancelar:primary"],
-                                                alert=True)
-                confirmar.show()
+                                                        "Cancelar:primary"],y=80)
                     
-                if confirmar.result != 'Cancelar':
+                if confirmar != 'Cancelar':
                     saves = save.Salvar()
-                    if confirmar.result == 'Não':
+                    if confirmar == 'Não':
                         saves.dontSave()
-                    if confirmar.result == 'Sim':
+                    if confirmar == 'Sim':
                         saves.save()
                         
                     if command == 'Fechar':
@@ -278,21 +279,62 @@ class Tela:
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
         
-    def error_screen(self,text, x=210, y=70, wrap=200):
-        error = ttk.Toplevel()
-        error.title('Erro')
-        self.centralizarTela(x,y,error)
-        error_label = ttk.Label(error, style='Error.TLabel',wraplength=wrap)
-        error_label.config(text=text)
-        error_label.pack()
-        sair_button = ttk.Button(error,text='OK', command=error.destroy, style='Estilo1.danger.TButton')
-        sair_button.pack()
-        
+    def error_screen(self, text, x=210, y=70, wrap=200, buttons='OK') -> str:
+            '''
+                Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
+                text: str = texto a ser exibido no popup
+                x: int =  tamanho horizontal do popup em pixels(padrao 200)
+                y: int = tamanho vertical do popup em pixels (padrao 70)
+                wrap: int = quantos pixels até o texto quebrar uma linha (padrao 200)
+                buttons: str | list = valores aceitos são 'OK' ou uma lista contendo o 
+                texto do botão e seu estilo separados por ':'. ex: ['Sim:primary','Não:Danger']
+                
+                Returns -> str: texto do botão pressionado.
+            '''
+            error = ttk.Toplevel()
+            error.title('Erro')
+            self.centralizarTela(x, y, error)
+            error_label = ttk.Label(error, style='Error.TLabel', wraplength=wrap)
+            error_label.config(text=text)
+            error_label.pack(fill='both', expand=True)
+            button_frame = ttk.Frame(error, padding=(5, 5))
+            resposta = ttk.StringVar()
+
+            def set_resposta(retorno):
+                resposta.set(retorno)
+
+            def fechar():
+                error.destroy()
+
+            def button_callback(retorno):
+                set_resposta(retorno)
+                fechar()
+
+            if buttons == 'OK':
+                sair_button = ttk.Button(button_frame, text='OK', command=partial(button_callback, 'OK'), style='Estilo1.danger.TButton')
+                sair_button.pack(anchor='e')
+            else:
+                retorno = []
+                for indice, valor in enumerate(buttons):
+                    text, estilo = valor.split(':')
+                    retorno.append(text)
+                    button = ttk.Button(button_frame, text=text, style=f'Estilo1.{estilo}.TButton')
+                    button.configure(command=partial(button_callback, retorno[indice]))
+                    if valor == buttons[0]:
+                        button.pack(anchor='e', side='right')
+                    else:
+                        button.pack(anchor='e', side='right',padx=(0,2))
+            ttk.Separator(error).pack(fill='x')
+            button_frame.pack(side='bottom', fill='x', anchor='s')
+            error.wait_window()
+
+            return resposta.get()
+
 class Estilo:
     tema = edit_config.getTema()
-    Tfonte = 'Nexa 16'
-    fonte = 'Nexa 10'
-    Sfonte = 'Nexa 8'
+    Tfonte = f'Roboto 14'
+    fonte = f'Roboto 9'
+    Sfonte = f'Roboto 8'
     def __init__(self):
         self.style = ttk.Style(self.tema)
         cores = self.style._theme_definitions.get(self.tema)
@@ -303,6 +345,7 @@ class Estilo:
         self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
+        self.style.configure('Estilo1.primary.TButton', font=self.fonte)
         self.style.configure('Estilo1.info.TButton', font=self.fonte)
         self.style.configure('Estilo1.danger.TButton', font=self.fonte)
         self.style.configure('Estilo1.Link.TButton', font=self.Sfonte,
@@ -320,7 +363,7 @@ class Estilo:
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('TCombobox', font=self.fonte)
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
-        self.style.configure('Table.Treeview.Heading', font=self.fonte)
+        self.style.configure('Table.Treeview.Heading', font=self.Sfonte)
         self.style.configure('custom.TFrame', relief='solid')
         self.style.configure('custom2.TFrame', background=self.background_2)
         self.style.configure('custom3.TFrame', background=self.background_1, relief='solid')
