@@ -196,17 +196,26 @@ class inicio:
                     bloquear_entrys()
                     return 
             if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 4:
-                try:
-                    if custos != '':
+                if custos != '':
+                    try:
                         tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get(), custo=custos)
+                    except:
+                        adicionar.configure(bootstyle="Danger")
+                        adicionar_custo.configure(bootstyle="Danger")
+                        self.home.after(3000, lambda: (adicionar_custo.configure(bootstyle="Default"), 
+                                                adicionar.configure(bootstyle="Default")))
                     else:
-                        tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get())
-                except:
-                    adicionar.configure(bootstyle="Danger")
-                    self.home.after(3000, lambda: adicionar.configure(bootstyle="Default"))
+                        analise_pareto()
+                        bloquear_entrys()
                 else:
-                    analise_pareto()
-                    bloquear_entrys()
+                    try:
+                        tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get())
+                    except:
+                        adicionar.configure(bootstyle="Danger")
+                        self.home.after(3000, lambda: adicionar.configure(bootstyle="Default"))
+                    else:
+                        analise_pareto()
+                        bloquear_entrys()
         # Atualizar ocorrencia
         def atualizar_itens_funcao():
             if len(pareto_tabela.get_columns()) == 6:
