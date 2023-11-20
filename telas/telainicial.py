@@ -881,6 +881,7 @@ class Esqueleto():
             text='Criar uma nova tabela',
             style='Comum2.TLabel',
         )
+        self.criar_tabela_label.lower()
         
         self.criar_tabela_label.place(relx=0.5, rely=0.04, anchor=CENTER)
         self.criar_tabela_entry.place(relx=0.5, rely=0.12, relheight=0.1, relwidth=0.95,anchor=CENTER)
@@ -902,6 +903,7 @@ class Esqueleto():
             text='Abrir uma tabela existente',
             style='Comum2.TLabel',
         )
+        self.abrir_tabela_label.lower()
         
         self.abrir_tabela_label.place(relx=0.5, rely=0.33,anchor=CENTER)
         self.abrir_tabela_btn.place(relx=0.5, rely=0.49, relheight=0.1, relwidth=0.5,anchor=CENTER)
@@ -914,6 +916,8 @@ class Esqueleto():
             text='Gerar gráfico de Pareto',
             style='Comum2.TLabel'
         )
+        self.gerar_grafico_label.lower()
+        
         self.gerar_grafico_label.place(relx=0.5, rely=0.58,anchor=CENTER)
         self.gerar_grafico_label.lower()
         self.gerar_grafico = ttk.Button(self.tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton')
@@ -926,6 +930,7 @@ class Esqueleto():
             text='Deletar Tabela',
             style='Comum2.TLabel'
         )
+        self.delete_tabela_label.lower()
         
         self.delete_tabela_var = ttk.StringVar(value='Deletar Tabela')
         self.delete_tabela_entry = ttk.Entry(
@@ -967,7 +972,9 @@ class Esqueleto():
                 home.tabela_medidas = self.tabela_atual_var.get()
                 
         self.tabela_atual_var.trace('w', lambda *args: set_tabela(home.aba))
-    
+        
+        self.tela.bind("<Configure>", lambda event: self.size_change())
+        
     #Criar uma tabela nova
     def criar_tabela(self,*args, **kwargs):
         criar_tabela = tabela(self.criar_tabela_var.get())
@@ -1018,4 +1025,14 @@ class Esqueleto():
                 i()
             for x in kwargs:
                 x
+    # Ajusta tamanho dos icones dinamicamente de acordo com o tamanho da janela
+    def size_change(self):
+        self.tela.update()
+        tabela_frame = self.tabela_func_frame.winfo_width()
+
+        # Define a quebra de linha das labels presentes no Frame de Tabelas
+        self.abrir_tabela_label.configure(wraplength=tabela_frame)
+        self.criar_tabela_label.configure(wraplength=tabela_frame)
+        self.gerar_grafico_label.configure(wraplength=tabela_frame)
+        self.delete_tabela_label.configure(wraplength=tabela_frame)
              
