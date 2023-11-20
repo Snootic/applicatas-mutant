@@ -12,7 +12,7 @@ import asyncio
 from functools import partial
 
 class inicio:
-    def __init__(self, login=''):
+    def __init__(self, login, estilo):
         self.login = login
         self.home = ttk.Toplevel()
         self.app = app.Tela(self.home, 'Peraeque - Início')
@@ -28,7 +28,7 @@ class inicio:
         
         #Estilo da tela
         colors = self.login.style.colors
-        self.estilo = app.Estilo()
+        self.estilo = estilo
         
         #notebook
         self.notebook = ttk.Notebook(self.home, style='custom2.TNotebook')
@@ -855,7 +855,8 @@ class Esqueleto():
         self.criar_tabela_label.place(relx=0.5, rely=0.04, anchor=CENTER)
         self.criar_tabela_entry.place(relx=0.5, rely=0.12, relheight=0.1, relwidth=0.95,anchor=CENTER)
         self.criar_tabela_botao.place(relx=0.5, rely=0.23, relheight=0.1, relwidth=0.5,anchor=CENTER)
-        
+                
+        ttk.Separator(self.tabela_func_frame,style='custom.TSeparator').place(anchor=CENTER, relx=0.5, rely=0.3,relwidth=0.97)
         
         self.abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
         self.abrir_tabela = ttk.Combobox(self.tabela_func_frame,
@@ -876,14 +877,19 @@ class Esqueleto():
         self.abrir_tabela_btn.place(relx=0.5, rely=0.49, relheight=0.1, relwidth=0.5,anchor=CENTER)
         self.abrir_tabela.place(relx=0.5, rely=0.395, relwidth=0.95,anchor=CENTER)
         
+        ttk.Separator(self.tabela_func_frame,style='custom.TSeparator').place(anchor=CENTER, relx=0.5, rely=0.555,relwidth=0.97)
+        
         self.gerar_grafico_label = ttk.Label(
             self.tabela_func_frame,
             text='Gerar gráfico de Pareto',
             style='Comum2.TLabel'
         )
         self.gerar_grafico_label.place(relx=0.5, rely=0.58,anchor=CENTER)
+        self.gerar_grafico_label.lower()
         self.gerar_grafico = ttk.Button(self.tabela_func_frame,text='Gerar gráfico',style='Estilo1.TButton')
         self.gerar_grafico.place(relx=0.5, rely=0.66, relheight=0.1, relwidth=0.7,anchor=CENTER)
+        
+        ttk.Separator(self.tabela_func_frame,style='custom.TSeparator').place(anchor=CENTER, relx=0.5, rely=0.725,relwidth=0.97)
         
         self.delete_tabela_label = ttk.Label(
             self.tabela_func_frame,
@@ -935,7 +941,6 @@ class Esqueleto():
     #Criar uma tabela nova
     def criar_tabela(self,*args, **kwargs):
         criar_tabela = tabela(self.criar_tabela_var.get())
-        print(self.aba)
         
         try:
             criar_tabela = criar_tabela.CriarBD(dados=self.aba)
