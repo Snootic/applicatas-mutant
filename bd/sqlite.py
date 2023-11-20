@@ -363,13 +363,15 @@ class tabela:
             else:
                 table = separated_lines[1].split(' ')
                 table = table[-1].split('(')[0]
-                self.DropTable(dados=dados, tabela=table)
+                try:
+                    self.DropTable(dados=dados, tabela=table)
+                except Exception as e: 
+                    print(e)
                 with sqlite3.connect(schema) as conn:
                     cursor = conn.cursor()
                     try:
                         cursor.executescript(lines)
                     except Exception as e:
-    
                         print(e)
                     else:
                         conn.commit()

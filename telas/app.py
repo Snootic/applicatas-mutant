@@ -10,7 +10,7 @@ class Tela:
     instancia_com_tabela=None
     aba_atual = None
     def __init__(self, janela='', titulo=''):
-        ttk.utility.enable_high_dpi_awareness(root=janela, scaling=1.3) 
+        ttk.utility.enable_high_dpi_awareness(root=janela, scaling=1.3)
         self.janela = janela
         self.janela.title(titulo)
         icone_caminho= os.path.abspath('data/icone.png')
@@ -82,10 +82,14 @@ class Tela:
                 dados = 'calculadora'
                 
             if do == 'save':
-                if self.aba_atual == 0:
-                    tabela = self.instancia_com_tabela.tabela_pareto
-                elif self.aba_atual == 1:
-                    tabela = self.instancia_com_tabela.tabela_medidas
+                try:
+                    if self.aba_atual == 0:
+                        tabela = self.instancia_com_tabela.tabela_pareto
+                    elif self.aba_atual == 1:
+                        tabela = self.instancia_com_tabela.tabela_medidas
+                except:
+                    self.error_screen(text='Nenhuma tabela selecionada.\nAbra uma tabela para continuar com o backup.')
+                    return
                     
                 arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
                                         defaultextension='.sql',
@@ -96,28 +100,32 @@ class Tela:
                 
                 def restaurar():
                     sql.restore(manual=True, dados=dados, file=arquivo)
+                    edit_config.EditarTabela(table=tabela,dados=dados)
                     if self.aba_atual == 0:
                         self.instancia_com_tabela.analise_pareto()
                     elif self.aba_atual == 1:
                         self.instancia_com_tabela.medidas()
-                        
-                with open(arquivo, 'r', encoding='utf-8') as file:
-                    lines = file.readlines()
-                    tabela = lines[1].split(' ')
-                    tabela = tabela[-1].split('(')[0]
+                try:        
+                    with open(arquivo, 'r', encoding='utf-8') as file:
+                        lines = file.readlines()
+                        tabela = lines[1].split(' ')
+                        tabela = tabela[-1].split('(')[0]
+                except Exception as e:
+                    print(e)
+                    return
                 
                 tabelas = sql.getTabelas(dados)
                 
                 for i in tabelas:
                     if tabela in i:
-                        substituir = self.error_screen(text=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",y=80,
+                        substituir = self.error_screen(text=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",y=100,
                                                        buttons=["Sim:Danger","Cancelar:primary"])
-                
                 try:
                     if substituir != 'Sim':
                         return
                     else:
                         restaurar()
+                        
                 except UnboundLocalError:
                     restaurar()
                     
