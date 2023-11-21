@@ -443,8 +443,8 @@ class Estilo:
                              background=[("selected", self.background_2)],
                              font=self.Sfonte)
         self.style.configure('custom.TEntry', font=self.fonte)
-        self.style.configure('custom.TCombobox', font=self.fonte)
-        self.style.configure('custom.TSpinbox', font=self.fonte)
+        #self.style.configure('custom.TCombobox', font=self.fonte)
+        #self.style.configure('custom.TSpinbox', font=self.fonte)
     
     def refresh(self):
         self.tema = edit_config.getTema()
