@@ -143,28 +143,28 @@ class inicio:
                 color2 = 'black'
                 fig,ax1 = plt.subplots(figsize=(15,10))
                 ax1.set_title('Pareto')
-                if len(pareto_tabela.get_columns()) == 6:
+                if len(pareto_tabela.get_columns()) > 4:
                     ax1.set_ylabel('Custo',color=color1)
-                    ax1.bar(matplot['Ocorrências'], matplot['Custo Total'], color=color1, edgecolor='orange', linewidth=2)
+                    ax1.bar(matplot.iloc[:,0], matplot.iloc[:,-3], color=color1, edgecolor='orange', linewidth=2)
                     ax1.tick_params(axis = 'y', labelcolor = color1)
                     
-                    for i, valor in enumerate(matplot['Custo Total']):
+                    for i, valor in enumerate(matplot.iloc[:,-3]):
                         ax1.annotate(f'R$ {valor:.2f}', (i, valor))
                     
                     ax2 = ax1.twinx()
                     ax2.set_ylabel('%', color=color2)
-                    ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+                    ax2.plot(matplot.iloc[:,0], matplot.iloc[:,-1], color = color2, marker = 's', markersize = 8, linestyle = '-')
                 else:
                     ax1.set_ylabel('Frequência (%)',color=color1)
-                    ax1.bar(matplot['Ocorrências'], matplot['Freq. Relativa'], color=color1, edgecolor='orange', linewidth=2)
+                    ax1.bar(matplot.iloc[:,0], matplot.iloc[:,-2], color=color1, edgecolor='orange', linewidth=2)
                     ax1.tick_params(axis = 'y', labelcolor = color1)
                 
-                    for i, valor in enumerate(matplot['Freq. Relativa']):
+                    for i, valor in enumerate(matplot.iloc[:,-2]):
                         ax1.annotate(f'{valor:.2f} %', (i, valor))
                     
                     ax2 = ax1.twinx()
                     ax2.set_ylabel('%', color=color2)
-                    ax2.plot(matplot['Ocorrências'], matplot['Freq. Acumulada'], color = color2, marker = 's', markersize = 8, linestyle = '-')
+                    ax2.plot(matplot.iloc[:,0], matplot.iloc[:,-1], color = color2, marker = 's', markersize = 8, linestyle = '-')
             except Exception as e:
                 self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 ep.gerar_grafico.configure(style="Estilo1.danger.TButton")
@@ -185,6 +185,7 @@ class inicio:
                     custos += caractere
             if len(pareto_tabela.get_columns()) == 6:
                 try:
+                    if custos == '' or custos == '.': raise ValueError('Custo não pode ser vazio')
                     tabelas.addValor_pareto(adicionar_var.get(), quantidade=adicionar_quantidade_var.get(), custo=custos)
                 except:
                     adicionar.configure(bootstyle="Danger")
