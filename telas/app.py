@@ -347,6 +347,8 @@ class Estilo:
     gfonte= f'Roboto 12'
     fonte = f'Roboto 10'
     Sfonte = f'Roboto 9'
+    largura = None
+    altura = None
     def __init__(self):
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
@@ -356,6 +358,44 @@ class Estilo:
         
         self.load_styles()
         
+    def font_size(self, largura, altura):
+            if (largura,altura) == (self.largura, self.altura):
+                return
+            else:
+                self.largura = largura
+                self.altura = altura
+                RESOLUCAO = largura * altura
+                print(largura, altura)
+                
+                if RESOLUCAO <= 900*600:
+                    self.Tfonte = f'Roboto 16'
+                    self.gfonte= f'Roboto 12'
+                    self.fonte = f'Roboto 10'
+                    self.Sfonte = f'Roboto 9'
+                elif RESOLUCAO > 900*600 and RESOLUCAO < 1280*800:
+                    self.Tfonte = f'Roboto 18'
+                    self.gfonte= f'Roboto 13'
+                    self.fonte = f'Roboto 11'
+                    self.Sfonte = f'Roboto 10'
+                elif RESOLUCAO >= 1280*800 and RESOLUCAO < 1600 * 800:
+                    self.Tfonte = f'Roboto 20'
+                    self.gfonte= f'Roboto 15'
+                    self.fonte = f'Roboto 13'
+                    self.Sfonte = f'Roboto 12'
+                elif RESOLUCAO >= 1600*800 and RESOLUCAO < 1920 * 900:
+                    self.Tfonte = f'Roboto 22'
+                    self.gfonte= f'Roboto 17'
+                    self.fonte = f'Roboto 15'
+                    self.Sfonte = f'Roboto 14'
+                elif RESOLUCAO >= 1920 * 900:
+                    self.Tfonte = f'Roboto 24'
+                    self.gfonte= f'Roboto 19'
+                    self.fonte = f'Roboto 17'
+                    self.Sfonte = f'Roboto 16'
+                    
+                
+                self.refresh()
+                    
     def load_styles(self):
         self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)

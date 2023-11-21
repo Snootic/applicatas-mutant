@@ -1029,11 +1029,17 @@ class Esqueleto():
     # Ajusta tamanho dos icones dinamicamente de acordo com o tamanho da janela
     def size_change(self):
         self.tela.update()
+        self.tela.update_idletasks()
         tabela_frame = self.tabela_func_frame.winfo_width()
+        tela_largura = self.home.winfo_width()
+        tela_altura = self.home.winfo_height()
 
         # Define a quebra de linha das labels presentes no Frame de Tabelas
         self.abrir_tabela_label.configure(wraplength=tabela_frame)
         self.criar_tabela_label.configure(wraplength=tabela_frame)
         self.gerar_grafico_label.configure(wraplength=tabela_frame)
         self.delete_tabela_label.configure(wraplength=tabela_frame)
+        
+        # Define o tamanho da fonte
+        self.estilo.font_size(tela_largura, tela_altura)
              
