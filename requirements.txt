@@ -4,3 +4,4 @@ pandas
 validate_email
 matplotlib
 openpyxl
+scipy
