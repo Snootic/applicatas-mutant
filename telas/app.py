@@ -437,14 +437,17 @@ class Estilo:
                              foreground=self.background_2)
         self.style.configure('custom2.TNotebook')
         self.style.map('custom.TNotebook.Tab',
-                             background=[("selected", self.tab_background_1),("!selected", self.background_2) ],)
+                             background=[("selected", self.tab_background_1),("!selected", self.background_2)],
+                             font=self.Sfonte)
         self.style.map('custom2.TNotebook.Tab',
-                             background=[("selected", self.background_2)],)
+                             background=[("selected", self.background_2)],
+                             font=self.Sfonte)
         self.style.configure('custom.TEntry', font=self.fonte)
         self.style.configure('custom.TCombobox', font=self.fonte)
         self.style.configure('custom.TSpinbox', font=self.fonte)
     
     def refresh(self):
+        self.tema = edit_config.getTema()
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
         self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
