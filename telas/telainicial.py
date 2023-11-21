@@ -166,7 +166,7 @@ class inicio:
                     ax2.set_ylabel('%', color=color2)
                     ax2.plot(matplot.iloc[:,0], matplot.iloc[:,-1], color = color2, marker = 's', markersize = 8, linestyle = '-')
             except Exception as e:
-                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
+                app.ErrorScreen.error(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 ep.gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: ep.gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -481,7 +481,7 @@ class inicio:
                 color1 = 'royalblue'
                 fig,ax1 = plt.subplots(figsize=(15,10))
             except Exception as e:
-                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
+                app.ErrorScreen.error(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 em.gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: em.gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -497,7 +497,7 @@ class inicio:
             try:
                 print(tabela_df[0])
             except Exception as e:
-                self.app.error_screen(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
+                app.ErrorScreen.error(text=f'{e}. Não foi possível gerar gráfico, verifique seus dados e tente novamente',y=120)
                 em.gerar_grafico.configure(style="Estilo1.danger.TButton")
                 self.home.after(3000, lambda: em.gerar_grafico.configure(style="Estilo1.TButton"))
             else:
@@ -988,7 +988,7 @@ class Esqueleto():
             self.tabela_atual_var.set(value=self.criar_tabela_var.get())
             
         except Exception as e:
-            self.aplicativo.error_screen(text=f'{e}: Nome da tabela inválido')
+            app.ErrorScreen.error(text=f'{e}: Nome da tabela inválido')
             self.criar_tabela_entry.config(bootstyle="Danger")
             self.home.after(3000,lambda: self.criar_tabela_entry.config(bootstyle="Default"))
             return
@@ -999,7 +999,7 @@ class Esqueleto():
                 x
     # Deletar Tabela
     def delete_tabela(self,*args, **kwargs):
-        confirmar = self.aplicativo.error_screen(text=f'Deseja realmente deletar a tabela: {self.delete_tabela_var.get()}?\nAs informações podem ser perdidas.',
+        confirmar = app.ErrorScreen.error(text=f'Deseja realmente deletar a tabela: {self.delete_tabela_var.get()}?\nAs informações podem ser perdidas.',
                                                  buttons=["Sim:danger","Não:primary"], y=120, x=220)
         if confirmar == 'Sim':
             try:
@@ -1021,7 +1021,7 @@ class Esqueleto():
             self.tabela_atual_var.set(value=self.abrir_tabela_var.get())
         except Exception as e:
             print(e)
-            self.aplicativo.error_screen(text='Nenhuma tabela selecionada')
+            app.ErrorScreen.error(text='Nenhuma tabela selecionada')
             self.abrir_tabela.config(bootstyle="Danger")
             self.home.after(3000,lambda: self.abrir_tabela.config(bootstyle="Default"))
         else:

@@ -28,15 +28,12 @@ class Tela:
         self.TELA_LARGURA = self.janela.winfo_screenwidth()
         self.TELA_ALTURA = self.janela.winfo_screenheight()
 
-    def centralizarTela(self,largura,altura, janela=''):
+    def centralizarTela(self,largura,altura,):
             janela_largura = largura
             janela_altura = altura
             MONITOR_HORIZONTAL = int(self.TELA_LARGURA /2 - janela_largura / 2)
             MONITOR_VERTICAL = int(self.TELA_ALTURA /2 - janela_altura /2)
-            if janela == '':
-                self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
-            else:
-                janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
+            self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
                 
     def trocar_tema(self):
         if tela_login.style.theme.type == 'dark':
@@ -92,7 +89,7 @@ class Tela:
                     elif self.aba_atual == 1:
                         tabela = self.instancia_com_tabela.tabela_medidas
                 except:
-                    self.error_screen(text='Nenhuma tabela selecionada.\nAbra uma tabela para continuar com o backup.')
+                    ErrorScreen.error(text='Nenhuma tabela selecionada.\nAbra uma tabela para continuar com o backup.')
                     return
                     
                 arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
@@ -122,7 +119,7 @@ class Tela:
                 
                 for i in tabelas:
                     if tabela in i:
-                        substituir = self.error_screen(text=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",y=100,
+                        substituir = ErrorScreen.error(text=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",y=100,
                                                        buttons=["Sim:Danger","Cancelar:primary"])
                 try:
                     if substituir != 'Sim':
@@ -187,7 +184,7 @@ class Tela:
                     self.janela.destroy()
                     tela_login.deiconify()
             else:
-                confirmar = self.error_screen(text=f"Há alterações não salvas, deseja salvar?",
+                confirmar = ErrorScreen.error(text=f"Há alterações não salvas, deseja salvar?",
                                                 buttons=["Não:danger",
                                                         "Sim:primary",
                                                         "Cancelar:primary"],y=80)
@@ -245,7 +242,7 @@ class Tela:
                 if isinstance(e, FileNotFoundError):
                     print(e)
                 else:
-                    self.error_screen(text='''Ocorreu um erro ao importar. Verifique se eu arquivo está devidamente formatado. Para mais informações acesse no menu superior: Programa -> Como usar.''', y=150)
+                    ErrorScreen.error(text='''Ocorreu um erro ao importar. Verifique se eu arquivo está devidamente formatado. Para mais informações acesse no menu superior: Programa -> Como usar.''', y=150)
         
         importar_menu = ttk.Menu(menu_principal, tearoff=False)
         importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))
@@ -268,7 +265,7 @@ class Tela:
                 if isinstance(e, ValueError):
                     print(e)
                 else:
-                    self.error_screen(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
+                    ErrorScreen.error(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
                                       x=275,
                                       y=200,
                                       wrap=268)
@@ -289,57 +286,74 @@ class Tela:
         menu_principal.add_cascade(label='Exportar', menu=exportar_menu)
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
-        
-    def error_screen(self, text, x=210, y=100, wrap=200, buttons='OK') -> str:
-            '''
-                Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
-                text: str = texto a ser exibido no popup
-                x: int =  tamanho horizontal do popup em pixels(padrao 200)
-                y: int = tamanho vertical do popup em pixels (padrao 100)
-                wrap: int = quantos pixels até o texto quebrar uma linha (padrao 200)
-                buttons: str | list = valores aceitos são 'OK' ou uma lista contendo o 
-                texto do botão e seu estilo separados por ':'. ex: ['Sim:primary','Não:Danger']
+
+class ErrorScreen():
+    def error(text, x=210, y=100, wrap=200, buttons='OK') -> str:
+        '''
+            Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
+            text: str = texto a ser exibido no popup
+            x: int =  tamanho horizontal do popup em pixels(padrao 200)
+            y: int = tamanho vertical do popup em pixels (padrao 100)
+            wrap: int = quantos pixels até o texto quebrar uma linha (padrao 200)
+            buttons: str | list = valores aceitos são 'OK' ou uma lista contendo o 
+            texto do botão e seu estilo separados por ':'. ex: ['Sim:primary','Não:Danger']
+            
+            Returns -> str: texto do botão pressionado.
+        '''
+        try:
+                scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
+        except:
+                scale = 1
                 
-                Returns -> str: texto do botão pressionado.
-            '''
-            error = ttk.Toplevel()
-            error.title('Erro')
-            self.centralizarTela(x, y, error)
-            error_label = ttk.Label(error, style='Grande.TLabel', wraplength=wrap)
-            error_label.config(text=text)
-            error_label.pack(fill='both', expand=True)
-            button_frame = ttk.Frame(error, padding=(5, 5))
-            resposta = ttk.StringVar()
+        error = ttk.Toplevel()
+        ttk.utility.enable_high_dpi_awareness(root=error,scaling=scale)
+        error.title('Erro')
+        
+        TELA_X = error.winfo_screenwidth()
+        TELA_Y = error.winfo_screenheight()
+        MONITOR_X = int(TELA_X /2 - x/ 2)
+        MONITOR_Y = int(TELA_Y /2 - y /2)
+        error.geometry(f'{x}x{y}+{MONITOR_X}+{MONITOR_Y}')
+        
+        error_label = ttk.Label(error, style='Comum.TLabel')
+        error_label.pack(fill='both', expand=True)
+        button_frame = ttk.Frame(error, padding=(5, 5))
+        
+        ttk.Separator(error).pack(fill='x')
+        button_frame.pack(side='bottom', fill='x', anchor='s')
+        
+        resposta = ttk.StringVar()
+        
+        def set_resposta(retorno):
+            resposta.set(retorno)
 
-            def set_resposta(retorno):
-                resposta.set(retorno)
+        def fechar():
+            error.destroy()
 
-            def fechar():
-                error.destroy()
+        def button_callback(retorno):
+            set_resposta(retorno)
+            fechar()
+            
+        error_label.config(text=text,wraplength=wrap)
+        
+        if buttons == 'OK':
+            sair_button = ttk.Button(button_frame, text='OK', command=partial(button_callback, 'OK'), style='Estilo1.danger.TButton')
+            sair_button.pack(anchor='e')
+        else:
+            retorno = []
+            for indice, valor in enumerate(buttons):
+                text, estilo = valor.split(':')
+                retorno.append(text)
+                button = ttk.Button(button_frame, text=text, style=f'Estilo1.{estilo}.TButton')
+                button.configure(command=partial(button_callback, retorno[indice]))
+                if valor == buttons[0]:
+                    button.pack(anchor='e', side='right')
+                else:
+                    button.pack(anchor='e', side='right',padx=(0,2))
+        error.wait_window()
 
-            def button_callback(retorno):
-                set_resposta(retorno)
-                fechar()
-
-            if buttons == 'OK':
-                sair_button = ttk.Button(button_frame, text='OK', command=partial(button_callback, 'OK'), style='Estilo1.danger.TButton')
-                sair_button.pack(anchor='e')
-            else:
-                retorno = []
-                for indice, valor in enumerate(buttons):
-                    text, estilo = valor.split(':')
-                    retorno.append(text)
-                    button = ttk.Button(button_frame, text=text, style=f'Estilo1.{estilo}.TButton')
-                    button.configure(command=partial(button_callback, retorno[indice]))
-                    if valor == buttons[0]:
-                        button.pack(anchor='e', side='right')
-                    else:
-                        button.pack(anchor='e', side='right',padx=(0,2))
-            ttk.Separator(error).pack(fill='x')
-            button_frame.pack(side='bottom', fill='x', anchor='s')
-            error.wait_window()
-
-            return resposta.get()
+        return resposta.get()
+            
 
 class Estilo:
     tema = edit_config.getTema()
