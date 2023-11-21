@@ -4,11 +4,10 @@ from telas.app import *
 from data.auth import login, cadastro
 from telas import telainicial
 from data.edit_config import getUser, getSenha
+import os
 
 #TODO:
 # melhorar a segurança do login automatico
-# mudar a cor das bordas das entry em caso de erro
-
 
 class telalogin:
     def __init__(self):
@@ -17,7 +16,7 @@ class telalogin:
         tela.centralizarTela(600,600)
         self.login.resizable(False,False)
         
-        self.estilo = Estilo()
+        self.estilo = tela.estilo
 
         titulo = ttk.Label(self.login,
                            text='Applicatas Mutant',
@@ -69,7 +68,13 @@ class telalogin:
             global inicio
             log = login.login(user,senha,manter_secao)
             retorno.configure(text=log)
-            if log == 'Logado':
+            if log == 'Senha incorreta':
+                self.senha_entry.configure(bootstyle="danger")
+                self.login.after(3000,lambda: self.senha_entry.configure(bootstyle="default"))
+            elif log == 'Usuário ou E-mail não cadastrados':
+                self.user_entry.configure(bootstyle="danger")
+                self.login.after(3000,lambda: self.user_entry.configure(bootstyle="default"))
+            elif log == 'Logado':
                 retorno.configure(text='')
                 self.senha_entry.destroy()
                 self.user_entry.destroy()
@@ -77,7 +82,7 @@ class telalogin:
                 user_entry(self)
                 senha_entry(self)
                 self.login.withdraw()
-                inicio = telainicial.inicio(self.login)
+                inicio = telainicial.inicio(self.login,self.estilo)
                 
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
@@ -102,6 +107,9 @@ class telalogin:
         registrar_label.place(x=210,y=550,anchor='center')
         registrar.place(x=365, y=550, anchor='center')
         
+        trocar_tema = ttk.Checkbutton(self.login, bootstyle="info-round-toggle", text='Tema', command=tela.trocar_tema)
+        trocar_tema.place(relx=0.85,rely=0.96)
+        
         self.login.protocol("WM_DELETE_WINDOW", self.login.destroy)
         try:
             usuario = getUser()
@@ -114,11 +122,10 @@ class telalogin:
             retorno.configure(text=e)
         
         self.login.mainloop()
-        
-        
+             
     def registro(self):
         registro = ttk.Toplevel(self.login)
-        registro.geometry('500x500')
+        registro.geometry('400x500')
         registro.resizable(False, False)
         registro.title('Registrar-se')
 
@@ -127,11 +134,29 @@ class telalogin:
         
         retorno = ttk.Label(registro, style='Comum.TLabel', text='')
 
+        def user_error():
+            user_entry.configure(bootstyle="Danger")
+            registro.after(3000,lambda: user_entry.configure(bootstyle="default"))
+        def email_error():
+            email_entry.configure(bootstyle="Danger")
+            registro.after(3000,lambda: email_entry.configure(bootstyle="default"))
+        def senha_error(same=False):
+            if same == True:
+                confirmar_senha_entry.configure(bootstyle="Danger")
+                registro.after(3000,lambda: confirmar_senha_entry.configure(bootstyle="default"))
+                senha_entry.configure(bootstyle="Danger")
+                registro.after(3000,lambda: senha_entry.configure(bootstyle="default"))
+            else:
+                senha_entry.configure(bootstyle="Danger")
+                registro.after(3000,lambda: senha_entry.configure(bootstyle="default"))
+        
+        
         def usuario():
             usuario = cadastro.credenciais(usuario=user_var.get())
             usuario = usuario.user()
             if usuario != True:
                 retorno.configure(text=usuario)
+                user_error()
                 return False
             else:
                 retorno.configure(text='')
@@ -141,9 +166,8 @@ class telalogin:
         user_entry = ttk.Entry(registro,
                                font=self.estilo.fonte,
                                textvariable=user_var,
-                               width=30,
                                )
-        user_entry.pack(ipady=15,pady=5)
+        user_entry.place(anchor='center', relx=0.5, rely=0.2, height=59, width=255)
         user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
                                                          user_entry.unbind('<FocusIn>'),
                                                          user_entry.bind('<KeyRelease>', lambda event: usuario())
@@ -154,6 +178,7 @@ class telalogin:
             email = email.Email()
             if email != True:
                 retorno.configure(text=email)
+                email_error()
                 return False
             else:
                 retorno.configure(text='')
@@ -165,7 +190,7 @@ class telalogin:
                                 font=self.estilo.fonte,
                                 textvariable=email_var,
                                 width=30)
-        email_entry.pack(ipady=15,pady=5)
+        email_entry.place(anchor='center', relx=0.5, rely=0.33, height=59, width=255)
         email_entry.bind('<FocusIn>',lambda event: (email_var.set(value=''),
                                                          email_entry.unbind('<FocusIn>'),
                                                          email_entry.bind('<KeyRelease>', lambda event: email())
@@ -176,25 +201,30 @@ class telalogin:
             senha = senha.passw()
             if senha != True:
                 retorno.configure(text=senha)
+                senha_error()
                 return False
             else:
                 retorno.configure(text='')
                 return True
         
-        senha_frame = Frame(registro)
-        senha_frame.pack()
-                   
+        senha_frame = Frame(registro, height=73, width=400)
+        senha_frame.place(anchor='center', relx=0.5, rely=0.455)
+        senha_frame.lower()
+        
         senha_var = StringVar(value='Senha')
         senha_entry = ttk.Entry(senha_frame,
                                 font=self.estilo.fonte,
-                                textvariable=senha_var,
-                                width=30)
-        senha_entry.pack(ipady=15,pady=5,padx=(0,0),side='left')
+                                textvariable=senha_var,)
+        senha_entry.place(anchor='center', relx=0.5, rely=0.53, height=59, width=255)
         senha_entry.bind('<FocusIn>',lambda event: senha_var.set(value=''))
         senha_var.trace('w',lambda *args: esconder_senha())
         
-        ver_senha=ttk.Button(senha_frame,width=2,command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
-        ver_senha.pack(before=senha_entry,side='left',padx=(0,5))
+        esconder_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/hide_password.png'))
+        ver_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/show_password.png'))
+        
+        ver_senha=ttk.Button(senha_frame,padding=1, image = esconder_senha_imagem, command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
+        ver_senha.place(anchor='nw', relx=0.83, rely=0.13)
+        
         
         def gerarsenha():
             senha_gerada = cadastro.credenciais()
@@ -202,9 +232,9 @@ class telalogin:
             senha_var.set(value=senha_gerada)
             confirmar_senha_var.set(value=senha_gerada)
             
-        
-        gerar_senha = ttk.Button(senha_frame,width=2,command=gerarsenha)
-        gerar_senha.pack(padx=(5,0),side='right')
+        gerar_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/generate_password.png'))
+        gerar_senha = ttk.Button(senha_frame,padding=1,image = gerar_senha_imagem,command=gerarsenha)
+        gerar_senha.place(anchor='nw', relx=0.83, rely=0.58)
 
         def confirmar_senha(*args):
             confirmar_senha = confirmar_senha_var.get()
@@ -222,7 +252,7 @@ class telalogin:
                                           font=self.estilo.fonte,
                                           textvariable=confirmar_senha_var,
                                           width=30)
-        confirmar_senha_entry.pack(ipady=15,pady=5)
+        confirmar_senha_entry.place(anchor='center', relx=0.5, rely=0.595, height=59, width=255)
         confirmar_senha_entry.bind('<FocusIn>',lambda event: confirmar_senha_var.set(value=''))
         
         confirmar_senha_var.trace('w',lambda *args: esconder_senha(entry=confirmar_senha_entry,
@@ -233,22 +263,28 @@ class telalogin:
                 entry.unbind('<FocusIn>'),
                 entry.configure(show='*')
                 entry.bind('<KeyRelease>', comando)
+                ver_senha.config(image=esconder_senha_imagem)
                 
             elif ver=='ver':
                 entry1.configure(show='')
                 entry.configure(show='')
+                ver_senha.config(image=ver_senha_imagem)
             else:
                 return False
         
         def cadastrar():
             if not confirmar_senha():
                 retorno.configure(text='As senhas não coincidem')
+                senha_error(same=True)
             elif not senha():
                 retorno.configure(text='Senha inválida')
+                senha_error()
             elif not email():
                 retorno.configure(text='E-mail inválido')
+                email_error()
             elif not usuario():
                 retorno.configure(text='Usuário Inválido')
+                user_error()
             else:
                 cadastrar = cadastro.credenciais(user_var.get(),email_var.get(),senha_var.get())
                 cadastrar = cadastrar.cadastrar()
@@ -257,11 +293,10 @@ class telalogin:
         
         confirmar = ttk.Button(registro,
                                style='Estilo1.info.TButton',
-                               width=20,
                                text='Registrar',
                                command=cadastrar)
-        confirmar.pack(ipady=10,pady=5)
+        confirmar.place(anchor='center', relx=0.5, rely=0.8, relheight=0.1, relwidth=0.3)
         
-        retorno.pack(before=confirmar)
-
+        retorno.place(anchor='center', relx=0.5, rely=0.7)
+        
         registro.mainloop()

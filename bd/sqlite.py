@@ -47,6 +47,7 @@ class tabela:
             cursor = tabela.cursor()
             cursor.execute(f"SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='{self.tabela}';")
             resultado = cursor.fetchone()
+
             if resultado[0] == 1:
                 self.att_config_table(self.tabela,dados)
                 return 'Tabela já existe'
@@ -80,32 +81,40 @@ class tabela:
                 self.att_config_table(tabela,'pareto')
                 schema.commit()
         
-    def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,quantidade=0):
+    def atualizar_ocorrencia(self,ocorrenciaatual,novaocorrencia,custo=0,quantidade=0):
         schema = self.CriarDirSchema('pareto')
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
-            self.dump(dados='pareto')
             
             tabela = edit_config.getTabela()
             
-            if quantidade == 0:
-                cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
+            cursor.execute(f"SELECT * FROM {tabela} WHERE ocorrencias='{ocorrenciaatual}'")
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            if novaocorrencia == '' or novaocorrencia == ' ':
+                return False
+            
+            self.dump(dados='pareto')
+            if custo == 0:
+                if quantidade == 0:
+                    cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
+                else:
+                    cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
             else:
-                cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
+                if quantidade == 0:
+                    cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}'")
+                    cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}'")
+                else:
+                    cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
+                    cursor.execute(f"UPDATE {tabela} SET ocorrencias='{novaocorrencia}' WHERE ocorrencias='{ocorrenciaatual}' LIMIT {quantidade}")
             self.att_config_table(tabela,'pareto')
             schema.commit()
             
-    def atualizar_custo(self,ocorrenciaatual,custo):
-        schema = self.CriarDirSchema('pareto')
-        with sqlite3.connect(schema) as schema:
-            cursor = schema.cursor()
-            self.dump(dados='pareto')
-            
-            tabela = edit_config.getTabela()
-            cursor.execute(f"UPDATE {tabela} SET custo='{custo}' WHERE ocorrencias='{ocorrenciaatual}'")
             self.att_config_table(tabela,'pareto')
             schema.commit()
-    
+            return True
+            
     def getTabelas(self,dados):
         schema = self.CriarDirSchema(dados)
         with sqlite3.connect(schema) as schema:
@@ -149,11 +158,20 @@ class tabela:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
             coluna = "medidas"+f'{conj_dados}'
+            try:
+                cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{medida_atual}'")
+            except:
+                return False
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            
             self.dump(dados='medidas')
             
-            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual} LIMIT 1'")
-            self.att_config_table(tabela,'medidas')
+            cursor.execute(f"UPDATE {tabela} SET {coluna}='{nova_medida}' WHERE {coluna}='{medida_atual}' LIMIT 1")
             schema.commit()
+            self.att_config_table(tabela,'medidas')
+            return True
             
     def get_TableColumns(self, medida):
         schema = self.CriarDirSchema('medidas')
@@ -177,14 +195,20 @@ class tabela:
         with sqlite3.connect(schema) as schema:
             cursor = schema.cursor()
             tabela = edit_config.getTabela()
-            self.dump(dados='pareto')
             
+            cursor.execute(f"SELECT * FROM {tabela} WHERE ocorrencias='{ocorrencia}'")
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            
+            self.dump(dados='pareto')
             if quantidade == 0:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}'")
             else:
                 cursor.execute(f"DELETE FROM {tabela} WHERE ocorrencias='{ocorrencia}' LIMIT {quantidade}")
-            self.att_config_table('pareto')
+            self.att_config_table(tabela,'pareto')
             schema.commit()
+            return True
                 
     def delete_valor_medidas(self, dado, conj_dados):
         schema = self.CriarDirSchema('medidas')
@@ -192,11 +216,20 @@ class tabela:
             cursor = schema.cursor()
             coluna = "medidas"+f'{conj_dados}'
             tabela = edit_config.getTabela()
-            self.dump(dados='medidas')
             
+            try:
+                cursor.execute(f"SELECT * FROM {tabela} WHERE {coluna}='{dado}'")
+            except:
+                return False
+            result = cursor.fetchone()
+            if result == None:
+                return False
+            
+            self.dump(dados='medidas')
             cursor.execute(f"DELETE FROM {tabela} WHERE {coluna}='{dado}' LIMIT 1")
             self.att_config_table(tabela,'medidas')
             schema.commit()
+            return True
 
     def dump(self, dados='', manual=False, path=None, tabela=None):
         schema = self.CriarDirSchema(dados)
@@ -330,13 +363,15 @@ class tabela:
             else:
                 table = separated_lines[1].split(' ')
                 table = table[-1].split('(')[0]
-                self.DropTable(dados=dados, tabela=table)
+                try:
+                    self.DropTable(dados=dados, tabela=table)
+                except Exception as e: 
+                    print(e)
                 with sqlite3.connect(schema) as conn:
                     cursor = conn.cursor()
                     try:
                         cursor.executescript(lines)
                     except Exception as e:
-    
                         print(e)
                     else:
                         conn.commit()

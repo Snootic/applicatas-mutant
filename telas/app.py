@@ -1,19 +1,25 @@
 import ttkbootstrap as ttk
-from ttkbootstrap import dialogs
 from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.telainicial import inicio
-import os, asyncio
+import os, asyncio, ctypes
+from functools import partial
 
 class Tela:
     instancia_com_tabela=None
     aba_atual = None
     def __init__(self, janela='', titulo=''):
+        try:
+            scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
+        except:
+            scale = 1
+        ttk.utility.enable_high_dpi_awareness(root=janela,scaling=scale)
         self.janela = janela
         self.janela.title(titulo)
         icone_caminho= os.path.abspath('data/icone.png')
         self.janela.iconphoto(False, ttk.PhotoImage(file=icone_caminho))
+        self.estilo = Estilo()
         
         if (self.janela.title()) == 'Peraeque - Login':
             global tela_login
@@ -22,25 +28,26 @@ class Tela:
         self.TELA_LARGURA = self.janela.winfo_screenwidth()
         self.TELA_ALTURA = self.janela.winfo_screenheight()
 
-    def centralizarTela(self,largura,altura):
+    def centralizarTela(self,largura,altura, janela=''):
             janela_largura = largura
             janela_altura = altura
             MONITOR_HORIZONTAL = int(self.TELA_LARGURA /2 - janela_largura / 2)
             MONITOR_VERTICAL = int(self.TELA_ALTURA /2 - janela_altura /2)
-            
-            self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
-    
+            if janela == '':
+                self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
+            else:
+                janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
+                
     def trocar_tema(self):
         if tela_login.style.theme.type == 'dark':
-            tela_login.style.theme_use("journal")
-            edit_config.editTema('journal')
-            Estilo.tema = 'journal'
+            tela_login.style.theme_use("litera")
+            edit_config.editTema('litera')
+            self.estilo.tema = 'litera'
         else:
             tela_login.style.theme_use("cyborg")
             edit_config.editTema('cyborg')
-            Estilo.tema = 'cyborg'
-        
-        estilo = Estilo()
+            self.estilo.tema = 'cyborg'
+        self.estilo.refresh()
 
     def menu(self):
         menu_principal = ttk.Menu(self.janela)
@@ -69,13 +76,24 @@ class Tela:
                 do: accepts 'save' and 'restore'
             '''
             sql = sqlite.tabela()
-            dados = 'pareto' if self.aba_atual == 0 else 'medidas'
-            
+            if self.aba_atual == 0:
+                dados = 'pareto'
+            elif self.aba_atual == 1:
+                dados = 'medidas'
+            elif self.aba_atual == 2:
+                dados = 'binomial'
+            else:
+                dados = 'calculadora'
+                
             if do == 'save':
-                if self.aba_atual == 0:
-                    tabela = self.instancia_com_tabela.tabela_pareto()
-                elif self.aba_atual == 1:
-                    tabela = self.instancia_com_tabela.tabela_medidas()
+                try:
+                    if self.aba_atual == 0:
+                        tabela = self.instancia_com_tabela.tabela_pareto
+                    elif self.aba_atual == 1:
+                        tabela = self.instancia_com_tabela.tabela_medidas
+                except:
+                    self.error_screen(text='Nenhuma tabela selecionada.\nAbra uma tabela para continuar com o backup.')
+                    return
                     
                 arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
                                         defaultextension='.sql',
@@ -86,32 +104,32 @@ class Tela:
                 
                 def restaurar():
                     sql.restore(manual=True, dados=dados, file=arquivo)
+                    edit_config.EditarTabela(table=tabela,dados=dados)
                     if self.aba_atual == 0:
                         self.instancia_com_tabela.analise_pareto()
                     elif self.aba_atual == 1:
                         self.instancia_com_tabela.medidas()
-                        
-                with open(arquivo, 'r', encoding='utf-8') as file:
-                    lines = file.readlines()
-                    tabela = lines[1].split(' ')
-                    tabela = tabela[-1].split('(')[0]
+                try:        
+                    with open(arquivo, 'r', encoding='utf-8') as file:
+                        lines = file.readlines()
+                        tabela = lines[1].split(' ')
+                        tabela = tabela[-1].split('(')[0]
+                except Exception as e:
+                    print(e)
+                    return
                 
                 tabelas = sql.getTabelas(dados)
+                
                 for i in tabelas:
                     if tabela in i:
-                        substituir = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
-                                                           title="Tabela já existente",
-                                                           message=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",
-                                                           buttons=["Sim:danger",
-                                                                    "Cancelar:primary"],
-                                                           alert=True)
-                        substituir.show()
-                
+                        substituir = self.error_screen(text=f"A tabela '{tabela}' já existe.\n Deseja substituí-la?",y=100,
+                                                       buttons=["Sim:Danger","Cancelar:primary"])
                 try:
-                    if substituir.result != 'Sim':
+                    if substituir != 'Sim':
                         return
                     else:
                         restaurar()
+                        
                 except UnboundLocalError:
                     restaurar()
                     
@@ -169,20 +187,16 @@ class Tela:
                     self.janela.destroy()
                     tela_login.deiconify()
             else:
-                confirmar = dialogs.MessageDialog(parent=self.instancia_com_tabela.home,
-                                                title="Tabela já existente",
-                                                message=f"Há alterações não salvas, deseja salvar?",
+                confirmar = self.error_screen(text=f"Há alterações não salvas, deseja salvar?",
                                                 buttons=["Não:danger",
                                                         "Sim:primary",
-                                                        "Cancelar:primary"],
-                                                alert=True)
-                confirmar.show()
+                                                        "Cancelar:primary"],y=80)
                     
-                if confirmar.result != 'Cancelar':
+                if confirmar != 'Cancelar':
                     saves = save.Salvar()
-                    if confirmar.result == 'Não':
+                    if confirmar == 'Não':
                         saves.dontSave()
-                    if confirmar.result == 'Sim':
+                    if confirmar == 'Sim':
                         saves.save()
                         
                     if command == 'Fechar':
@@ -192,9 +206,7 @@ class Tela:
                         apagar_dados('Sair')
                         self.janela.destroy()
                         tela_login.deiconify()
-            
-            
-                
+                  
         arquivo_menu.add_command(label='Sair', command=lambda: checkSave('Sair'))
         arquivo_menu.add_command(label='Fechar', command=lambda: checkSave('Fechar'))
         
@@ -230,7 +242,10 @@ class Tela:
                         excel = asyncio.run(medidas.imports(arquivo, 'xlsx', nome))
                         self.instancia_com_tabela.medidas(excel,nome)
             except Exception as e:
-                print(e)
+                if isinstance(e, FileNotFoundError):
+                    print(e)
+                else:
+                    self.error_screen(text='''Ocorreu um erro ao importar. Verifique se eu arquivo está devidamente formatado. Para mais informações acesse no menu superior: Programa -> Como usar.''', y=150)
         
         importar_menu = ttk.Menu(menu_principal, tearoff=False)
         importar_menu.add_command(label='Importar CSV/TXT', command=lambda: import_arquivo(tipo='csv'))
@@ -238,17 +253,25 @@ class Tela:
         
         def export_arquivo(tipo):
             dados = 'pareto' if self.aba_atual == 0 else 'medidas'
-            if tipo == 'csv':
-                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
-                                                       defaultextension='.csv',
-                                                       filetypes=[("CSV", ".csv")])
-                self.instancia_com_tabela.exportar(arquivo, 'csv' ,dados)
-            else:
-                arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
-                                                       defaultextension='.xlsx',
-                                                       filetypes=[("Arquivos Excel", ".xlsx")])
-                self.instancia_com_tabela.exportar(arquivo, 'xlsx' ,dados)
-        
+            try:
+                if tipo == 'csv':
+                    arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                                        defaultextension='.csv',
+                                                        filetypes=[("CSV", ".csv")])
+                    self.instancia_com_tabela.exportar(arquivo, 'csv' ,dados)
+                else:
+                    arquivo = filedialog.asksaveasfilename(confirmoverwrite=True,
+                                                        defaultextension='.xlsx',
+                                                        filetypes=[("Arquivos Excel", ".xlsx")])
+                    self.instancia_com_tabela.exportar(arquivo, 'xlsx' ,dados)
+            except Exception as e:
+                if isinstance(e, ValueError):
+                    print(e)
+                else:
+                    self.error_screen(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
+                                      x=275,
+                                      y=200,
+                                      wrap=268)
         exportar_menu = ttk.Menu(menu_principal, tearoff=False)
         exportar_menu.add_command(label='Exportar - CSV', command=lambda: export_arquivo(tipo='csv'))
         exportar_menu.add_command(label='Exportar - Excel', command=lambda: export_arquivo(tipo='xlsx'))
@@ -267,29 +290,168 @@ class Tela:
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
         
+    def error_screen(self, text, x=210, y=100, wrap=200, buttons='OK') -> str:
+            '''
+                Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
+                text: str = texto a ser exibido no popup
+                x: int =  tamanho horizontal do popup em pixels(padrao 200)
+                y: int = tamanho vertical do popup em pixels (padrao 100)
+                wrap: int = quantos pixels até o texto quebrar uma linha (padrao 200)
+                buttons: str | list = valores aceitos são 'OK' ou uma lista contendo o 
+                texto do botão e seu estilo separados por ':'. ex: ['Sim:primary','Não:Danger']
+                
+                Returns -> str: texto do botão pressionado.
+            '''
+            error = ttk.Toplevel()
+            error.title('Erro')
+            self.centralizarTela(x, y, error)
+            error_label = ttk.Label(error, style='Grande.TLabel', wraplength=wrap)
+            error_label.config(text=text)
+            error_label.pack(fill='both', expand=True)
+            button_frame = ttk.Frame(error, padding=(5, 5))
+            resposta = ttk.StringVar()
+
+            def set_resposta(retorno):
+                resposta.set(retorno)
+
+            def fechar():
+                error.destroy()
+
+            def button_callback(retorno):
+                set_resposta(retorno)
+                fechar()
+
+            if buttons == 'OK':
+                sair_button = ttk.Button(button_frame, text='OK', command=partial(button_callback, 'OK'), style='Estilo1.danger.TButton')
+                sair_button.pack(anchor='e')
+            else:
+                retorno = []
+                for indice, valor in enumerate(buttons):
+                    text, estilo = valor.split(':')
+                    retorno.append(text)
+                    button = ttk.Button(button_frame, text=text, style=f'Estilo1.{estilo}.TButton')
+                    button.configure(command=partial(button_callback, retorno[indice]))
+                    if valor == buttons[0]:
+                        button.pack(anchor='e', side='right')
+                    else:
+                        button.pack(anchor='e', side='right',padx=(0,2))
+            ttk.Separator(error).pack(fill='x')
+            button_frame.pack(side='bottom', fill='x', anchor='s')
+            error.wait_window()
+
+            return resposta.get()
+
 class Estilo:
     tema = edit_config.getTema()
-    Tfonte = 'Nexa 16'
-    fonte = 'Nexa 10'
-    Sfonte = 'Nexa 8'
+    Tfonte = f'Roboto 16'
+    gfonte= f'Roboto 12'
+    fonte = f'Roboto 10'
+    Sfonte = f'Roboto 9'
+    largura = None
+    altura = None
     def __init__(self):
         self.style = ttk.Style(self.tema)
-        cores = self.style._theme_definitions.get(self.tema)
+        self.cores = self.style._theme_definitions.get(self.tema)
+        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
+        self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
+        
+        self.load_styles()
+        
+    def font_size(self, largura, altura):
+            if (largura,altura) == (self.largura, self.altura):
+                return
+            else:
+                self.largura = largura
+                self.altura = altura
+                RESOLUCAO = largura * altura
+                
+                if RESOLUCAO <= 500*600:
+                    self.Tfonte = f'Roboto 12'
+                    self.gfonte= f'Roboto 8'
+                    self.fonte = f'Roboto 7'
+                    self.Sfonte = f'Roboto 6'
+                
+                elif RESOLUCAO <= 700*700:
+                    self.Tfonte = f'Roboto 14'
+                    self.gfonte= f'Roboto 10'
+                    self.fonte = f'Roboto 9'
+                    self.Sfonte = f'Roboto 8'
+                elif RESOLUCAO <= 900*600:
+                    self.Tfonte = f'Roboto 16'
+                    self.gfonte= f'Roboto 12'
+                    self.fonte = f'Roboto 10'
+                    self.Sfonte = f'Roboto 9'
+                elif RESOLUCAO <= 1280*800:
+                    self.Tfonte = f'Roboto 18'
+                    self.gfonte= f'Roboto 13'
+                    self.fonte = f'Roboto 11'
+                    self.Sfonte = f'Roboto 10'
+                elif RESOLUCAO <= 1600 * 800:
+                    self.Tfonte = f'Roboto 20'
+                    self.gfonte= f'Roboto 15'
+                    self.fonte = f'Roboto 13'
+                    self.Sfonte = f'Roboto 12'
+                elif RESOLUCAO <= 1920 * 900:
+                    self.Tfonte = f'Roboto 22'
+                    self.gfonte= f'Roboto 17'
+                    self.fonte = f'Roboto 15'
+                    self.Sfonte = f'Roboto 14'
+                elif RESOLUCAO >= 1920 * 900:
+                    self.Tfonte = f'Roboto 24'
+                    self.gfonte= f'Roboto 19'
+                    self.fonte = f'Roboto 17'
+                    self.Sfonte = f'Roboto 16'
+                    
+                self.refresh()
+                    
+    def load_styles(self):
         self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
+        self.style.configure('Estilo1.primary.TButton', font=self.fonte)
         self.style.configure('Estilo1.info.TButton', font=self.fonte)
+        self.style.configure('Estilo1.danger.TButton', font=self.fonte)
         self.style.configure('Estilo1.Link.TButton', font=self.Sfonte,
-                            focuscolor=cores.colors.primary,
-                            foreground=cores.colors.primary,)
+                            focuscolor=self.cores.colors.primary,
+                            foreground=self.cores.colors.primary,)
         self.style.configure('Estilo2.Link.TButton', font=self.fonte,
-                             focuscolor=cores.colors.primary,
-                             foreground=cores.colors.primary,
+                             focuscolor=self.cores.colors.primary,
+                             foreground=self.cores.colors.primary,
                              )
-        self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=cores.colors.info)
+        self.style.configure('Titulo.TLabel', font=self.Tfonte, foreground=self.cores.colors.info)
+        self.style.configure('Titulo2.TLabel', font=self.Tfonte, foreground=self.cores.colors.info, background=self.background_2)
         self.style.configure('Comum.TLabel', font=self.fonte)
+        self.style.configure('Comum2.TLabel', font=self.fonte, background=self.background_1)
+        self.style.configure('Error.TLabel', font=self.fonte, foreground=self.cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
+        self.style.configure('Grande.TLabel', font=self.gfonte)
         self.style.configure('TCombobox', font=self.fonte)
         self.style.configure('Table.Treeview',font=self.fonte, rowheight=30)
-        self.style.configure('Table.Treeview.Heading', font=self.fonte)
+        self.style.configure('Table.Treeview.Heading', font=self.Sfonte)
         self.style.configure('custom.TFrame', relief='solid')
+        self.style.configure('custom2.TFrame', background=self.background_2)
+        self.style.configure('custom3.TFrame', background=self.background_1, relief='solid')
+        self.style.configure('custom.TNotebook',
+                             background=self.background_2,
+                             foreground=self.background_2)
+        self.style.configure('custom2.TNotebook')
+        self.style.map('custom.TNotebook.Tab',
+                             background=[("selected", self.tab_background_1),("!selected", self.background_2)],
+                             font=self.Sfonte)
+        self.style.map('custom2.TNotebook.Tab',
+                             background=[("selected", self.background_2)],
+                             font=self.Sfonte)
+        self.style.configure('custom.TEntry', font=self.fonte)
+        #self.style.configure('custom.TCombobox', font=self.fonte)
+        #self.style.configure('custom.TSpinbox', font=self.fonte)
+    
+    def refresh(self):
+        self.tema = edit_config.getTema()
+        self.style = ttk.Style(self.tema)
+        self.cores = self.style._theme_definitions.get(self.tema)
+        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
+        self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
+        
+        self.load_styles()
