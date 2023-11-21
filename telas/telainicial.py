@@ -294,7 +294,7 @@ class inicio:
         adicionar_var = ttk.StringVar(value='Ocorrência')
         adicionar = ttk.Entry(ep.adicionar_frame,
                                     textvariable=adicionar_var,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         adicionar.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.72)
         adicionar.bind(
             '<FocusIn>',
@@ -304,7 +304,7 @@ class inicio:
         adicionar_custo_var = ttk.StringVar(value='Custo Unitário')
         adicionar_custo = ttk.Spinbox(ep.adicionar_frame,
                                     textvariable=adicionar_custo_var,
-                                    font=self.estilo.fonte)
+                                    style='custom.TSpinbox')
         adicionar_custo.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.72)
         adicionar_custo.bind(
             '<FocusIn>',
@@ -315,7 +315,8 @@ class inicio:
         adicionar_quantidade = ttk.Spinbox(ep.adicionar_frame,
                                             textvariable=adicionar_quantidade_var,
                                             from_=1,
-                                            to=10000)
+                                            to=10000,
+                                            style='custom.TSpinbox')
         adicionar_quantidade.place(relx=0.78,rely=0.1, relheight=0.35, relwidth=0.2)
         
         adicionar_btn = ttk.Button(ep.adicionar_frame,
@@ -330,7 +331,7 @@ class inicio:
         alterar_atual = ttk.Entry(ep.atualizar_frame,
                                     textvariable=alterar_atual_var,
                                     width=30,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         alterar_atual.place(relx=0.02,rely=0.1, relheight=0.35,relwidth=0.72)
         alterar_atual.bind(
             '<FocusIn>',
@@ -342,14 +343,15 @@ class inicio:
                                             textvariable=alterar_quantidade_var,
                                             width=10,
                                             from_=1,
-                                            to=10000)
+                                            to=10000,
+                                            style='custom.TSpinbox')
         alterar_quantidade.place(relx=0.78,rely=0.1, relheight=0.35, relwidth=0.2)
         
         alterar_novo_var = ttk.StringVar(value='Nova ocorrência')
         alterar_novo = ttk.Entry(ep.atualizar_frame,
                                     textvariable=alterar_novo_var,
                                     width=15,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         alterar_novo.bind(
             '<FocusIn>',
             lambda event: (alterar_novo_var.set(value=''),
@@ -361,7 +363,7 @@ class inicio:
                                     textvariable=alterar_custo_var,
                                     width=10,
                                     from_=1,
-                                    font=self.estilo.fonte)
+                                    style='custom.TSpinbox')
         alterar_custo.place(relx=0.385, rely=0.55, relheight=0.35,relwidth=0.36)
         alterar_custo.bind(
             '<FocusIn>',
@@ -379,7 +381,7 @@ class inicio:
         delete_var = ttk.StringVar(value='Ocorrência')
         delete = ttk.Entry(ep.delete_frame,
                                     textvariable=delete_var,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         delete.place(relx=0.375,rely=0.29, relheight=0.35, relwidth=0.72, anchor=CENTER)
         delete.bind(
             '<FocusIn>',
@@ -391,7 +393,8 @@ class inicio:
                                             textvariable=delete_quantidade_var,
                                             width=10,
                                             from_=0,
-                                            to=10000)
+                                            to=10000,
+                                            style='custom.TSpinbox')
         delete_quantidade.place(relx=0.375,rely=0.75, relheight=0.35, relwidth=0.72, anchor=CENTER)
         
         delete_btn = ttk.Button(ep.delete_frame,
@@ -712,7 +715,7 @@ class inicio:
         inserir_var = ttk.StringVar(value='Insira o dado')
         inserir = ttk.Entry(em.adicionar_frame,
                         textvariable=inserir_var,
-                        font=self.estilo.fonte)
+                        style='custom.TEntry')
         inserir.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.65)
         inserir.bind(
             '<FocusIn>',
@@ -723,7 +726,7 @@ class inicio:
         inserir_coluna = ttk.Combobox(em.adicionar_frame,
                                       textvariable=inserir_coluna_var,
                                       width=15,
-                                      font=self.estilo.fonte)
+                                      style='custom.TCombobox')
         inserir_coluna.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.65)
         inserir_coluna.bind('<FocusIn>', lambda event: (inserir_coluna_var.set(value=''), inserir_coluna.unbind('<FocusIn>')))
         
@@ -739,7 +742,7 @@ class inicio:
         atualizar_atual = ttk.Entry(em.atualizar_frame,
                                     textvariable=atualizar_atual_var,
                                     width=10,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         atualizar_atual.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.475)
         atualizar_atual.bind(
             '<FocusIn>',
@@ -750,7 +753,7 @@ class inicio:
         atualizar_novo = ttk.Entry(em.atualizar_frame,
                                     textvariable=atualizar_novo_var,
                                     width=10,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         atualizar_novo.place(relx=0.505, rely=0.1, relheight=0.35, relwidth=0.475)
         atualizar_novo.bind(
             '<FocusIn>',
@@ -761,7 +764,7 @@ class inicio:
         atualizar_coluna = ttk.Combobox(em.atualizar_frame,
                                       textvariable=atualizar_coluna_var,
                                       width=10,
-                                      font=self.estilo.fonte)
+                                      style='custom.TCombobox')
         atualizar_coluna.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.65)
         atualizar_coluna.bind('<FocusIn>', lambda event: (atualizar_coluna_var.set(value=''),
                                                             atualizar_coluna.unbind('<FocusIn>')))
@@ -780,7 +783,7 @@ class inicio:
         delete = ttk.Entry(em.delete_frame,
                                     textvariable=delete_var,
                                     width=10,
-                                    font=self.estilo.fonte)
+                                    style='custom.TEntry')
         delete.place(relx=0.02,rely=0.1, relheight=0.35, relwidth=0.65)
         delete.bind(
             '<FocusIn>',
@@ -791,7 +794,7 @@ class inicio:
         delete_coluna = ttk.Combobox(em.delete_frame,
                                       textvariable=delete_coluna_var,
                                       width=15,
-                                      font=self.estilo.fonte)
+                                      style='custom.TCombobox')
         delete_coluna.place(relx=0.02, rely=0.55, relheight=0.35,relwidth=0.65)
         delete_coluna.bind('<FocusIn>', lambda event: (delete_coluna_var.set(value=''), delete_coluna.unbind('<FocusIn>')))
         
@@ -865,7 +868,7 @@ class Esqueleto():
         self.criar_tabela_entry = ttk.Entry(
             self.tabela_func_frame,
             textvariable=self.criar_tabela_var,
-            font=self.estilo.fonte)
+            style='custom.TEntry')
         self.criar_tabela_entry.bind(
             '<FocusIn>',
             lambda event: (self.criar_tabela_var.set(value=''),
@@ -893,7 +896,7 @@ class Esqueleto():
         self.abrir_tabela_var = ttk.StringVar(value='Abrir uma tabela')
         self.abrir_tabela = ttk.Combobox(self.tabela_func_frame,
                                     textvariable=self.abrir_tabela_var,
-                                    font=self.estilo.fonte)
+                                    style='custom.TCombobox')
         
         self.abrir_tabela_btn = ttk.Button(self.tabela_func_frame,
                                       text='Abrir',
@@ -937,7 +940,7 @@ class Esqueleto():
         self.delete_tabela_entry = ttk.Entry(
             self.tabela_func_frame,
             textvariable=self.delete_tabela_var,
-            font=self.estilo.fonte)
+            style='custom.TEntry')
         self.delete_tabela_entry.bind(
             '<FocusIn>',
             lambda event: (self.delete_tabela_var.set(value=''),
@@ -1042,4 +1045,5 @@ class Esqueleto():
         
         # Define o tamanho da fonte
         self.estilo.font_size(tela_largura, tela_altura)
+        
              

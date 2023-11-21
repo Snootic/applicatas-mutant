@@ -42,11 +42,11 @@ class Tela:
         if tela_login.style.theme.type == 'dark':
             tela_login.style.theme_use("litera")
             edit_config.editTema('litera')
-            Estilo.tema = 'litera'
+            self.estilo.tema = 'litera'
         else:
             tela_login.style.theme_use("cyborg")
             edit_config.editTema('cyborg')
-            Estilo.tema = 'cyborg'
+            self.estilo.tema = 'cyborg'
         self.estilo.refresh()
 
     def menu(self):
@@ -365,24 +365,34 @@ class Estilo:
                 self.largura = largura
                 self.altura = altura
                 RESOLUCAO = largura * altura
-                print(largura, altura)
                 
-                if RESOLUCAO <= 900*600:
+                if RESOLUCAO <= 500*600:
+                    self.Tfonte = f'Roboto 12'
+                    self.gfonte= f'Roboto 8'
+                    self.fonte = f'Roboto 7'
+                    self.Sfonte = f'Roboto 6'
+                
+                elif RESOLUCAO <= 700*700:
+                    self.Tfonte = f'Roboto 14'
+                    self.gfonte= f'Roboto 10'
+                    self.fonte = f'Roboto 9'
+                    self.Sfonte = f'Roboto 8'
+                elif RESOLUCAO <= 900*600:
                     self.Tfonte = f'Roboto 16'
                     self.gfonte= f'Roboto 12'
                     self.fonte = f'Roboto 10'
                     self.Sfonte = f'Roboto 9'
-                elif RESOLUCAO > 900*600 and RESOLUCAO < 1280*800:
+                elif RESOLUCAO <= 1280*800:
                     self.Tfonte = f'Roboto 18'
                     self.gfonte= f'Roboto 13'
                     self.fonte = f'Roboto 11'
                     self.Sfonte = f'Roboto 10'
-                elif RESOLUCAO >= 1280*800 and RESOLUCAO < 1600 * 800:
+                elif RESOLUCAO <= 1600 * 800:
                     self.Tfonte = f'Roboto 20'
                     self.gfonte= f'Roboto 15'
                     self.fonte = f'Roboto 13'
                     self.Sfonte = f'Roboto 12'
-                elif RESOLUCAO >= 1600*800 and RESOLUCAO < 1920 * 900:
+                elif RESOLUCAO <= 1920 * 900:
                     self.Tfonte = f'Roboto 22'
                     self.gfonte= f'Roboto 17'
                     self.fonte = f'Roboto 15'
@@ -393,7 +403,6 @@ class Estilo:
                     self.fonte = f'Roboto 17'
                     self.Sfonte = f'Roboto 16'
                     
-                
                 self.refresh()
                     
     def load_styles(self):
@@ -431,6 +440,9 @@ class Estilo:
                              background=[("selected", self.tab_background_1),("!selected", self.background_2) ],)
         self.style.map('custom2.TNotebook.Tab',
                              background=[("selected", self.background_2)],)
+        self.style.configure('custom.TEntry', font=self.fonte)
+        self.style.configure('custom.TCombobox', font=self.fonte)
+        self.style.configure('custom.TSpinbox', font=self.fonte)
     
     def refresh(self):
         self.style = ttk.Style(self.tema)
