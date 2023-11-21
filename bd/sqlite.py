@@ -2,7 +2,6 @@ import os
 import sqlite3
 # from sqlite_dump import iterdump
 from data import edit_config
-import platform
 from time import sleep
 
 class tabela:
@@ -11,11 +10,12 @@ class tabela:
     def CriarDirSchema(self, dados):
         
         usuario = edit_config.getUser()
-        if platform.system() == 'Windows':
-            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data\\users\\sqlite_databases\\{usuario}')
-        else:
-            CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data/users/sqlite_databases/{usuario}')
+        CAMINHO_DBS = os.path.join(os.getcwd(),f'data/users/sqlite_databases/')
+        CAMINHO_PASTA_DB = os.path.join(os.getcwd(),f'data/users/sqlite_databases/{usuario}')
         
+        if not os.path.exists(CAMINHO_DBS):
+            os.mkdir(CAMINHO_DBS)
+            
         if not os.path.exists(CAMINHO_PASTA_DB):
             os.mkdir(CAMINHO_PASTA_DB)
         
