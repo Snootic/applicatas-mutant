@@ -51,6 +51,7 @@ class inicio:
         
         self.pareto = self.telas_pareto(self.tela_pareto)
         self.medida = self.telas_medidas(self.tela_medidas)
+        self.binomial = self.telas_binomiais(self.tela_binomial)
         # self.binomial = self.telas_binomiais(self.tela_binomial)
         
         self.data_pareto: DataFrame
@@ -816,6 +817,9 @@ class inicio:
         tabela_tdf()
         
         return tabelas_medidas
+
+    def telas_binomiais(self, tela):
+        cc = CalcEsqueleto(tela, 'binomial', self.app, self)
     
     def analise_pareto(self, *args):
         self.pareto(*args)
@@ -1046,4 +1050,14 @@ class TbEsqueleto():
         # Define o tamanho da fonte
         self.estilo.font_size(tela_largura, tela_altura)
         
-             
+class CalcEsqueleto():
+    def __init__(self,tela, aba, aplicativo, home):
+        self.estilo = app.Estilo()
+        self.tabelas = tabela()
+        self.aba = aba
+        self.tela = tela
+        self.aplicativo = aplicativo
+        self.home = home.home
+        
+        test_button = ttk.Button(tela, text='TESTE')
+        test_button.pack()
