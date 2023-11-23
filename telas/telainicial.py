@@ -61,7 +61,7 @@ class inicio:
         self.home.mainloop()
    
     def telas_pareto(self, tela):
-        ep = Esqueleto(tela, 'pareto', self.app, self)
+        ep = TbEsqueleto(tela, 'pareto', self.app, self)
         tabelas = tabela()
         sqlite = pareto()
         
@@ -420,7 +420,7 @@ class inicio:
         return analise_pareto
         
     def telas_medidas(self, tela):
-        em = Esqueleto(tela, 'medidas', self.app, self)
+        em = TbEsqueleto(tela, 'medidas', self.app, self)
         tabelas = tabela()
         em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
         
@@ -849,7 +849,7 @@ class inicio:
         self.home.destroy()
         self.login.destroy()
         
-class Esqueleto():
+class TbEsqueleto():
     def __init__(self, tela, aba, aplicativo, home):
         self.estilo = app.Estilo()
         self.tabelas = tabela()
