@@ -2,7 +2,7 @@ import ttkbootstrap as ttk
 from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite, save
-from telas.telainicial import inicio
+from telas.inicio import inicio
 import os, asyncio, ctypes
 from functools import partial
 

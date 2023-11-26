@@ -2,7 +2,7 @@ from tkinter import *
 import ttkbootstrap as ttk
 from telas.app import *
 from data.auth import login, cadastro
-from telas import telainicial
+from telas import inicio
 from data.edit_config import getUser, getSenha
 import os
 
@@ -82,7 +82,7 @@ class telalogin:
                 user_entry(self)
                 senha_entry(self)
                 self.login.withdraw()
-                inicio = telainicial.inicio(self.login,self.estilo)
+                inicio = inicio.inicio(self.login,self.estilo)
                 
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
