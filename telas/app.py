@@ -437,6 +437,7 @@ class Estilo:
         self.style.configure('Titulo2.TLabel', font=self.Tfonte, foreground=self.cores.colors.info, background=self.background_2)
         self.style.configure('Comum.TLabel', font=self.fonte)
         self.style.configure('Comum2.TLabel', font=self.fonte, background=self.background_1)
+        self.style.configure('Comum3.TLabel', font=self.fonte, background=self.background_2)
         self.style.configure('Error.TLabel', font=self.fonte, foreground=self.cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('Grande.TLabel', font=self.gfonte)
