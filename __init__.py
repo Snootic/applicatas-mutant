@@ -1,3 +1,3 @@
-from telas import telalogin
+from telas import login
 if __name__ == '__main__':
-    tela_login = telalogin.telalogin()
+    tela_login = login.telalogin()

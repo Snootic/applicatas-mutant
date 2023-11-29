@@ -2,7 +2,7 @@ import ttkbootstrap as ttk
 from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite, save
-from telas.telainicial import inicio
+from telas.inicio import inicio
 import os, asyncio, ctypes
 from functools import partial
 
@@ -366,7 +366,7 @@ class Estilo:
     def __init__(self):
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_2 = '#E3E5E8' if self.tema == 'litera' else '#1E1E21'
         self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
         self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
         
@@ -437,6 +437,7 @@ class Estilo:
         self.style.configure('Titulo2.TLabel', font=self.Tfonte, foreground=self.cores.colors.info, background=self.background_2)
         self.style.configure('Comum.TLabel', font=self.fonte)
         self.style.configure('Comum2.TLabel', font=self.fonte, background=self.background_1)
+        self.style.configure('Comum3.TLabel', font=self.fonte, background=self.background_2)
         self.style.configure('Error.TLabel', font=self.fonte, foreground=self.cores.colors.danger)
         self.style.configure('Pequeno.TLabel', font=self.Sfonte)
         self.style.configure('Grande.TLabel', font=self.gfonte)
@@ -457,6 +458,8 @@ class Estilo:
                              background=[("selected", self.background_2)],
                              font=self.Sfonte)
         self.style.configure('custom.TEntry', font=self.fonte)
+        self.style.configure('custom.Table.Treeview', font=self.Tfonte)
+        self.style.configure('custom.Table.Treeview.Heading', font=self.Tfonte)
         #self.style.configure('custom.TCombobox', font=self.fonte)
         #self.style.configure('custom.TSpinbox', font=self.fonte)
     
@@ -464,7 +467,7 @@ class Estilo:
         self.tema = edit_config.getTema()
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_2 = '#E3E5E8' if self.tema == 'litera' else '#1E1E21'
         self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
         self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
         
