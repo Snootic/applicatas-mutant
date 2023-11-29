@@ -34,6 +34,7 @@ class Tela:
             MONITOR_HORIZONTAL = int(self.TELA_LARGURA /2 - janela_largura / 2)
             MONITOR_VERTICAL = int(self.TELA_ALTURA /2 - janela_altura /2)
             self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
+            self.janela.update_idletasks()
                 
     def trocar_tema(self):
         if tela_login.style.theme.type == 'dark':
