@@ -3,7 +3,7 @@ import numpy as np
 from scipy.stats import binom
 
 
-def distBinomial(n, p, testes=10, x_min=0, x_max=0):
+def distBinomial(n, p, testes=10, x_min=0, x_max=0, *args):
     k = range(testes+1)
     dist = binom.pmf(k,n,p)
 
