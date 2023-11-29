@@ -366,7 +366,7 @@ class Estilo:
     def __init__(self):
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_2 = '#E3E5E8' if self.tema == 'litera' else '#1E1E21'
         self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
         self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
         
@@ -465,7 +465,7 @@ class Estilo:
         self.tema = edit_config.getTema()
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#F2F3F5' if self.tema == 'litera' else '#1E1E21'
+        self.background_2 = '#E3E5E8' if self.tema == 'litera' else '#1E1E21'
         self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
         self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
         
