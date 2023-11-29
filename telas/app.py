@@ -314,6 +314,15 @@ class ErrorScreen():
         TELA_Y = error.winfo_screenheight()
         MONITOR_X = int(TELA_X /2 - x/ 2)
         MONITOR_Y = int(TELA_Y /2 - y /2)
+        
+        estilo = ttk.Style(Estilo.tema)
+        fonte = estilo.lookup('Comum.TLabel', 'font')
+        fonte = int(fonte.split(' ')[1])
+        
+        adjust_geometry = (fonte / 10)
+        x = int(round(x * adjust_geometry))
+        y = int(round(y * adjust_geometry))
+        
         error.geometry(f'{x}x{y}+{MONITOR_X}+{MONITOR_Y}')
         
         error_label = ttk.Label(error, style='Comum.TLabel')
@@ -335,7 +344,7 @@ class ErrorScreen():
             set_resposta(retorno)
             fechar()
             
-        error_label.config(text=text,wraplength=wrap)
+        error_label.config(text=text,wraplength=x)
         
         if buttons == 'OK':
             sair_button = ttk.Button(button_frame, text='OK', command=partial(button_callback, 'OK'), style='Estilo1.danger.TButton')
