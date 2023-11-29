@@ -10,6 +10,9 @@ from bd.medidas import *
 from data.edit_config import EditarTabela
 import asyncio
 from functools import partial
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.figure import Figure
+from bd.binomial import *
 
 class inicio:
     def __init__(self, login, estilo):
@@ -52,7 +55,6 @@ class inicio:
         self.pareto = self.telas_pareto(self.tela_pareto)
         self.medida = self.telas_medidas(self.tela_medidas)
         self.binomial = self.telas_binomiais(self.tela_binomial)
-        # self.binomial = self.telas_binomiais(self.tela_binomial)
         
         self.data_pareto: DataFrame
         self.data_medidas: DataFrame
@@ -1059,5 +1061,163 @@ class CalcEsqueleto():
         self.aplicativo = aplicativo
         self.home = home.home
         
-        test_button = ttk.Button(tela, text='TESTE')
-        test_button.pack()
+        # Frames das elementos da calculadora
+        main_frame = ttk.Frame(tela,style='custom2.TFrame')
+        main_frame.place(anchor='center', relx=0.5, rely=0.15, relheight=0.3, relwidth=1)
+        canva_frame = ttk.Frame(tela)
+        canva_frame.place(anchor='center', relx=0.5, rely=0.65, relheight=0.7, relwidth=1)
+        
+        # Elementos para cálculo Binomial
+        n_var = ttk.StringVar(value='')
+        n_label = ttk.Label(main_frame,style='Comum3.TLabel', text='n')
+        n_entry = ttk.Entry(main_frame,style='custom.TEntry', textvariable= n_var)
+        n_label.place(anchor=CENTER,relx=0.03, rely=0.2)
+        n_entry.place(anchor=CENTER, relx=0.13, rely=0.2, relheight=0.2, relwidth=0.15)
+        
+        p_var = ttk.StringVar(value='')
+        p_label = ttk.Label(main_frame,style='Comum3.TLabel', text='p')
+        p_entry = ttk.Entry(main_frame,style='custom.TEntry', textvariable=p_var)
+        p_label.place(anchor=CENTER,relx=0.03, rely=0.7)
+        p_entry.place(anchor=CENTER, relx=0.13, rely=0.7, relheight=0.2, relwidth=0.15)
+        
+        testes_var = ttk.StringVar(value='10')
+        testes_label = ttk.Label(main_frame,style='Comum3.TLabel', text='k')
+        testes_entry = ttk.Entry(main_frame,style='custom.TEntry', textvariable=testes_var)
+        testes_label.place(anchor=CENTER,relx=0.34, rely=0.2)
+        testes_entry.place(anchor=CENTER, relx=0.44, rely=0.2, relheight=0.2, relwidth=0.15)
+        
+        x_min_var = ttk.StringVar(value='0')
+        x_min_label = ttk.Label(main_frame,style='Comum3.TLabel', text='Valor mínimo de P')
+        x_min_entry = ttk.Entry(main_frame, style='custom.TEntry', textvariable=x_min_var)
+        x_min_label.place(anchor=CENTER,relx=0.29,rely=0.45)
+        x_min_entry.place(anchor=CENTER,relx=0.44,rely=0.45, relheight=0.2, relwidth=0.15)
+                
+        x_max_var = ttk.StringVar(value='0')
+        x_max_label = ttk.Label(main_frame,style='Comum3.TLabel', text='Valor máximo de P')
+        x_max_entry = ttk.Entry(main_frame, textvariable=x_max_var, style='custom.TEntry')
+        x_max_label.place(anchor=CENTER, relx=0.29, rely=0.7)
+        x_max_entry.place(anchor=CENTER, relx=0.44,rely=0.7, relheight=0.2,relwidth=0.15)
+        
+        
+        # Elementos resultantes dos cálculos
+        self.esperanca_var = ttk.StringVar(value='')
+        esperanca_label = ttk.Entry(main_frame, textvariable=self.esperanca_var, style='custom.TEntry',state="readonly")
+        esperanca_head = ttk.Label(main_frame, style='Comum3.TLabel', text='μ = ')
+        esperanca_head.place(anchor=CENTER,relx=0.67,rely=0.2)
+        esperanca_label.place(anchor=CENTER,relx=0.77,rely=0.2,relheight=0.2,relwidth=0.15)
+        
+        self.soma_var = ttk.StringVar(value='')
+        soma_label = ttk.Entry(main_frame, textvariable=self.soma_var, style='custom.TEntry',state="readonly")
+        soma_head = ttk.Label(main_frame, style='Comum3.TLabel', text='Soma = ')
+        soma_head.place(anchor=CENTER,relx=0.659,rely=0.45)
+        soma_label.place(anchor=CENTER,relx=0.77,rely=0.45,relheight=0.2,relwidth=0.15)
+        
+        self.desvio_var = ttk.StringVar(value='')
+        desvio_label = ttk.Entry(main_frame, style='custom.TEntry', textvariable=self.desvio_var,state="readonly")
+        desvio_head = ttk.Label(main_frame, text='Desvio Padrão = ', style='Comum3.TLabel')
+        desvio_head.place(anchor=CENTER,relx=0.63,rely=0.7)
+        desvio_label.place(anchor=CENTER,relx=0.77,rely=0.7,relheight=0.2,relwidth=0.15)
+        
+        # Para calculo Binomial
+        def calcular(*args):
+            p = p_var.get()
+            n = n_var.get()
+            testes = testes_var.get()
+            x_min = x_min_var.get()
+            x_max = x_max_var.get()
+            
+            try:
+                p = float(p)
+                n = float(n)
+                testes = int(testes)
+                x_min = int(x_min)
+                x_max = int(x_max)
+            except:
+                return
+            
+            try:
+                if not args:
+                    for i in self.k_treeview.get_children():
+                        self.k_treeview.delete(i)
+                    self.binomial(n,p,testes,x_min,x_max)
+                    
+                else:
+                    self.binomial(n,p,testes,*args)
+            except Exception as e:
+                print(e)
+                return
+                       
+        n_var.trace("w", lambda *args: calcular())
+        p_var.trace("w", lambda *args: calcular())
+        testes_var.trace("w", lambda *args: calcular())
+        x_min_var.trace("w", lambda *args: calcular())
+        x_max_var.trace("w", lambda *args: calcular())
+        
+        # Elementos para mostrar o gráfico de distribuição
+        fig = Figure()
+        self.ax = fig.add_subplot(111)
+        self.ax.set_title("Distribuição Binomial")
+        self.ax.set_xlim(0, 10)
+        self.ax.set_ylim(0, 1)
+        self.canvas = FigureCanvasTkAgg(fig, master=canva_frame)
+        self.canvas.get_tk_widget().place(relx=0, y=0.5, relwidth=0.85, relheight=1)
+        self.canvas.draw()
+        
+        # Mostra todos os k resultantes do cálculo da distribuição binomial
+        k_frame = ttk.Frame(canva_frame,style='custom2.TFrame')
+        k_frame.place(relwidth=0.15, relheight=1, relx=0.85, y=0.5)
+        
+        def selecao():
+            try:
+                colunas = self.k_treeview.selection()
+                items = []
+                items.append(colunas[0])
+                items.append(colunas[-1])
+
+                # x_min_var.set(value='0')
+                # x_max_var.set(value='0')
+                
+                values = []
+                for item in items:
+                    value = self.k_treeview.item(item, 'values')
+                    value = int(value[0])
+                    values.append(value)
+                
+                calcular(values[0],values[1])
+            except:
+                pass
+        
+        self.k_treeview = ttk.Treeview(k_frame, columns=('k', 'P(X = k)'), show=HEADINGS,style='custom.Table.Treeview')
+        self.k_treeview.column('k', stretch=False, width=40)
+        self.k_treeview.column('P(X = k)', stretch=False)
+        self.k_treeview.heading('k', text='k', anchor=W)
+        self.k_treeview.heading('P(X = k)', text='P(X = k)', anchor=W)
+        self.k_treeview.place(relheight=1,relwidth=1,relx=0,y=0.5)
+        self.k_treeview.bind('<<TreeviewSelect>>', lambda event: selecao())
+        
+    def binomial(self, *args):
+        result = distBinomial(*args)
+        
+        data = {'0': result[0]}
+        df = DataFrame(data)
+        
+        indices_azuis = []
+        for index, value in enumerate(result[0]):
+            values = f'{value:.4f}'
+            self.k_treeview.insert(parent = '',index=END,values=[index,values])
+            try:
+                for valor in result[1]:
+                    if value == valor:
+                        indices_azuis.append(index)
+            except:
+                pass
+        
+        cores = ['#0000b8' if i in indices_azuis else '#70b8ff' for i in df.index]
+        self.ax.clear()
+        self.ax.set_title("Distribuição Binomial")
+        self.ax.bar(df.index, df['0'], color=cores, edgecolor='#00003d', linewidth=2, width=0.99)
+        self.canvas.draw_idle()
+        
+        self.soma_var.set(value=f'{result[2]:.2f}')
+        self.esperanca_var.set(value=f'{result[3]:.2f}')
+        self.desvio_var.set(value=f'{result[4]:.4f}')
