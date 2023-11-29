@@ -364,21 +364,16 @@ class ErrorScreen():
             
 
 class Estilo:
-    tema = edit_config.getTema()
-    Tfonte = f'Roboto 16'
-    gfonte= f'Roboto 12'
-    fonte = f'Roboto 10'
-    Sfonte = f'Roboto 9'
-    largura = None
-    altura = None
     def __init__(self):
-        self.style = ttk.Style(self.tema)
-        self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#E3E5E8' if self.tema == 'litera' else '#1E1E21'
-        self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
-        self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
+        self.tema = edit_config.getTema()
+        self.Tfonte = f'Roboto 16'
+        self.gfonte= f'Roboto 12'
+        self.fonte = f'Roboto 10'
+        self.Sfonte = f'Roboto 9'
+        self.largura = None
+        self.altura = None
         
-        self.load_styles()
+        self.refresh()
         
     def font_size(self, largura, altura):
             if (largura,altura) == (self.largura, self.altura):
