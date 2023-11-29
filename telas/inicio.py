@@ -1087,15 +1087,15 @@ class CalcEsqueleto():
         testes_entry.place(anchor=CENTER, relx=0.44, rely=0.2, relheight=0.2, relwidth=0.15)
         
         x_min_var = ttk.StringVar(value='0')
-        x_min_label = ttk.Label(main_frame,style='Comum3.TLabel', text='Valor mínimo de P')
+        x_min_label = ttk.Label(main_frame,style='Comum3.TLabel', text='X >=')
         x_min_entry = ttk.Entry(main_frame, style='custom.TEntry', textvariable=x_min_var)
-        x_min_label.place(anchor=CENTER,relx=0.29,rely=0.45)
+        x_min_label.place(anchor=CENTER,relx=0.33,rely=0.45)
         x_min_entry.place(anchor=CENTER,relx=0.44,rely=0.45, relheight=0.2, relwidth=0.15)
                 
         x_max_var = ttk.StringVar(value='0')
-        x_max_label = ttk.Label(main_frame,style='Comum3.TLabel', text='Valor máximo de P')
+        x_max_label = ttk.Label(main_frame,style='Comum3.TLabel', text='X <=')
         x_max_entry = ttk.Entry(main_frame, textvariable=x_max_var, style='custom.TEntry')
-        x_max_label.place(anchor=CENTER, relx=0.29, rely=0.7)
+        x_max_label.place(anchor=CENTER, relx=0.33, rely=0.7)
         x_max_entry.place(anchor=CENTER, relx=0.44,rely=0.7, relheight=0.2,relwidth=0.15)
         
         
