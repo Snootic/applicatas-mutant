@@ -1188,8 +1188,8 @@ class CalcEsqueleto():
                 pass
         
         self.k_treeview = ttk.Treeview(k_frame, columns=('k', 'P(X = k)'), show=HEADINGS,style='custom.Table.Treeview')
-        self.k_treeview.column('k', stretch=False, width=40)
-        self.k_treeview.column('P(X = k)', stretch=False)
+        self.k_treeview.column('k', stretch=False, width=45)
+        self.k_treeview.column('P(X = k)', stretch=True)
         self.k_treeview.heading('k', text='k', anchor=W)
         self.k_treeview.heading('P(X = k)', text='P(X = k)', anchor=W)
         self.k_treeview.place(relheight=1,relwidth=1,relx=0,y=0.5)
