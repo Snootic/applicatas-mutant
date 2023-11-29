@@ -289,7 +289,7 @@ class Tela:
         self.janela.config(menu=menu_principal)
 
 class ErrorScreen():
-    def error(text, x=210, y=100, wrap=200, buttons='OK') -> str:
+    def error(text, x=210, y=100, wrap=200, buttons='OK', titulo='Erro') -> str:
         '''
             Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
             text: str = texto a ser exibido no popup
@@ -308,7 +308,7 @@ class ErrorScreen():
                 
         error = ttk.Toplevel()
         ttk.utility.enable_high_dpi_awareness(root=error,scaling=scale)
-        error.title('Erro')
+        error.title(titulo)
         
         TELA_X = error.winfo_screenwidth()
         TELA_Y = error.winfo_screenheight()
