@@ -1173,9 +1173,6 @@ class CalcEsqueleto():
                 items = []
                 items.append(colunas[0])
                 items.append(colunas[-1])
-
-                # x_min_var.set(value='0')
-                # x_max_var.set(value='0')
                 
                 values = []
                 for item in items:
@@ -1183,7 +1180,7 @@ class CalcEsqueleto():
                     value = int(value[0])
                     values.append(value)
                 
-                calcular(values[0],values[1])
+                calcular(values[0],values[1],'tree')
             except:
                 pass
         
@@ -1206,7 +1203,10 @@ class CalcEsqueleto():
         indices_azuis = []
         for index, value in enumerate(result[0]):
             values = f'{value:.4f}'
-            self.k_treeview.insert(parent = '',index=END,values=[index,values])
+            if 'tree' in args:
+                pass
+            else:
+                self.k_treeview.insert(parent = '',index=END,values=[index,values])
             try:
                 for valor in result[1]:
                     if value == valor:
