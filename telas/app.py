@@ -364,8 +364,8 @@ class ErrorScreen():
             
 
 class Estilo:
+    tema = edit_config.getTema()
     def __init__(self):
-        self.tema = edit_config.getTema()
         self.Tfonte = f'Roboto 16'
         self.gfonte= f'Roboto 12'
         self.fonte = f'Roboto 10'
