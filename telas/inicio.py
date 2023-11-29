@@ -1195,6 +1195,8 @@ class CalcEsqueleto():
         self.k_treeview.place(relheight=1,relwidth=1,relx=0,y=0.5)
         self.k_treeview.bind('<<TreeviewSelect>>', lambda event: selecao())
         
+        self.tela.bind("<Configure>", lambda event: self.size_change())
+        
     def binomial(self, *args):
         result = distBinomial(*args)
         
@@ -1221,3 +1223,13 @@ class CalcEsqueleto():
         self.soma_var.set(value=f'{result[2]:.2f}')
         self.esperanca_var.set(value=f'{result[3]:.2f}')
         self.desvio_var.set(value=f'{result[4]:.4f}')
+        
+    def size_change(self):
+        self.tela.update()
+        self.tela.update_idletasks()
+        
+        tela_largura = self.home.winfo_width()
+        tela_altura = self.home.winfo_height()
+        
+        # Define o tamanho da fonte
+        self.estilo.font_size(tela_largura, tela_altura)
