@@ -268,8 +268,7 @@ class Tela:
                 else:
                     ErrorScreen.error(text='''Ocorreu um erro ao exportar.\nVerifique se seus dados, nome e caminho indicado foram corretamente inseridos e se você possui permissão de escrita ao caminho indicado.\nPara mais informações acesse no menu superior: Programa -> Como usar.''',
                                       x=275,
-                                      y=200,
-                                      wrap=268)
+                                      y=200)
         exportar_menu = ttk.Menu(menu_principal, tearoff=False)
         exportar_menu.add_command(label='Exportar - CSV', command=lambda: export_arquivo(tipo='csv'))
         exportar_menu.add_command(label='Exportar - Excel', command=lambda: export_arquivo(tipo='xlsx'))
@@ -289,13 +288,12 @@ class Tela:
         self.janela.config(menu=menu_principal)
 
 class ErrorScreen():
-    def error(text, x=210, y=100, wrap=200, buttons='OK', titulo='Erro') -> str:
+    def error(text, x=210, y=100, buttons='OK', titulo='Erro') -> str:
         '''
             Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
             text: str = texto a ser exibido no popup
             x: int =  tamanho horizontal do popup em pixels(padrao 200)
             y: int = tamanho vertical do popup em pixels (padrao 100)
-            wrap: int = quantos pixels até o texto quebrar uma linha (padrao 200)
             buttons: str | list = valores aceitos são 'OK' ou uma lista contendo o 
             texto do botão e seu estilo separados por ':'. ex: ['Sim:primary','Não:Danger']
             
