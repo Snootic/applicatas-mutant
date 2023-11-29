@@ -857,7 +857,7 @@ class inicio:
         
 class TbEsqueleto():
     def __init__(self, tela, aba, aplicativo, home):
-        self.estilo = app.Estilo()
+        self.estilo = aplicativo.estilo
         self.tabelas = tabela()
         self.aba = aba
         self.tela = tela
@@ -1054,7 +1054,7 @@ class TbEsqueleto():
         
 class CalcEsqueleto():
     def __init__(self,tela, aba, aplicativo, home):
-        self.estilo = app.Estilo()
+        self.estilo = aplicativo.estilo
         self.tabelas = tabela()
         self.aba = aba
         self.tela = tela
