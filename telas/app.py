@@ -139,16 +139,26 @@ class Tela:
                 
             elif do == 'autosave':
                 is_saved = edit_config.getAutoSave()
-                if is_saved == 'True':
+                is_saved = True if is_saved == 'True' else False
+                if is_saved:
                     edit_config.setAutoSave(False)
+                    save_variable.set(False)
                 else:
                     edit_config.setAutoSave(True)
-               
+                    save_variable.set(True)
+            elif do == 'get_autosave':
+                is_saved = edit_config.getAutoSave()
+                is_saved = True if is_saved == 'True' else False
+                return is_saved
+                
         arquivo_menu = ttk.Menu(menu_principal, tearoff=False)
         arquivo_menu.add_command(label='Restaurar Backup', command=lambda: manual_backup(do='restore'))
         arquivo_menu.add_command(label='Salvar Backup', command=lambda: manual_backup(do='save'))
         arquivo_menu.add_command(label='Salvar arquivo', command=lambda: salvar('save'))
-        arquivo_menu.add_command(label='Salvar Automaticamente', command=lambda: salvar('autosave'))
+        save_variable = ttk.BooleanVar()
+        arquivo_menu.add_checkbutton(label='Salvar Automaticamente', command=lambda: salvar('autosave'), variable=save_variable, onvalue=True, offvalue=False)
+        autosave = salvar('get_autosave')
+        save_variable.set(autosave)
         arquivo_menu.add_command(label='Desfazer', command=lambda: undoRedo('undo'))
         arquivo_menu.add_command(label='Refazer', command=lambda: undoRedo('redo'))
         
@@ -175,8 +185,16 @@ class Tela:
             '''
                 Checa se o arquivo foi salvo ao fechar o programa. Se não, pergunta se o usuário deseja salvar.
             '''
+            autosave = salvar('get_autosave')
+            if not autosave:
+                pass
+            else:
+                salvar('save')
+            
             is_saved = edit_config.getIsSaved()
-            if is_saved == 'True':
+            is_saved = True if is_saved == 'True' else False
+            
+            if is_saved:
                 if command == 'Fechar':
                         apagar_dados()
                         tela_login.destroy()
@@ -362,7 +380,6 @@ class ErrorScreen():
 
         return resposta.get()
             
-
 class Estilo:
     tema = edit_config.getTema()
     def __init__(self):
