@@ -299,6 +299,20 @@ class Tela:
             versao = versao[0]
         programa_menu.add_command(label=f'Versão: {versao}')
         
+        about_text = (
+f'''           Obrigado por utilizar nosso programa!
+
+Desenvolvedores: 
+Kaik Mendes - @Snootic
+Luis Guilherme Silva de Sousa - @LGSS18
+
+Versão: {versao}
+Data: 2023-11-30
+Python: 3.11.6
+''')
+        about_title = 'Sobre - Applicatas Mutant'
+        programa_menu.add_command(label='Sobre', command= lambda: ErrorScreen.error(text=about_text, titulo=about_title, x=300,y=220))
+        
         menu_principal.add_cascade(label='Arquivo', menu=arquivo_menu)
         menu_principal.add_cascade(label='Importar', menu=importar_menu)
         menu_principal.add_cascade(label='Exportar', menu=exportar_menu)
