@@ -1,3 +1,24 @@
+## Versão 0.9.5 (beta)
+### Adições e mudanças
+- Separa o popup de erro numa classe própria para torná-la portátil. ([fa57875](https://github.com/Snootic/applicatas-mutant/commit/fa57875605e7df892667edaa938b21c7a4251467#diff-37a32fb0bf80c9916573b50796bf744e25c4c19a862f67eabd3a41598d354addR28))
+- Cria tela com cálculo de distribuição binomial. ([24271f1](https://github.com/Snootic/applicatas-mutant/commit/24271f19b7eecbbff8a12dddc1a64fbc539f164d)), ([134a0a8](https://github.com/Snootic/applicatas-mutant/commit/134a0a84ceb1dd9e41d4c5d623e0fd7c4b154e72))
+- Adicionado parâmetro título ao popup de erro, para que seja flexível quanto ao seu uso. ([28b93fb](https://github.com/Snootic/applicatas-mutant/commit/28b93fb5ab4c75d730f178334a0b75cb29915d64))
+- Adicionado parâmetro *args a função binomial ([0730402](https://github.com/Snootic/applicatas-mutant/commit/073040276c312ad28a36e0d7fc21dfbbb4bfe19f))
+- Popup de erro agora se auto redimensiona para caber as mudanças de tamanho de fonte durante redimensionamento do programa. ([8773356](https://github.com/Snootic/applicatas-mutant/commit/87733564ddb5bdca050c461089c81a56d3964eae))
+- remove o parâmetro wrap do popup de erro. ([3e7b73d](https://github.com/Snootic/applicatas-mutant/commit/3e7b73d131a60e2ad8c407c204f9e4ef608bce9f))
+- Otimiza a classe Estilo. ([085e314](https://github.com/Snootic/applicatas-mutant/commit/085e314dfd274dd8265b049a29dafde297294cd3))
+- Compartilha o estilo entre diferentes classes para otimizar o processo de troca de tema. ([e9d328a](https://github.com/Snootic/applicatas-mutant/commit/e9d328a643d29ec8200e5cfe302fc5e324418583))
+- Remove o botão "Esqueci minha senha" indefinidamente ([d95299e](https://github.com/Snootic/applicatas-mutant/commit/d95299e847b3c0fae30d0463e73fd16be69a9a6f))
+- Implementa a funcionalidade de auto salvamento ([ee0195d](https://github.com/Snootic/applicatas-mutant/commit/ee0195d75b2527585d75e695faff166cc00e42a1))
+- Adiciona o menu sobre ao programa ([79a7d58](https://github.com/Snootic/applicatas-mutant/commit/79a7d582618dd3e1599b9187cdbe1935c54df923))
+
+### Correções
+- Dimensionamento do programa não funciona corretamente em X11. ([13563f9](https://github.com/Snootic/applicatas-mutant/commit/13563f97ec8a5aeafa003f029b7df11710eb92a1))
+
+**outras mudanças e correções menores...** ([0.9.5](https://github.com/Snootic/applicatas-mutant/tree/0.9.5-beta))
+
+----
+
 ## Versão 0.9
 ### Adições e mudanças
 - UI/UX do programa retrabalhada para ser mais responsiva e visualmente agradável. ([#6](https://github.com/Snootic/applicatas-mutant/pull/6))
