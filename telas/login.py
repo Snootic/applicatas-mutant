@@ -97,7 +97,7 @@ class telalogin:
         esqueci_senha = ttk.Button(self.login,
                                    textvariable=esqueci_senha_var,
                                    style='Estilo1.Link.TButton')
-        esqueci_senha.place(x=420,y=460,anchor='center')
+        # esqueci_senha.place(x=420,y=460,anchor='center')
         
         registrar_label = ttk.Label(text='Não tem conta?',
                                     style='Comum.TLabel')
