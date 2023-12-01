@@ -3,6 +3,8 @@ import os
 
 class user_table:
     def __init__(self):
+        if not os.path.exists('data/users'):
+            os.makedirs('data/users')
         CAMINHO_DB = os.path.join(os.getcwd(),f'data/users/usuarios.db')
         usuarios = sqlite3.connect(CAMINHO_DB)
         cursor = usuarios.cursor()
