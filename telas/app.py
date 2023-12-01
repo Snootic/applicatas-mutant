@@ -339,6 +339,7 @@ class ErrorScreen():
         error = ttk.Toplevel()
         ttk.utility.enable_high_dpi_awareness(root=error,scaling=scale)
         error.title(titulo)
+        error.resizable(False,False)
         
         TELA_X = error.winfo_screenwidth()
         TELA_Y = error.winfo_screenheight()
