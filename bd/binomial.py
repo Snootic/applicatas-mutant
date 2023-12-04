@@ -6,11 +6,16 @@ from scipy.stats import binom
 def distBinomial(n, p, testes=10, x_min=0, x_max=0, *args):
     k = range(testes+1)
     dist = binom.pmf(k,n,p)
-
+    dist_final = []
+    
     if x_max == 0 and x_max <= x_min:
         dist_filtrada = dist[x_min:] if x_min > 0 else dist[:]
+        for i in range(x_min, testes + 1):
+            dist_final.append(i)
     else:
         dist_filtrada = dist[x_min:x_max+1] if x_min > 0 else dist[x_min:x_max+1]
+        for i in range(x_min, x_max + 1):
+            dist_final.append(i)
     
     soma = sum(dist_filtrada)
 
@@ -19,8 +24,8 @@ def distBinomial(n, p, testes=10, x_min=0, x_max=0, *args):
     q = 1 - p
     variancia = n * p * q
     desvio_padrao = np.sqrt(variancia)
-    
-    return dist, dist_filtrada, soma, esperanca, desvio_padrao
+
+    return dist, dist_final, soma, esperanca, desvio_padrao
     
         
 if __name__ == '__main__':

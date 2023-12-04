@@ -1175,10 +1175,10 @@ class CalcEsqueleto():
                 items.append(colunas[-1])
                 
                 values = []
-                for item in items:
-                    value = self.k_treeview.item(item, 'values')
-                    value = int(value[0])
-                    values.append(value)
+                for index,item in enumerate(self.k_treeview.get_children()):
+                    for valor in items:
+                        if item == valor:
+                            values.append(index)
                 
                 calcular(values[0],values[1],'tree')
             except:
@@ -1208,8 +1208,8 @@ class CalcEsqueleto():
             else:
                 self.k_treeview.insert(parent = '',index=END,values=[index,values])
             try:
-                for valor in result[1]:
-                    if value == valor:
+                for indice in result[1]:
+                    if index == indice:
                         indices_azuis.append(index)
             except:
                 pass
@@ -1220,7 +1220,7 @@ class CalcEsqueleto():
         self.ax.bar(df.index, df['0'], color=cores, edgecolor='#00003d', linewidth=2, width=0.99)
         self.canvas.draw_idle()
         
-        self.soma_var.set(value=f'{result[2]:.2f}')
+        self.soma_var.set(value=f'{result[2]:.4f}')
         self.esperanca_var.set(value=f'{result[3]:.2f}')
         self.desvio_var.set(value=f'{result[4]:.4f}')
         
