@@ -167,27 +167,19 @@ def apagar_dados():
     linhas = LerConfig('linhas')
     
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
-        for i in range(len(itens)):
-            if itens[i][0] == 'user':
-                linhas[i] = 'user='+'\n'
-            if itens[i][0] == 'senha':
-                linhas[i] = 'senha='+'\n'
-            if itens[i][0] == 'ultimo_schema':
-                linhas[i] = 'ultimo_schema='+'\n'
-            if itens[i][0] == 'ultima_tabela':
-                linhas[i] = 'ultima_tabela='+'\n'
-            if itens[i][0] == 'schema_caminho':
-                linhas[i] = 'schema_caminho='+'\n'
-            if itens[i][0] == 'manter_logado':
-                linhas[i] = 'manter_logado=False'+'\n'
-            if itens[i][0] == 'undo':
-                linhas[i] = 'undo=\n'
-            if itens[i][0] == 'redo':
-                linhas[i] = 'redo=\n'
-            if itens[i][0] == 'saved':
-                linhas[i] = 'saved=True\n'
-            if itens[i][0] == 'autosave':
-                linhas[i] = 'autosave=False\n'
+        for index, item in enumerate(itens):
+            if item[0] == 'tema':
+                item[1] = 'cyborg'
+            elif item[1] == 'True' or item[1] == 'False':
+                if item[0] == 'manter_logado':
+                    item[1] = 'False'
+                elif item[0] == 'autosave':
+                    item[1] = 'False'
+                elif item[0] == 'saved':
+                    item[1] = 'True'
+            else:
+                item[1] = ''
+            linhas[index] = f'{item[0]}={item[1]}\n'
         configuracoes.writelines(linhas)
 
 def limpar_temp():
@@ -227,8 +219,7 @@ def getUndo():
         if itens[i][0] == 'undo':
             undo = itens[i][1]
             return undo
-    
-    
+        
 def editarRedo(redo):
     CAMINHO_CONFIG = LerConfig('config')
     itens = LerConfig('itens')
@@ -282,3 +273,26 @@ def getAutoSave() -> str:
         if itens[i][0] == 'autosave':
             auto_save = itens[i][1]
             return auto_save
+
+def set_scale(scale: int) -> int:
+    CAMINHO_CONFIG = LerConfig('config')
+    itens = LerConfig('itens')
+    linhas = LerConfig('linhas')
+
+    with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
+        for i in range(len(itens)):
+            if itens[i][0] == 'escala':
+                linhas[i] = f'escala={scale}\n'
+                configuracoes.writelines(linhas)
+                
+def get_scale() -> float: 
+    itens = LerConfig('itens')
+    for i in range(len(itens)):
+        if itens[i][0] == 'escala':
+            try:
+                scale = float(itens[i][1])
+            except:
+                return None
+            else:
+                return scale
+        

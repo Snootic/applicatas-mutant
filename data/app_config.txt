@@ -9,3 +9,4 @@ redo=
 saved=True
 autosave=False
 manter_logado=False
+escala=

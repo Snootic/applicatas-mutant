@@ -110,6 +110,11 @@ class telalogin:
         trocar_tema = ttk.Checkbutton(self.login, bootstyle="info-round-toggle", text='Tema', command=tela.trocar_tema)
         trocar_tema.place(relx=0.85,rely=0.96)
         
+        aumentar_escala = ttk.Button(self.login, text='+', command=lambda: tela.setScale('soma'), style='Estilo1.info.TButton')
+        diminuir_escala = ttk.Button(self.login, text='-', command=lambda: tela.setScale('sub'), style='Estilo1.info.TButton')
+        aumentar_escala.place(relx=0.85,rely=0.6, relheight=0.06, relwidth=0.06)
+        diminuir_escala.place(relx=0.85,rely=0.67, relheight=0.06, relwidth=0.06)
+        
         self.login.protocol("WM_DELETE_WINDOW", self.login.destroy)
         try:
             usuario = getUser()

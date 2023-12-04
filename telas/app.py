@@ -3,18 +3,20 @@ from tkinter import filedialog
 from data import edit_config
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.inicio import inicio
-import os, asyncio, ctypes
+import os, asyncio, ctypes, sys
 from functools import partial
 
 class Tela:
     instancia_com_tabela=None
     aba_atual = None
     def __init__(self, janela='', titulo=''):
-        try:
-            scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
-        except:
-            scale = 1
-        ttk.utility.enable_high_dpi_awareness(root=janela,scaling=scale)
+        self.scale = edit_config.get_scale()
+        if self.scale == None:
+            try:
+                self.scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
+            except:
+                self.scale = 1
+        ttk.utility.enable_high_dpi_awareness(root=janela,scaling=self.scale)
         self.janela = janela
         self.janela.title(titulo)
         icone_caminho= os.path.abspath('data/icone.png')
@@ -292,6 +294,10 @@ class Tela:
         exportar_menu.add_command(label='Exportar - Excel', command=lambda: export_arquivo(tipo='xlsx'))
         
         programa_menu = ttk.Menu(menu_principal, tearoff=False)
+        escala_menu = ttk.Menu(programa_menu)
+        programa_menu.add_cascade(label='Escala', menu=escala_menu)
+        escala_menu.add_command(label='Aumentar', command=lambda: self.setScale('soma'))
+        escala_menu.add_command(label='Diminuir', command=lambda: self.setScale('sub'))
         programa_menu.add_command(label='Trocar Tema', command=lambda: self.trocar_tema())
         version = os.path.abspath('VERSION')
         with open(version, 'r') as version:
@@ -319,6 +325,34 @@ Python: 3.11.6
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
 
+    def restart(self):
+        python = sys.executable
+        os.execl(python, python, * sys.argv)
+    
+    def setScale(self, operação):
+        '''
+            operação: 'soma'|'sub'
+            Aumenta ou diminui a escala do programa
+        '''
+        if operação == 'soma':
+            if self.scale < 2:
+                self.scale += 0.25
+        elif operação == 'sub':
+            if self.scale > 1:
+                self.scale -= 0.25
+        
+        ttk.utility.enable_high_dpi_awareness(root=self.janela,scaling=self.scale)
+
+        edit_config.set_scale(self.scale)
+        
+        confirmar = ErrorScreen.error(titulo='Reinicialização pendente', text='O programa precisa ser reiniciado para que as alterações sejam feitas. Deseja continuar? Nenhuma alteração será perdida.',
+                          buttons=['Sim:info', 'Não:info'], y=120)
+        if confirmar == 'Não':
+            return
+        elif confirmar == 'Sim':
+            self.restart()
+                    
+        
 class ErrorScreen():
     def error(text, x=210, y=100, buttons='OK', titulo='Erro') -> str:
         '''
