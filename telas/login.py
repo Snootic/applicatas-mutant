@@ -5,6 +5,7 @@ from data.auth import login, cadastro
 from telas import inicio
 from data.edit_config import getUser, getSenha
 import os
+from data.users import UsuariosFunc
 
 #TODO:
 # melhorar a segurança do login automatico
@@ -96,8 +97,9 @@ class telalogin:
         esqueci_senha_var = StringVar(value='Esqueci minha senha')
         esqueci_senha = ttk.Button(self.login,
                                    textvariable=esqueci_senha_var,
-                                   style='Estilo1.Link.TButton')
-        # esqueci_senha.place(x=420,y=460,anchor='center')
+                                   style='Estilo1.Link.TButton',
+                                   command=lambda: self.esqueceu_senha())
+        esqueci_senha.place(x=420,y=460,anchor='center')
         
         registrar_label = ttk.Label(text='Não tem conta?',
                                     style='Comum.TLabel')
@@ -305,3 +307,189 @@ class telalogin:
         retorno.place(anchor='center', relx=0.5, rely=0.7)
         
         registro.mainloop()
+
+    def esqueceu_senha(self):
+        tela = ttk.Toplevel(self.login)
+        tela.geometry('400x500')
+        tela.resizable(False, False)
+        tela.title('Esqueci minha senha')
+
+        titulo = ttk.Label(tela, text='Resetar senha', font='Nexa 20')
+        titulo.pack(pady=20)
+        
+        retorno = ttk.Label(tela, style='Comum.TLabel', text='')
+
+        def user_error():
+            user_entry.configure(bootstyle="Danger")
+            tela.after(3000,lambda: user_entry.configure(bootstyle="default"))
+        def email_error():
+            email_entry.configure(bootstyle="Danger")
+            tela.after(3000,lambda: email_entry.configure(bootstyle="default"))
+        def senha_error(same=False):
+            if same == True:
+                confirmar_senha_entry.configure(bootstyle="Danger")
+                tela.after(3000,lambda: confirmar_senha_entry.configure(bootstyle="default"))
+                senha_entry.configure(bootstyle="Danger")
+                tela.after(3000,lambda: senha_entry.configure(bootstyle="default"))
+            else:
+                senha_entry.configure(bootstyle="Danger")
+                tela.after(3000,lambda: senha_entry.configure(bootstyle="default"))
+        
+        
+        def usuario():
+            usuario = cadastro.credenciais(usuario=user_var.get())
+            usuario = usuario.user()
+            if usuario == True:
+                retorno.configure(text='Usuário não cadastrado')
+                user_error()
+                return False
+            elif usuario != 'Usuário já cadastrado':
+                retorno.configure(text=usuario)
+                user_error()
+                return False
+            else:
+                retorno.configure(text='')
+                return True
+        
+        user_var = StringVar(value='Usuário')
+        user_entry = ttk.Entry(tela,
+                               font=self.estilo.fonte,
+                               textvariable=user_var,
+                               )
+        user_entry.place(anchor='center', relx=0.5, rely=0.2, height=59, width=255)
+        user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
+                                                         user_entry.unbind('<FocusIn>'),
+                                                         user_entry.bind('<KeyRelease>', lambda event: usuario())
+                                                         ))
+
+        def email():
+            email = cadastro.credenciais(email=email_var.get())
+            email = email.Email()
+            if email == True:
+                retorno.configure(text='E-mail não cadastrado')
+                email_error()
+                return False
+            elif email != 'E-mail já cadastrado':
+                retorno.configure(text=email)
+                email_error()
+                return False
+            else:
+                retorno.configure(text='')
+                return True
+        
+        
+        email_var = StringVar(value='E-mail')
+        email_entry = ttk.Entry(tela,
+                                font=self.estilo.fonte,
+                                textvariable=email_var,
+                                width=30)
+        email_entry.place(anchor='center', relx=0.5, rely=0.33, height=59, width=255)
+        email_entry.bind('<FocusIn>',lambda event: (email_var.set(value=''),
+                                                         email_entry.unbind('<FocusIn>'),
+                                                         email_entry.bind('<KeyRelease>', lambda event: email())
+                                                         ))
+        
+        def senha(*args):
+            senha = cadastro.credenciais(senha=senha_var.get())
+            senha = senha.passw()
+            if senha != True:
+                retorno.configure(text=senha)
+                senha_error()
+                return False
+            else:
+                retorno.configure(text='')
+                return True
+        
+        senha_frame = Frame(tela, height=73, width=400)
+        senha_frame.place(anchor='center', relx=0.5, rely=0.455)
+        senha_frame.lower()
+        
+        senha_var = StringVar(value='Senha')
+        senha_entry = ttk.Entry(senha_frame,
+                                font=self.estilo.fonte,
+                                textvariable=senha_var,)
+        senha_entry.place(anchor='center', relx=0.5, rely=0.53, height=59, width=255)
+        senha_entry.bind('<FocusIn>',lambda event: senha_var.set(value=''))
+        senha_var.trace('w',lambda *args: esconder_senha())
+        
+        esconder_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/hide_password.png'))
+        ver_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/show_password.png'))
+        
+        ver_senha=ttk.Button(senha_frame,padding=1, image = esconder_senha_imagem, command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
+        ver_senha.place(anchor='nw', relx=0.83, rely=0.13)
+        
+        
+        def gerarsenha():
+            senha_gerada = cadastro.credenciais()
+            senha_gerada = senha_gerada.GerarSenha()
+            senha_var.set(value=senha_gerada)
+            confirmar_senha_var.set(value=senha_gerada)
+            
+        gerar_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/generate_password.png'))
+        gerar_senha = ttk.Button(senha_frame,padding=1,image = gerar_senha_imagem,command=gerarsenha)
+        gerar_senha.place(anchor='nw', relx=0.83, rely=0.58)
+
+        def confirmar_senha(*args):
+            confirmar_senha = confirmar_senha_var.get()
+            senha = senha_var.get()
+            if confirmar_senha != senha:
+                retorno.configure(text='As senhas não coincidem')
+                return False
+            else:
+                retorno.configure(text='')
+                return True
+        
+        
+        confirmar_senha_var = StringVar(value='Confirmar Senha')
+        confirmar_senha_entry = ttk.Entry(tela,
+                                          font=self.estilo.fonte,
+                                          textvariable=confirmar_senha_var,
+                                          width=30)
+        confirmar_senha_entry.place(anchor='center', relx=0.5, rely=0.595, height=59, width=255)
+        confirmar_senha_entry.bind('<FocusIn>',lambda event: confirmar_senha_var.set(value=''))
+        
+        confirmar_senha_var.trace('w',lambda *args: esconder_senha(entry=confirmar_senha_entry,
+                                                                   comando=confirmar_senha))
+        
+        def esconder_senha(ver='esconder',entry=senha_entry,comando=senha,entry1=''):
+            if ver=='esconder':
+                entry.unbind('<FocusIn>'),
+                entry.configure(show='*')
+                entry.bind('<KeyRelease>', comando)
+                ver_senha.config(image=esconder_senha_imagem)
+                
+            elif ver=='ver':
+                entry1.configure(show='')
+                entry.configure(show='')
+                ver_senha.config(image=ver_senha_imagem)
+            else:
+                return False
+        
+        def reset():
+            if not confirmar_senha():
+                retorno.configure(text='As senhas não coincidem')
+                senha_error(same=True)
+            elif not senha():
+                retorno.configure(text='Senha inválida')
+                senha_error()
+            elif not email():
+                retorno.configure(text='E-mail inválido')
+                email_error()
+            elif not usuario():
+                retorno.configure(text='Usuário Inválido')
+                user_error()
+            else:
+                cadastrar = UsuariosFunc.InserirDados(senha=senha_var.get())
+                cadastrar = cadastrar.alterarSenha()
+                retorno.configure(text=cadastrar)
+            
+        
+        confirmar = ttk.Button(tela,
+                               style='Estilo1.info.TButton',
+                               text='Registrar',
+                               command=reset)
+        confirmar.place(anchor='center', relx=0.5, rely=0.8, relheight=0.1, relwidth=0.3)
+        
+        retorno.place(anchor='center', relx=0.5, rely=0.7)
+        
+        tela.mainloop()
