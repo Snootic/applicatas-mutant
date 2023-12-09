@@ -1,7 +1,7 @@
 import sqlite3
 import data.auth.verificarusuario as verificarusuario
 import data.users.usuarios as usuarios
-import os
+import os, hashlib
 
 class InserirDados:
     def __init__(self,usuario='',email='',senha=''):
@@ -29,6 +29,7 @@ class InserirDados:
         else:
             self.cursor.execute(f'UPDATE credenciais SET usuario="{self.usuario}"')
             self.usuarios.commit()
+            return 'Usuário alterado com sucesso'
             
     def alterarEmail(self):
         Email = verificarusuario.usuario(email = self.email)
@@ -37,11 +38,11 @@ class InserirDados:
         else:
             self.cursor.execute(f'UPDATE credenciais SET email="{self.email}"')
             self.usuarios.commit()
+            return 'E-mail Alterado com sucesso'
             
     def alterarSenha(self):
-        password = verificarusuario.usuario(self.senha)
-        if password == None:
-            return password
-        else:
-            self.cursor.execute(f'UPDATE credenciais SET senha="{self.senha}"')
-            self.usuarios.commit()
+        senha = self.senha.encode('utf-8')
+        senha = hashlib.sha256(senha).hexdigest()
+        self.cursor.execute(f'UPDATE credenciais SET senha="{senha}"')
+        self.usuarios.commit()
+        return 'Senha alterada com suceso'
