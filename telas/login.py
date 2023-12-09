@@ -486,7 +486,7 @@ class telalogin:
         
         confirmar = ttk.Button(tela,
                                style='Estilo1.info.TButton',
-                               text='Registrar',
+                               text='Alterar Senha',
                                command=reset)
         confirmar.place(anchor='center', relx=0.5, rely=0.8, relheight=0.1, relwidth=0.3)
         
