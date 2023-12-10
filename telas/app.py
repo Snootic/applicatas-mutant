@@ -326,7 +326,7 @@ Python: 3.11.6
         menu_principal.add_cascade(label='Exportar', menu=exportar_menu)
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
         self.janela.config(menu=menu_principal)
-
+    
     def restart(self):
         python = sys.executable
         os.execl(python, python, * sys.argv)
@@ -355,7 +355,7 @@ Python: 3.11.6
             self.restart()
                                  
 class ErrorScreen():
-    def error(text, x=210, y=100, buttons='OK', titulo='Erro') -> str:
+    def error(text, *args, x=210, y=100, buttons='OK', titulo='Erro') -> str:
         '''
             Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
             text: str = texto a ser exibido no popup
@@ -370,7 +370,7 @@ class ErrorScreen():
                 scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
         except:
                 scale = 1
-                
+        print(Estilo.tema)
         error = ttk.Toplevel()
         ttk.utility.enable_high_dpi_awareness(root=error,scaling=scale)
         error.title(titulo)
@@ -391,8 +391,18 @@ class ErrorScreen():
         
         error.geometry(f'{x}x{y}+{MONITOR_X}+{MONITOR_Y}')
         
-        error_label = ttk.Label(error, style='Comum.TLabel')
-        error_label.pack(fill='both', expand=True)
+        try:
+            for i in args:
+                widget = partial(i, error) # pack the widgets from args
+                widget()
+        except Exception as e:
+            print(e)
+        
+        if not args:
+            error_label = ttk.Label(error, style='Comum.TLabel')
+            error_label.pack(fill='both', expand=True)
+            error_label.config(text=text,wraplength=x)
+            
         button_frame = ttk.Frame(error, padding=(5, 5))
         
         ttk.Separator(error).pack(fill='x')
@@ -409,8 +419,6 @@ class ErrorScreen():
         def button_callback(retorno):
             set_resposta(retorno)
             fechar()
-            
-        error_label.config(text=text,wraplength=x)
         
         if buttons == 'OK':
             sair_button = ttk.Button(button_frame, text='OK', command=partial(button_callback, 'OK'), style='Estilo1.danger.TButton')
@@ -427,7 +435,7 @@ class ErrorScreen():
                 else:
                     button.pack(anchor='e', side='right',padx=(0,2))
         error.wait_window()
-
+        
         return resposta.get()
             
 class Estilo:
