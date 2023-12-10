@@ -2,6 +2,24 @@ import glob
 from bd.sqlite import *
 import platform
 
+def criar_config():
+    config = ["tema=cyborg",
+              "ultimo_schema=",
+              "ultima_tabela=",
+              "schema_caminho=",
+              "user=",
+              "senha=",
+              "undo=",
+              "redo=",
+              "saved=True",
+              "autosave=False",
+              "manter_logado=False",
+              "escala="]
+    config_caminho = os.path.abspath('data/app_config.txt')
+    with open(config_caminho, 'a', encoding='utf-8') as configuracoes:
+        for i in config:
+            configuracoes.writelines(i + '\n')
+
 def LerConfig(argumento):
     """
     'config': retorna caminho absoluto das configurações ->
@@ -10,6 +28,8 @@ def LerConfig(argumento):
     'dirtab': retorna diretorio da schema mais recente ->
     """
     CAMINHO_CONFIG = (os.path.abspath('data/app_config.txt'))
+    if not os.path.exists(CAMINHO_CONFIG):
+        criar_config()
     dir_schema = None
     
     with open(CAMINHO_CONFIG, 'r', encoding='utf-8') as configuracoes:
