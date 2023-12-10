@@ -302,22 +302,24 @@ class Tela:
         version = os.path.abspath('VERSION')
         with open(version, 'r') as version:
             versao = version.readlines()
+            data = versao[1]
             versao = versao[0]
         programa_menu.add_command(label=f'Versão: {versao}')
         
         about_text = (
 f'''           Obrigado por utilizar nosso programa!
 
-Desenvolvedores: 
-Kaik Mendes - @Snootic
+Desenvolvedor: 
+Kaik Mendes - @Snootic | @Snootic_
+
+Contribuidor:
 Luis Guilherme Silva de Sousa - @LGSS18
 
-Versão: {versao}
-Data: 2023-11-30
+Versão: {versao}Data: {data}
 Python: 3.11.6
 ''')
         about_title = 'Sobre - Applicatas Mutant'
-        programa_menu.add_command(label='Sobre', command= lambda: ErrorScreen.error(text=about_text, titulo=about_title, x=300,y=220))
+        programa_menu.add_command(label='Sobre', command= lambda: ErrorScreen.error(text=about_text, titulo=about_title, x=300,y=250))
         
         menu_principal.add_cascade(label='Arquivo', menu=arquivo_menu)
         menu_principal.add_cascade(label='Importar', menu=importar_menu)
@@ -351,8 +353,7 @@ Python: 3.11.6
             return
         elif confirmar == 'Sim':
             self.restart()
-                    
-        
+                                 
 class ErrorScreen():
     def error(text, x=210, y=100, buttons='OK', titulo='Erro') -> str:
         '''
