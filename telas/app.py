@@ -1,6 +1,7 @@
 import ttkbootstrap as ttk
 from tkinter import filedialog
 from data import edit_config
+from data.users import UsuariosFunc
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.inicio import inicio
 import os, asyncio, ctypes, sys
@@ -38,15 +39,19 @@ class Tela:
             self.janela.geometry(f'{janela_largura}x{janela_altura}+{MONITOR_HORIZONTAL}+{MONITOR_VERTICAL}')
             self.janela.update_idletasks()
                 
-    def trocar_tema(self):
-        if tela_login.style.theme.type == 'dark':
-            tela_login.style.theme_use("litera")
-            edit_config.editTema('litera')
-            self.estilo.tema = 'litera'
+    def trocar_tema(self, tema=''):
+        if tema != '':
+            edit_config.editTema(tema)
+            self.estilo.tema = tema
         else:
-            tela_login.style.theme_use("cyborg")
-            edit_config.editTema('cyborg')
-            self.estilo.tema = 'cyborg'
+            if tela_login.style.theme.type == 'dark':
+                tela_login.style.theme_use("litera")
+                edit_config.editTema('litera')
+                self.estilo.tema = 'litera'
+            else:
+                tela_login.style.theme_use("cyborg")
+                edit_config.editTema('cyborg')
+                self.estilo.tema = 'cyborg'
         self.estilo.refresh()
 
     def menu(self):
@@ -365,11 +370,22 @@ class Tela:
             notebook.add(edit_user_frame, text='Editar Conta')
             notebook.add(about_frame, text='Sobre')
             
-            # print(type(visual_frame))
-            
             def visual_programa():
+                def salvar():
+                    if trocar_tema_var.get() != '':
+                        self.trocar_tema(trocar_tema_var.get())
+                    if escala_programa_var.get() != '':
+                        edit_config.set_scale(escala_programa_var.get())
+                        confirmar = ErrorScreen.error(titulo='Reinicialização pendente',
+                                                      text='O programa precisa ser reiniciado para que as alterações sejam feitas. Deseja continuar? Nenhuma alteração será perdida.',
+                          buttons=['Sim:info', 'Não:info'], y=120)
+                        if confirmar == 'Não':
+                            return
+                        elif confirmar == 'Sim':
+                            self.restart()
+                    
                 trocar_tema_label = ttk.Label(visual_frame, text='Tema', style='Comum3.TLabel')
-                trocar_tema_var = ttk.StringVar()
+                trocar_tema_var = ttk.StringVar(value=Estilo.tema)
                 trocar_tema = ttk.Combobox(visual_frame, textvariable=trocar_tema_var)
                 
                 escala_programa_label = ttk.Label(visual_frame, text='Escala do programa', style='Comum3.TLabel')
@@ -381,10 +397,48 @@ class Tela:
                 escala_programa_label.place(relx=0.05, rely=0.24, relwidth=0.5)
                 escala_programa.place(relx=0.05, rely=0.3, relwidth=0.75)
                 
-                salvar_botao = ttk.Button(visual_frame, text='Salvar', style='Estilo1.TButton')
+                salvar_botao = ttk.Button(visual_frame, text='Salvar', style='Estilo1.TButton', command=salvar)
                 salvar_botao.place(relx=0.05, rely=0.5, relwidth=0.25, relheight=0.1)
                 
+                style = ttk.Style()
+                trocar_tema['value'] = style.theme_names()
+                
+                escalas = [1.0, 1.25, 1.50, 1.75, 2.0]
+                escala_programa['value'] = escalas
+                
             def editar_usuario():
+                def salvar():
+                    if edit_user_var.get() == '':
+                        usuario = edit_config.getUser()
+                        old_user = usuario
+                    else:
+                        old_user = edit_config.getUser()
+                        usuario = edit_user_var.get()
+                    users = UsuariosFunc.getDados(edit_config.getUser())
+                    if edit_email_var.get() == '':
+                        email = users.get_email()[0]
+                        old_email = email
+                    else:
+                        old_email = users.get_email()[0]
+                        email = edit_email_var.get()
+                        
+                    users = UsuariosFunc.InserirDados(usuario, email, edit_senha_var.get(), old_user, old_email)
+                        
+                    users.alterarUser()
+                    users.alterarEmail()
+                    
+                    if edit_senha_var.get() != '':
+                        users.alterarSenha()
+                    
+                    edit_config.editUser(usuario)
+                    confirmar = ErrorScreen.error(titulo='Reinicialização pendente',
+                        text='O programa precisa ser reiniciado para que as alterações sejam feitas. Deseja continuar? Nenhuma alteração será perdida.',
+                        buttons=['Sim:info', 'Não:info'], y=120)
+                    if confirmar == 'Não':
+                        return
+                    elif confirmar == 'Sim':
+                        self.restart(users.rename_database)
+                
                 edit_user_var = ttk.StringVar()
                 edit_email_var = ttk.StringVar()
                 edit_senha_var = ttk.StringVar()
@@ -412,7 +466,7 @@ class Tela:
                 confirm_senha_label.place(relx=0.05, rely=0.62, relwidth=0.75)
                 confirm_senha.place(relx=0.05, rely=0.67, relwidth=0.75)
                 
-                salvar_botao = ttk.Button(edit_user_frame, text='Salvar', style='Estilo1.TButton')
+                salvar_botao = ttk.Button(edit_user_frame, text='Salvar', style='Estilo1.TButton', command=salvar)
                 salvar_botao.place(relx=0.05, rely=0.8, relwidth=0.25, relheight=0.1)
                 
                 deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button')
@@ -434,9 +488,12 @@ class Tela:
                                                                                             buttons=['Fechar:default']))
         self.janela.config(menu=menu_principal)
     
-    def restart(self):
+    def restart(self, *args):
         python = sys.executable
+        for i in args:
+            i()
         os.execl(python, python, * sys.argv)
+        
     
     def setScale(self, operação):
         '''
@@ -477,7 +534,6 @@ class ErrorScreen():
                 scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
         except:
                 scale = 1
-        print(Estilo.tema)
         error = ttk.Toplevel()
         ttk.utility.enable_high_dpi_awareness(root=error,scaling=scale)
         error.title(titulo)
