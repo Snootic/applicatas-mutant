@@ -302,29 +302,136 @@ class Tela:
         version = os.path.abspath('VERSION')
         with open(version, 'r') as version:
             versao = version.readlines()
-            data = versao[1]
-            versao = versao[0]
-        programa_menu.add_command(label=f'Versão: {versao}')
+            self.data = versao[1]
+            self.versao = versao[0]
+            self.python_v = versao[2]
+        programa_menu.add_command(label=f'Versão: {self.versao}')
         
-        about_text = (
-f'''           Obrigado por utilizar nosso programa!
-
-Desenvolvedor: 
-Kaik Mendes - @Snootic | @Snootic_
-
-Contribuidor:
-Luis Guilherme Silva de Sousa - @LGSS18
-
-Versão: {versao}Data: {data}
-Python: 3.11.6
-''')
+        def about_screen(master):
+            master.update()
+            wrap = master.winfo_width()
+            if not isinstance(master, ttk.Frame):
+                master = ttk.Frame(master, style='custom2.TFrame')
+                master.pack(expand=True, fill='both')
+            titulo = ttk.Label(master, text='Applicatas Mutant', style='Titulo2.TLabel')
+            sub_titulo = ttk.Label(master, text='Obrigado por usar nosso programa!', style='Grande2.TLabel')
+            
+            if wrap == 1:
+                wrap = 290
+            
+            desenvolvedores = ['Kaik Mendes - @Snootic | @Snootic_']
+            desenvolvedores_text = ""
+            for i in desenvolvedores:
+                desenvolvedores_text += f'{i}\n'
+            desenvolvedor = ttk.Label(master, text='Desenvolvedor:', style='Comum3.TLabel')
+            desenvolvedores = ttk.Label(master, text=f'{desenvolvedores_text}', style = 'Comum3.TLabel')
+            
+            contribuidores = ['Luis Guilherme Silva de Sousa - @LGSS18']
+            contribuidores_text = ""
+            for i in contribuidores:
+                contribuidores_text += f'{i}\n'
+            contribuidor = ttk.Label(master, text='Contribuidores:', style='Comum3.TLabel')
+            contribuidores = ttk.Label(master, text=f'{contribuidores_text}', style = 'Comum3.TLabel')
+            
+            versao = ttk.Label(master, text=f"Versão: {self.versao}", style='Comum3.TLabel')
+            data = ttk.Label(master, text=f"Data: {self.data}", style='Comum3.TLabel')
+            python = ttk.Label(master, text=f"Python: {self.python_v}", style='Comum3.TLabel', wraplength=wrap)
+            
+            titulo.place(anchor='center', relx=0.5, rely=0.05)
+            sub_titulo.place(anchor='center', relx=0.5, rely=0.13)
+            desenvolvedor.place(relx=0, rely=0.25)
+            desenvolvedores.place(relx=0, rely=0.3)
+            contribuidor.place(relx=0, rely=0.5)
+            contribuidores.place(relx=0, rely=0.55)
+            versao.place(relx=0, rely=0.7)
+            data.place(relx=0, rely=0.75)
+            python.place(relx=0, rely=0.8)
+            
         about_title = 'Sobre - Applicatas Mutant'
-        programa_menu.add_command(label='Sobre', command= lambda: ErrorScreen.error(text=about_text, titulo=about_title, x=300,y=250))
+        programa_menu.add_command(label='Sobre', command= lambda: ErrorScreen.error(about_screen, titulo=about_title, x=350,y=400, buttons=['OK:info']))
         
+        def config_screen(master):
+            notebook = ttk.Notebook(master, style='custom2.TNotebook')
+            notebook.pack(expand=True, fill='both')
+            
+            visual_frame = ttk.Frame(notebook, style='custom2.TFrame')
+            edit_user_frame = ttk.Frame(notebook, style='custom2.TFrame')
+            about_frame = ttk.Frame(notebook, style='custom2.TFrame')
+            edit_user_frame.pack(expand=True, fill='both')
+            visual_frame.pack(expand=True, fill='both')
+            about_frame.pack(expand=True, fill='both')
+            
+            notebook.add(visual_frame, text='Visual')
+            notebook.add(edit_user_frame, text='Editar Conta')
+            notebook.add(about_frame, text='Sobre')
+            
+            # print(type(visual_frame))
+            
+            def visual_programa():
+                trocar_tema_label = ttk.Label(visual_frame, text='Tema', style='Comum3.TLabel')
+                trocar_tema_var = ttk.StringVar()
+                trocar_tema = ttk.Combobox(visual_frame, textvariable=trocar_tema_var)
+                
+                escala_programa_label = ttk.Label(visual_frame, text='Escala do programa', style='Comum3.TLabel')
+                escala_programa_var = ttk.StringVar()
+                escala_programa = ttk.Combobox(visual_frame, textvariable=escala_programa_var)
+                
+                trocar_tema_label.place(relx=0.05, rely=0.05, relwidth=0.5)
+                trocar_tema.place(relx=0.05, rely=0.11, relwidth=0.75)
+                escala_programa_label.place(relx=0.05, rely=0.24, relwidth=0.5)
+                escala_programa.place(relx=0.05, rely=0.3, relwidth=0.75)
+                
+                salvar_botao = ttk.Button(visual_frame, text='Salvar', style='Estilo1.TButton')
+                salvar_botao.place(relx=0.05, rely=0.5, relwidth=0.25, relheight=0.1)
+                
+            def editar_usuario():
+                edit_user_var = ttk.StringVar()
+                edit_email_var = ttk.StringVar()
+                edit_senha_var = ttk.StringVar()
+                confirm_senha_var = ttk.StringVar()
+                
+                edit_user_label = ttk.Label(edit_user_frame, text='Alterar Usuário', style='Comum3.TLabel')
+                edit_email_label = ttk.Label(edit_user_frame, text='Alterar E-mail', style='Comum3.TLabel')
+                edit_senha_label = ttk.Label(edit_user_frame, text='Alterar Senha', style='Comum3.TLabel')
+                confirm_senha_label = ttk.Label(edit_user_frame, text='Confirmar nova senha', style='Comum3.TLabel')
+                
+                edit_user = ttk.Entry(edit_user_frame, textvariable=edit_user_var, style='Custom.TEntry')
+                edit_email = ttk.Entry(edit_user_frame, textvariable=edit_email_var, style='Custom.TEntry')
+                edit_senha = ttk.Entry(edit_user_frame, textvariable=edit_senha_var, style='Custom.TEntry')
+                confirm_senha = ttk.Entry(edit_user_frame, textvariable=confirm_senha_var, style='Custom.TEntry')
+                
+                edit_user_label.place(relx=0.05, rely=0.05, relwidth=0.55)
+                edit_user.place(relx=0.05, rely=0.11, relwidth=0.75)
+                
+                edit_email_label.place(relx=0.05, rely=0.24, relwidth=0.55)
+                edit_email.place(relx=0.05, rely=0.3, relwidth=0.75)
+                
+                edit_senha_label.place(relx=0.05, rely=0.43, relwidth=0.55)
+                edit_senha.place(relx=0.05, rely=0.49, relwidth=0.75)
+                
+                confirm_senha_label.place(relx=0.05, rely=0.62, relwidth=0.75)
+                confirm_senha.place(relx=0.05, rely=0.67, relwidth=0.75)
+                
+                salvar_botao = ttk.Button(edit_user_frame, text='Salvar', style='Estilo1.TButton')
+                salvar_botao.place(relx=0.05, rely=0.8, relwidth=0.25, relheight=0.1)
+                
+                deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button')
+                deletar_conta.place(relx=0.35, rely=0.8, relwidth=0.45, relheight=0.1)
+
+            about_screen(about_frame)
+            
+            visual_programa()
+            editar_usuario()
+            
         menu_principal.add_cascade(label='Arquivo', menu=arquivo_menu)
         menu_principal.add_cascade(label='Importar', menu=importar_menu)
         menu_principal.add_cascade(label='Exportar', menu=exportar_menu)
         menu_principal.add_cascade(label='Programa', menu=programa_menu)
+        menu_principal.add_command(label='Configurações', command=lambda: ErrorScreen.error(config_screen, 
+                                                                                            titulo='Peraeque - Configurações',
+                                                                                            x=270,
+                                                                                            y=400,
+                                                                                            buttons=['Fechar:default']))
         self.janela.config(menu=menu_principal)
     
     def restart(self):
@@ -355,7 +462,7 @@ Python: 3.11.6
             self.restart()
                                  
 class ErrorScreen():
-    def error(text, *args, x=210, y=100, buttons='OK', titulo='Erro') -> str:
+    def error(*args, text='Lore Ipsum', x=210, y=100, buttons='OK', titulo='Erro') -> str:
         '''
             Cria um popup de erro ou aviso. Aceita os seguintes parâmetros:
             text: str = texto a ser exibido no popup
