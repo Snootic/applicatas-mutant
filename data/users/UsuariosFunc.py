@@ -4,7 +4,7 @@ import data.users.usuarios as usuarios
 import os, hashlib
 
 class InserirDados:
-    def __init__(self,usuario='',email='',senha=''):
+    def __init__(self,usuario='',email='',senha='', old_user='', old_email=''):
         self.usuario = usuario
         self.email = email
         self.senha = senha
@@ -43,6 +43,6 @@ class InserirDados:
     def alterarSenha(self):
         senha = self.senha.encode('utf-8')
         senha = hashlib.sha256(senha).hexdigest()
-        self.cursor.execute(f'UPDATE credenciais SET senha="{senha}"')
+        self.cursor.execute(f'UPDATE credenciais SET senha="{senha}" WHERE usuario="{self.usuario}" AND email="{self.email}"')
         self.usuarios.commit()
         return 'Senha alterada com suceso'

@@ -479,7 +479,7 @@ class telalogin:
                 retorno.configure(text='Usuário Inválido')
                 user_error()
             else:
-                cadastrar = UsuariosFunc.InserirDados(senha=senha_var.get())
+                cadastrar = UsuariosFunc.InserirDados(usuario=user_var.get(), email=email_var.get(),senha=senha_var.get())
                 cadastrar = cadastrar.alterarSenha()
                 retorno.configure(text=cadastrar)
             
