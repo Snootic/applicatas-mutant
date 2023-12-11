@@ -1,6 +1,5 @@
 import glob
 from bd.sqlite import *
-import platform
 
 def criar_config():
     config = ["tema=cyborg",
@@ -214,10 +213,7 @@ def limpar_temp():
             if itens[i][0] == 'redo':
                 linhas[i] = 'redo=\n'
         configuracoes.writelines(linhas)
-    if platform.system() == 'Windows':
-        padrao_txt = os.path.join(os.getcwd(),'data\\users\\sqlite_databases\\backup\\*.sql')
-    else:
-        padrao_txt = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup/*.sql')
+    padrao_txt = os.path.join(os.getcwd(),'data/users/sqlite_databases/backup/*.sql')
     arquivos_txt = glob.glob(padrao_txt)
     for arquivo in arquivos_txt:
         os.remove(arquivo)
