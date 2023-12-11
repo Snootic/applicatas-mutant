@@ -8,6 +8,8 @@ class InserirDados:
         self.usuario = usuario
         self.email = email
         self.senha = senha
+        self.old_user = old_user
+        self.old_email = old_email
         CAMINHO_DB = os.path.join(os.getcwd(),f'data/users/usuarios.db')
         self.usuarios = sqlite3.connect(CAMINHO_DB)
         self.cursor = self.usuarios.cursor()
@@ -46,3 +48,33 @@ class InserirDados:
         self.cursor.execute(f'UPDATE credenciais SET senha="{senha}" WHERE usuario="{self.usuario}" AND email="{self.email}"')
         self.usuarios.commit()
         return 'Senha alterada com suceso'
+    def rename_database(self):
+        old_user_path = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}')
+        old_user_pareto = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}/{self.old_user}_pareto.db')
+        old_user_medidas = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}/{self.old_user}_medidas.db')
+        
+        new_user_path = os.path.abspath(f'data/users/sqlite_databases/{self.usuario}')
+        new_user_pareto = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}/{self.usuario}_pareto.db')
+        new_user_medidas = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}/{self.usuario}_medidas.db')
+        
+        try:    
+            os.rename(old_user_pareto,new_user_pareto)
+            os.rename(old_user_medidas,new_user_medidas)
+            os.rename(old_user_path,new_user_path)
+        except Exception as e:
+            print(e)
+            print(os.path.exists(old_user_path), os.path.exists(old_user_pareto), os.path.exists(old_user_medidas))
+        else:
+            print('PINTO PINTO')
+    
+class getDados:
+    def __init__(self,usuario=''):
+        self.usuario = usuario
+        CAMINHO_DB = os.path.join(os.getcwd(),f'data/users/usuarios.db')
+        self.usuarios = sqlite3.connect(CAMINHO_DB)
+        self.cursor = self.usuarios.cursor()
+    
+    def get_email(self):
+        self.cursor.execute(f'SELECT email FROM credenciais WHERE usuario="{self.usuario}"')
+        resultado = self.cursor.fetchone()
+        return resultado
