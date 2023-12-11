@@ -492,6 +492,7 @@ class Tela:
         python = sys.executable
         for i in args:
             i()
+        edit_config.limpar_temp()
         os.execl(python, python, * sys.argv)
         
     
