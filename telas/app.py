@@ -632,7 +632,7 @@ class ErrorScreen():
         MONITOR_X = int(TELA_X /2 - x/ 2)
         MONITOR_Y = int(TELA_Y /2 - y /2)
         
-        estilo = ttk.Style(Estilo.tema)
+        estilo = ttk.Style(edit_config.getTema())
         fonte = estilo.lookup('Comum.TLabel', 'font')
         fonte = int(fonte.split(' ')[1])
         
