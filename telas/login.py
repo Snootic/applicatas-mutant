@@ -37,14 +37,14 @@ class telalogin:
             self.user_var = StringVar(value='Usuário / E-mail')
             self.user_entry = ttk.Entry(self.login,
                                 textvariable=self.user_var,
-                                style='custom.TEntry', width=35)
-            self.user_entry.place(x=300,y=200,anchor='center', height=60)
+                                style='custom.TEntry')
+            self.user_entry.place(x=300,y=200,anchor='center', height=60,width=365)
             self.user_entry.bind('<FocusIn>',lambda event: (self.user_var.set(value=''),
                                                             self.user_entry.unbind('<FocusIn>')))
         def senha_entry(self):
             self.senha_var = StringVar(value='Senha')
-            self.senha_entry = ttk.Entry(self.login, textvariable=self.senha_var, style='custom.TEntry',width=35)
-            self.senha_entry.place(x=300,y=280,anchor='center', height=60)
+            self.senha_entry = ttk.Entry(self.login, textvariable=self.senha_var, style='custom.TEntry')
+            self.senha_entry.place(x=300,y=280,anchor='center', height=60,width=365)
             self.senha_entry.bind('<FocusIn>',lambda event: (self.senha_var.set(value=''),
                                                             self.senha_entry.unbind('<FocusIn>'),
                                                             self.senha_entry.configure(show='*')))
@@ -85,11 +85,10 @@ class telalogin:
                 
         logar_var = StringVar(value='Entrar')
         logar = ttk.Button(self.login,
-                           width=38,
                            textvariable=logar_var,
                            style='Estilo1.info.TButton',
                            command=lambda: logando(self.user_var.get(),self.senha_var.get(),self.manter_secao_var.get()))
-        logar.place(x=300,y=400,anchor='center', height=70)
+        logar.place(x=300,y=400,anchor='center', height=70,width=365)
         
         
         esqueci_senha_var = StringVar(value='Esqueci minha senha')
