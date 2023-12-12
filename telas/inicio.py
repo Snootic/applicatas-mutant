@@ -428,7 +428,6 @@ class inicio:
         em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
         
         def bloquear_entrys():
-            print(em.tabela_atual_var.get())
             if em.tabela_atual_var.get() == 'SELECIONE UMA TABELA':
                 inserir.config(state='disabled')
                 inserir_coluna.config(state='disabled')
@@ -1105,17 +1104,11 @@ class CalcEsqueleto():
         p_label.place(anchor=CENTER,relx=0.03, rely=0.7)
         p_entry.place(anchor=CENTER, relx=0.13, rely=0.7, relheight=0.2, relwidth=0.15)
         
-        testes_var = ttk.StringVar(value='10')
-        testes_label = ttk.Label(main_frame,style='Comum3.TLabel', text='k')
-        testes_entry = ttk.Entry(main_frame,style='custom.TEntry', textvariable=testes_var)
-        testes_label.place(anchor=CENTER,relx=0.34, rely=0.2)
-        testes_entry.place(anchor=CENTER, relx=0.44, rely=0.2, relheight=0.2, relwidth=0.15)
-        
         x_min_var = ttk.StringVar(value='0')
         x_min_label = ttk.Label(main_frame,style='Comum3.TLabel', text='X >=')
         x_min_entry = ttk.Entry(main_frame, style='custom.TEntry', textvariable=x_min_var)
-        x_min_label.place(anchor=CENTER,relx=0.33,rely=0.45)
-        x_min_entry.place(anchor=CENTER,relx=0.44,rely=0.45, relheight=0.2, relwidth=0.15)
+        x_min_label.place(anchor=CENTER,relx=0.33,rely=0.2)
+        x_min_entry.place(anchor=CENTER,relx=0.44,rely=0.2, relheight=0.2, relwidth=0.15)
                 
         x_max_var = ttk.StringVar(value='0')
         x_max_label = ttk.Label(main_frame,style='Comum3.TLabel', text='X <=')
@@ -1147,14 +1140,12 @@ class CalcEsqueleto():
         def calcular(*args):
             p = p_var.get()
             n = n_var.get()
-            testes = testes_var.get()
             x_min = x_min_var.get()
             x_max = x_max_var.get()
             
             try:
                 p = float(p)
-                n = float(n)
-                testes = int(testes)
+                n = int(n)
                 x_min = int(x_min)
                 x_max = int(x_max)
             except:
@@ -1164,17 +1155,16 @@ class CalcEsqueleto():
                 if not args:
                     for i in self.k_treeview.get_children():
                         self.k_treeview.delete(i)
-                    self.binomial(n,p,testes,x_min,x_max)
+                    self.binomial(n,p,x_min,x_max)
                     
                 else:
-                    self.binomial(n,p,testes,*args)
+                    self.binomial(n,p,*args)
             except Exception as e:
                 print(e)
                 return
                        
         n_var.trace("w", lambda *args: calcular())
         p_var.trace("w", lambda *args: calcular())
-        testes_var.trace("w", lambda *args: calcular())
         x_min_var.trace("w", lambda *args: calcular())
         x_max_var.trace("w", lambda *args: calcular())
         
