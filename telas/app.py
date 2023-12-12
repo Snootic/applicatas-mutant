@@ -205,8 +205,8 @@ class Tela:
             
             if is_saved:
                 if command == 'Fechar':
-                        apagar_dados()
-                        tela_login.destroy()
+                    apagar_dados()
+                    tela_login.destroy()
                 elif command == 'Sair':
                     apagar_dados('Sair')
                     self.janela.destroy()
@@ -481,8 +481,7 @@ class Tela:
                         tela_login.deiconify()
                         deletar.delete_user()
                         deletar.delete_databases()
-                        
-                        
+                               
                 def user_error():
                     edit_user.configure(bootstyle="Danger")
                     master.after(3000,lambda: edit_user.configure(bootstyle="default"))
@@ -728,46 +727,45 @@ class Estilo:
                 RESOLUCAO = largura * altura
                 
                 if RESOLUCAO <= 500*600:
-                    self.Tfonte = f'Roboto 12'
-                    self.gfonte= f'Roboto 8'
-                    self.fonte = f'Roboto 7'
-                    self.Sfonte = f'Roboto 6'
-                
-                elif RESOLUCAO <= 700*700:
                     self.Tfonte = f'Roboto 14'
                     self.gfonte= f'Roboto 10'
                     self.fonte = f'Roboto 9'
                     self.Sfonte = f'Roboto 8'
-                elif RESOLUCAO <= 900*600:
+                
+                elif RESOLUCAO <= 700*700:
                     self.Tfonte = f'Roboto 16'
                     self.gfonte= f'Roboto 12'
-                    self.fonte = f'Roboto 10'
-                    self.Sfonte = f'Roboto 9'
-                elif RESOLUCAO <= 1280*800:
-                    self.Tfonte = f'Roboto 18'
-                    self.gfonte= f'Roboto 13'
                     self.fonte = f'Roboto 11'
                     self.Sfonte = f'Roboto 10'
-                elif RESOLUCAO <= 1600 * 800:
+                elif RESOLUCAO <= 900*600:
+                    self.Tfonte = f'Roboto 18'
+                    self.gfonte= f'Roboto 14'
+                    self.fonte = f'Roboto 12'
+                    self.Sfonte = f'Roboto 11'
+                elif RESOLUCAO <= 1280*800:
                     self.Tfonte = f'Roboto 20'
                     self.gfonte= f'Roboto 15'
                     self.fonte = f'Roboto 13'
                     self.Sfonte = f'Roboto 12'
-                elif RESOLUCAO <= 1920 * 900:
+                elif RESOLUCAO <= 1600 * 800:
                     self.Tfonte = f'Roboto 22'
                     self.gfonte= f'Roboto 17'
                     self.fonte = f'Roboto 15'
                     self.Sfonte = f'Roboto 14'
-                elif RESOLUCAO >= 1920 * 900:
+                elif RESOLUCAO <= 1920 * 900:
                     self.Tfonte = f'Roboto 24'
                     self.gfonte= f'Roboto 19'
                     self.fonte = f'Roboto 17'
                     self.Sfonte = f'Roboto 16'
+                elif RESOLUCAO >= 1920 * 900:
+                    self.Tfonte = f'Roboto 26'
+                    self.gfonte= f'Roboto 21'
+                    self.fonte = f'Roboto 19'
+                    self.Sfonte = f'Roboto 18'
                     
                 self.refresh()
                     
     def load_styles(self):
-        self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
         self.style.configure('Estilo1.default.TButton', font=self.fonte)
