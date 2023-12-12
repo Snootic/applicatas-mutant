@@ -472,11 +472,11 @@ class inicio:
             tabela_medidas_tdf.pack(fill=BOTH, expand=True)
         # Chama um diálogo com 2 opções de gŕaficos
         def grafico():
-            popup = ttk.Toplevel(self.home)
-            histograma = ttk.Button(popup, text='Histograma', command=lambda: (Histograma(), popup.destroy()))
-            histograma.pack()
-            boxplot = ttk.Button(popup, text='BoxPlot', command=lambda:(BoxPlot(), popup.destroy()))
-            boxplot.pack()
+            popup = app.ErrorScreen.error(titulo='Escolha o gráfico', text='Escolha o gráfico desejado abaixo', buttons=['BoxPlot:info','Histograma:info','Cancelar:danger'], x=255)
+            if popup == 'Histograma':
+                Histograma()
+            elif popup == 'BoxPlot':
+                BoxPlot()
         # Gráfico Histograma
         def Histograma():
             try:
