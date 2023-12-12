@@ -1,5 +1,5 @@
 import ttkbootstrap as ttk
-import os, asyncio, ctypes, sys
+import os, asyncio, ctypes, sys, subprocess
 from tkinter import filedialog
 from data import edit_config
 from data.users import UsuariosFunc
@@ -313,6 +313,9 @@ class Tela:
             self.versao = versao[0]
             self.python_v = versao[2]
         programa_menu.add_command(label=f'Versão: {self.versao}')
+        
+        license = os.path.abspath('LICENSE')
+        programa_menu.add_command(label='Licensa', command=lambda: subprocess.Popen(["xdg-open",license]))
         
         def about_screen(master):
             master.update()
