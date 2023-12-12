@@ -77,3 +77,21 @@ class getDados:
         self.cursor.execute(f'SELECT email FROM credenciais WHERE usuario="{self.usuario}"')
         resultado = self.cursor.fetchone()
         return resultado
+    
+class deleteDados:
+    def __init__(self,usuario=''):
+        self.usuario = usuario
+        CAMINHO_DB = os.path.join(os.getcwd(),f'data/users/usuarios.db')
+        self.usuarios = sqlite3.connect(CAMINHO_DB)
+        self.cursor = self.usuarios.cursor()
+        
+    def delete_user(self):
+        self.cursor.execute(f'DELETE FROM credenciais WHERE usuario="{self.usuario}"')
+        self.usuarios.commit()
+        return 'Deletado com sucesso'
+    
+    def delete_databases(self):
+        os.remove(os.path.abspath(f'data/users/sqlite_databases/{self.usuario}/{self.usuario}_pareto.db'))
+        os.remove(os.path.abspath(f'data/users/sqlite_databases/{self.usuario}/{self.usuario}_medidas.db'))
+        os.removedirs(os.path.abspath(f'data/users/sqlite_databases/{self.usuario}'))
+        return 'deletado'

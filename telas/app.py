@@ -1,5 +1,5 @@
 import ttkbootstrap as ttk
-import os, asyncio, ctypes, sys
+import os, asyncio, ctypes, sys, subprocess
 from tkinter import filedialog
 from data import edit_config
 from data.users import UsuariosFunc
@@ -207,8 +207,8 @@ class Tela:
             
             if is_saved:
                 if command == 'Fechar':
-                        apagar_dados()
-                        tela_login.destroy()
+                    apagar_dados()
+                    tela_login.destroy()
                 elif command == 'Sair':
                     apagar_dados('Sair')
                     self.janela.destroy()
@@ -315,6 +315,11 @@ class Tela:
             self.versao = versao[0]
             self.python_v = versao[2]
         programa_menu.add_command(label=f'Versão: {self.versao}')
+        
+        how_to = os.path.abspath('data/como-usar.md')
+        programa_menu.add_command(label='Como usar', command=lambda: subprocess.Popen(["xdg-open",how_to]))
+        license = os.path.abspath('LICENSE')
+        programa_menu.add_command(label='Licensa', command=lambda: subprocess.Popen(["xdg-open",license]))
         
         def about_screen(master):
             master.update()
@@ -465,6 +470,22 @@ class Tela:
                         buttons=['OK:info'], y=120)
                     self.restart(users.rename_database)
                 
+                def delete_account():
+                    usuario = edit_config.getUser()
+                    confirm = ErrorScreen.error(titulo='Tem certeza?',
+                                      text='Sua conta será deletada. Todos os dados serão permanentemente perdidos, tem certeza de que quer continuar?',
+                                      buttons=['Sim:danger','Não:default'])
+                    if confirm == 'Sim':
+                        deletar = UsuariosFunc.deleteDados(usuario)
+                        saves = save.Salvar()
+                        edit_config.setIsSaved(True)
+                        saves.save()
+                        apagar_dados('Sair')
+                        self.janela.destroy()
+                        tela_login.deiconify()
+                        deletar.delete_user()
+                        deletar.delete_databases()
+                               
                 def user_error():
                     edit_user.configure(bootstyle="Danger")
                     master.after(3000,lambda: edit_user.configure(bootstyle="default"))
@@ -557,7 +578,7 @@ class Tela:
                 salvar_botao = ttk.Button(edit_user_frame, text='Salvar', style='Estilo1.TButton', command=salvar)
                 salvar_botao.place(relx=0.05, rely=0.88, relwidth=0.25, relheight=0.1)
                 
-                deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button')
+                deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button', command=delete_account)
                 deletar_conta.place(relx=0.35, rely=0.88, relwidth=0.45, relheight=0.1)
 
             about_screen(about_frame)
@@ -710,46 +731,45 @@ class Estilo:
                 RESOLUCAO = largura * altura
                 
                 if RESOLUCAO <= 500*600:
-                    self.Tfonte = f'Roboto 12'
-                    self.gfonte= f'Roboto 8'
-                    self.fonte = f'Roboto 7'
-                    self.Sfonte = f'Roboto 6'
-                
-                elif RESOLUCAO <= 700*700:
                     self.Tfonte = f'Roboto 14'
                     self.gfonte= f'Roboto 10'
                     self.fonte = f'Roboto 9'
                     self.Sfonte = f'Roboto 8'
-                elif RESOLUCAO <= 900*600:
+                
+                elif RESOLUCAO <= 700*700:
                     self.Tfonte = f'Roboto 16'
                     self.gfonte= f'Roboto 12'
-                    self.fonte = f'Roboto 10'
-                    self.Sfonte = f'Roboto 9'
-                elif RESOLUCAO <= 1280*800:
-                    self.Tfonte = f'Roboto 18'
-                    self.gfonte= f'Roboto 13'
                     self.fonte = f'Roboto 11'
                     self.Sfonte = f'Roboto 10'
-                elif RESOLUCAO <= 1600 * 800:
+                elif RESOLUCAO <= 900*600:
+                    self.Tfonte = f'Roboto 18'
+                    self.gfonte= f'Roboto 14'
+                    self.fonte = f'Roboto 12'
+                    self.Sfonte = f'Roboto 11'
+                elif RESOLUCAO <= 1280*800:
                     self.Tfonte = f'Roboto 20'
                     self.gfonte= f'Roboto 15'
                     self.fonte = f'Roboto 13'
                     self.Sfonte = f'Roboto 12'
-                elif RESOLUCAO <= 1920 * 900:
+                elif RESOLUCAO <= 1600 * 800:
                     self.Tfonte = f'Roboto 22'
                     self.gfonte= f'Roboto 17'
                     self.fonte = f'Roboto 15'
                     self.Sfonte = f'Roboto 14'
-                elif RESOLUCAO >= 1920 * 900:
+                elif RESOLUCAO <= 1920 * 900:
                     self.Tfonte = f'Roboto 24'
                     self.gfonte= f'Roboto 19'
                     self.fonte = f'Roboto 17'
                     self.Sfonte = f'Roboto 16'
+                elif RESOLUCAO >= 1920 * 900:
+                    self.Tfonte = f'Roboto 26'
+                    self.gfonte= f'Roboto 21'
+                    self.fonte = f'Roboto 19'
+                    self.Sfonte = f'Roboto 18'
                     
                 self.refresh()
                     
     def load_styles(self):
-        self.style.configure('.', f=self.fonte)
         self.style.configure("TCheckbutton", font=self.Sfonte)
         self.style.configure('Estilo1.TButton', font=self.fonte)
         self.style.configure('Estilo1.default.TButton', font=self.fonte)

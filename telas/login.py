@@ -7,15 +7,14 @@ from data.edit_config import getUser, getSenha
 import os
 from data.users import UsuariosFunc
 
-#TODO:
-# melhorar a segurança do login automatico
-
 class telalogin:
     def __init__(self):
         self.login = ttk.Window()
         tela = Tela(self.login, 'Peraeque - Login')
         tela.centralizarTela(600,600)
         self.login.resizable(False,False)
+        
+        self.login.bind("<Map>", lambda event: self.size_change())
         
         self.estilo = tela.estilo
 
@@ -24,7 +23,7 @@ class telalogin:
                            style='Titulo.TLabel')
         subtitulo = ttk.Label(self.login,
                               text='Bem vindo! Faça login para continuar',
-                              style='Comum.TLabel')
+                              style='Grande.TLabel')
         titulo.place(x=300,y=70,anchor='center')
         subtitulo.place(x=300,y=100,anchor='center')
         
@@ -38,14 +37,13 @@ class telalogin:
             self.user_var = StringVar(value='Usuário / E-mail')
             self.user_entry = ttk.Entry(self.login,
                                 textvariable=self.user_var,
-                                width=39,
-                                font=self.estilo.fonte)
+                                style='custom.TEntry', width=35)
             self.user_entry.place(x=300,y=200,anchor='center', height=60)
             self.user_entry.bind('<FocusIn>',lambda event: (self.user_var.set(value=''),
                                                             self.user_entry.unbind('<FocusIn>')))
         def senha_entry(self):
             self.senha_var = StringVar(value='Senha')
-            self.senha_entry = ttk.Entry(self.login, textvariable=self.senha_var, width=39, font=self.estilo.fonte)
+            self.senha_entry = ttk.Entry(self.login, textvariable=self.senha_var, style='custom.TEntry',width=35)
             self.senha_entry.place(x=300,y=280,anchor='center', height=60)
             self.senha_entry.bind('<FocusIn>',lambda event: (self.senha_var.set(value=''),
                                                             self.senha_entry.unbind('<FocusIn>'),
@@ -129,6 +127,17 @@ class telalogin:
             retorno.configure(text=e)
         
         self.login.mainloop()
+    
+    def size_change(self):
+        self.login.update()
+        self.login.update_idletasks()
+        
+        tela_largura = self.login.winfo_width()
+        tela_altura = self.login.winfo_height()
+        
+        # Define o tamanho da fonte
+        self.estilo.font_size(tela_largura, tela_altura)
+        self.estilo.refresh()
              
     def registro(self):
         registro = ttk.Toplevel(self.login)
@@ -171,8 +180,8 @@ class telalogin:
         
         user_var = StringVar(value='Usuário')
         user_entry = ttk.Entry(registro,
-                               font=self.estilo.fonte,
                                textvariable=user_var,
+                               style='custom.TEntry'
                                )
         user_entry.place(anchor='center', relx=0.5, rely=0.2, height=59, width=255)
         user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
@@ -194,9 +203,8 @@ class telalogin:
         
         email_var = StringVar(value='E-mail')
         email_entry = ttk.Entry(registro,
-                                font=self.estilo.fonte,
                                 textvariable=email_var,
-                                width=30)
+                                style='custom.TEntry')
         email_entry.place(anchor='center', relx=0.5, rely=0.33, height=59, width=255)
         email_entry.bind('<FocusIn>',lambda event: (email_var.set(value=''),
                                                          email_entry.unbind('<FocusIn>'),
@@ -220,8 +228,8 @@ class telalogin:
         
         senha_var = StringVar(value='Senha')
         senha_entry = ttk.Entry(senha_frame,
-                                font=self.estilo.fonte,
-                                textvariable=senha_var,)
+                                textvariable=senha_var,
+                                style='custom.TEntry')
         senha_entry.place(anchor='center', relx=0.5, rely=0.53, height=59, width=255)
         senha_entry.bind('<FocusIn>',lambda event: senha_var.set(value=''))
         senha_var.trace('w',lambda *args: esconder_senha())
@@ -229,7 +237,9 @@ class telalogin:
         esconder_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/hide_password.png'))
         ver_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/show_password.png'))
         
-        ver_senha=ttk.Button(senha_frame,padding=1, image = esconder_senha_imagem, command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
+        ver_senha=ttk.Button(senha_frame,padding=1, image = esconder_senha_imagem, command=lambda: esconder_senha(ver='ver',
+                                                                                                                  entry=senha_entry,
+                                                                                                                  entry1=confirmar_senha_entry))
         ver_senha.place(anchor='nw', relx=0.83, rely=0.13)
         
         
@@ -256,11 +266,10 @@ class telalogin:
         
         confirmar_senha_var = StringVar(value='Confirmar Senha')
         confirmar_senha_entry = ttk.Entry(registro,
-                                          font=self.estilo.fonte,
                                           textvariable=confirmar_senha_var,
-                                          width=30)
+                                          style='custom.TEntry')
         confirmar_senha_entry.place(anchor='center', relx=0.5, rely=0.595, height=59, width=255)
-        confirmar_senha_entry.bind('<FocusIn>',lambda event: confirmar_senha_var.set(value=''))
+        confirmar_senha_entry.bind('<FocusIn>',lambda event: confirmar_senha_var.set(value=''),)
         
         confirmar_senha_var.trace('w',lambda *args: esconder_senha(entry=confirmar_senha_entry,
                                                                    comando=confirmar_senha))
@@ -353,10 +362,10 @@ class telalogin:
         
         user_var = StringVar(value='Usuário')
         user_entry = ttk.Entry(tela,
-                               font=self.estilo.fonte,
                                textvariable=user_var,
+                               style='custom.TEntry'
                                )
-        user_entry.place(anchor='center', relx=0.5, rely=0.2, height=59, width=255)
+        user_entry.place(anchor='center', relx=0.5, rely=0.2, height=59, width=255 )
         user_entry.bind('<FocusIn>',lambda event: (user_var.set(value=''),
                                                          user_entry.unbind('<FocusIn>'),
                                                          user_entry.bind('<KeyRelease>', lambda event: usuario())
@@ -380,9 +389,8 @@ class telalogin:
         
         email_var = StringVar(value='E-mail')
         email_entry = ttk.Entry(tela,
-                                font=self.estilo.fonte,
                                 textvariable=email_var,
-                                width=30)
+                                style='custom.TEntry')
         email_entry.place(anchor='center', relx=0.5, rely=0.33, height=59, width=255)
         email_entry.bind('<FocusIn>',lambda event: (email_var.set(value=''),
                                                          email_entry.unbind('<FocusIn>'),
@@ -406,8 +414,8 @@ class telalogin:
         
         senha_var = StringVar(value='Senha')
         senha_entry = ttk.Entry(senha_frame,
-                                font=self.estilo.fonte,
-                                textvariable=senha_var,)
+                                textvariable=senha_var,
+                                style='custom.TEntry')
         senha_entry.place(anchor='center', relx=0.5, rely=0.53, height=59, width=255)
         senha_entry.bind('<FocusIn>',lambda event: senha_var.set(value=''))
         senha_var.trace('w',lambda *args: esconder_senha())
@@ -442,9 +450,8 @@ class telalogin:
         
         confirmar_senha_var = StringVar(value='Confirmar Senha')
         confirmar_senha_entry = ttk.Entry(tela,
-                                          font=self.estilo.fonte,
                                           textvariable=confirmar_senha_var,
-                                          width=30)
+                                          style='custom.TEntry')
         confirmar_senha_entry.place(anchor='center', relx=0.5, rely=0.595, height=59, width=255)
         confirmar_senha_entry.bind('<FocusIn>',lambda event: confirmar_senha_var.set(value=''))
         

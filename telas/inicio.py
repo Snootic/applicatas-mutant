@@ -68,7 +68,6 @@ class inicio:
         tabelas = tabela()
         sqlite = pareto()
         
-        ep.abrir_tabela['value'] = tabelas.getTabelas('pareto')
         # Tabela da análise de pareto
         def tabela_analise_pareto(colunas = ''):
             global pareto_tabela
@@ -80,6 +79,9 @@ class inicio:
                 autoalign=False,
             )
             pareto_tabela.place(relx=0.405,rely=0.45,anchor=CENTER, relheight=0.75, relwidth=0.815)
+        # Edita os valores de "ABIR TABELA"
+        def att_tabelas():
+            ep.abrir_tabela['value'] = tabelas.getTabelas('pareto')
         # Função para inserir os dados da tabela
         def analise_pareto(tabela=None, grafico=None, name=None):
             global matplot
@@ -113,6 +115,7 @@ class inicio:
             else:
                 ep.tabela_atual_var.set(value=edit_config.getTabela())
             edit_config.setIsSaved(False)
+            att_tabelas()
         # Realiza o bloqueio das entries de dados de acordo com a tabela atual
         def bloquear_entrys():
             if len(pareto_tabela.get_rows()) < 1 or len(pareto_tabela.get_columns()) == 6:
@@ -416,19 +419,21 @@ class inicio:
         ep.delete_tabela_botao.configure(command= lambda: ep.delete_tabela(pareto_tabela.destroy, 
                                                                            tabela_analise_pareto,
                                                                            att_max_att,
-                                                                           bloquear_entrys))
+                                                                           bloquear_entrys, att_tabelas))
         
         tabela_analise_pareto()
         bloquear_entrys()
+        att_tabelas()
         return analise_pareto
         
     def telas_medidas(self, tela):
         em = TbEsqueleto(tela, 'medidas', self.app, self)
         tabelas = tabela()
-        em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
+        
+        def att_tabelas():
+            em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
         
         def bloquear_entrys():
-            print(em.tabela_atual_var.get())
             if em.tabela_atual_var.get() == 'SELECIONE UMA TABELA':
                 inserir.config(state='disabled')
                 inserir_coluna.config(state='disabled')
@@ -447,7 +452,13 @@ class inicio:
                 delete_coluna.config(state='normal')
 
         def mudar_conj_dados():
-            atualizar_coluna['value'] = tabelas.get_TableColumns('medidas')
+            try:
+                colunas = tabelas.get_TableColumns('medidas')
+                inserir_coluna['value'] = colunas
+                atualizar_coluna['value'] = colunas
+                delete_coluna['value'] = colunas
+            except Exception as e:
+                print(e)
         #Tabela de medidas
         def tabela_medidas_matriz(colunas = ''):
             global tabela_medidas_matrix
@@ -618,10 +629,12 @@ class inicio:
             tabela_medidas_tdf.destroy()
             tabela_df =([],DataFrame([], columns=['', 'Freq. Relativa %']))
             tabela_tdf()
+            att_tabelas()
         # Insere os dados nas tabelas
         def tabelas_medidas(tabela=None, nome=None):
             importado = 1
             sqlite_table
+            att_tabelas()
             if tabela is None or isinstance(tabela, str) or tabela.empty:
                 global tabela_df
                 global tabela_matriz
@@ -717,6 +730,7 @@ class inicio:
             em.tabela_atual_var.set(value=edit_config.getTabela())
             edit_config.setIsSaved(False)
             bloquear_entrys()
+            mudar_conj_dados()
             
         #Notebok tabelas
         notebook = ttk.Notebook(tela, style='custom.TNotebook')
@@ -840,6 +854,7 @@ class inicio:
         tabela_de_medidas()
         tabela_tdf()
         bloquear_entrys()
+        att_tabelas()
         
         return tabelas_medidas
 
@@ -1105,17 +1120,11 @@ class CalcEsqueleto():
         p_label.place(anchor=CENTER,relx=0.03, rely=0.7)
         p_entry.place(anchor=CENTER, relx=0.13, rely=0.7, relheight=0.2, relwidth=0.15)
         
-        testes_var = ttk.StringVar(value='10')
-        testes_label = ttk.Label(main_frame,style='Comum3.TLabel', text='k')
-        testes_entry = ttk.Entry(main_frame,style='custom.TEntry', textvariable=testes_var)
-        testes_label.place(anchor=CENTER,relx=0.34, rely=0.2)
-        testes_entry.place(anchor=CENTER, relx=0.44, rely=0.2, relheight=0.2, relwidth=0.15)
-        
         x_min_var = ttk.StringVar(value='0')
         x_min_label = ttk.Label(main_frame,style='Comum3.TLabel', text='X >=')
         x_min_entry = ttk.Entry(main_frame, style='custom.TEntry', textvariable=x_min_var)
-        x_min_label.place(anchor=CENTER,relx=0.33,rely=0.45)
-        x_min_entry.place(anchor=CENTER,relx=0.44,rely=0.45, relheight=0.2, relwidth=0.15)
+        x_min_label.place(anchor=CENTER,relx=0.33,rely=0.2)
+        x_min_entry.place(anchor=CENTER,relx=0.44,rely=0.2, relheight=0.2, relwidth=0.15)
                 
         x_max_var = ttk.StringVar(value='0')
         x_max_label = ttk.Label(main_frame,style='Comum3.TLabel', text='X <=')
@@ -1147,14 +1156,12 @@ class CalcEsqueleto():
         def calcular(*args):
             p = p_var.get()
             n = n_var.get()
-            testes = testes_var.get()
             x_min = x_min_var.get()
             x_max = x_max_var.get()
             
             try:
                 p = float(p)
-                n = float(n)
-                testes = int(testes)
+                n = int(n)
                 x_min = int(x_min)
                 x_max = int(x_max)
             except:
@@ -1164,17 +1171,16 @@ class CalcEsqueleto():
                 if not args:
                     for i in self.k_treeview.get_children():
                         self.k_treeview.delete(i)
-                    self.binomial(n,p,testes,x_min,x_max)
+                    self.binomial(n,p,x_min,x_max)
                     
                 else:
-                    self.binomial(n,p,testes,*args)
+                    self.binomial(n,p,*args)
             except Exception as e:
                 print(e)
                 return
                        
         n_var.trace("w", lambda *args: calcular())
         p_var.trace("w", lambda *args: calcular())
-        testes_var.trace("w", lambda *args: calcular())
         x_min_var.trace("w", lambda *args: calcular())
         x_max_var.trace("w", lambda *args: calcular())
         
