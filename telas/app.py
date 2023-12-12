@@ -314,6 +314,8 @@ class Tela:
             self.python_v = versao[2]
         programa_menu.add_command(label=f'Versão: {self.versao}')
         
+        how_to = os.path.abspath('data/como-usar.md')
+        programa_menu.add_command(label='Como usar', command=lambda: subprocess.Popen(["xdg-open",how_to]))
         license = os.path.abspath('LICENSE')
         programa_menu.add_command(label='Licensa', command=lambda: subprocess.Popen(["xdg-open",license]))
         
