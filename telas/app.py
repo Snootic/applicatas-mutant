@@ -581,8 +581,7 @@ class Tela:
             i()
         edit_config.limpar_temp()
         os.execl(python, python, * sys.argv)
-        
-    
+           
     def setScale(self, operação):
         '''
             operação: 'soma'|'sub'
@@ -798,8 +797,8 @@ class Estilo:
         self.tema = edit_config.getTema()
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#E3E5E8' if self.style.theme.type == 'light' else '#1E1E21'
-        self.background_1 = '#D7D9DC' if self.style.theme.type == 'light'else '#111214'
-        self.tab_background_1 = '#FFFFFF' if self.style.theme.type == 'light' else '#191919'
+        self.background_2 = self.cores.colors.inputbg
+        self.background_1 = self.cores.colors.bg
+        self.tab_background_1 = self.cores.colors.dark if self.style.theme.type == 'dark' else self.cores.colors.light
         
         self.load_styles()
