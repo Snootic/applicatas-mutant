@@ -466,6 +466,23 @@ class Tela:
                         buttons=['OK:info'], y=120)
                     self.restart(users.rename_database)
                 
+                def delete_account():
+                    usuario = edit_config.getUser()
+                    confirm = ErrorScreen.error(titulo='Tem certeza?',
+                                      text='Sua conta será deletada. Todos os dados serão permanentemente perdidos, tem certeza de que quer continuar?',
+                                      buttons=['Sim:danger','Não:default'])
+                    if confirm == 'Sim':
+                        deletar = UsuariosFunc.deleteDados(usuario)
+                        saves = save.Salvar()
+                        edit_config.setIsSaved(True)
+                        saves.save()
+                        apagar_dados('Sair')
+                        self.janela.destroy()
+                        tela_login.deiconify()
+                        deletar.delete_user()
+                        deletar.delete_databases()
+                        
+                        
                 def user_error():
                     edit_user.configure(bootstyle="Danger")
                     master.after(3000,lambda: edit_user.configure(bootstyle="default"))
@@ -558,7 +575,7 @@ class Tela:
                 salvar_botao = ttk.Button(edit_user_frame, text='Salvar', style='Estilo1.TButton', command=salvar)
                 salvar_botao.place(relx=0.05, rely=0.88, relwidth=0.25, relheight=0.1)
                 
-                deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button')
+                deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button', command=delete_account)
                 deletar_conta.place(relx=0.35, rely=0.88, relwidth=0.45, relheight=0.1)
 
             about_screen(about_frame)
