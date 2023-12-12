@@ -427,6 +427,24 @@ class inicio:
         tabelas = tabela()
         em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
         
+        def bloquear_entrys():
+            if em.tabela_atual_var.get() == 'SELECIONE UMA TABELA':
+                inserir.config(state='disabled')
+                inserir_coluna.config(state='disabled')
+                atualizar_atual.config(state='disabled')
+                atualizar_novo.config(state='disabled')
+                atualizar_coluna.config(state='disabled')
+                delete.config(state='disabled')
+                delete_coluna.config(state='disabled')
+            else:
+                inserir.config(state='normal')
+                inserir_coluna.config(state='normal')
+                atualizar_atual.config(state='normal')
+                atualizar_novo.config(state='normal')
+                atualizar_coluna.config(state='normal')
+                delete.config(state='normal')
+                delete_coluna.config(state='normal')
+
         def mudar_conj_dados():
             atualizar_coluna['value'] = tabelas.get_TableColumns('medidas')
         #Tabela de medidas
@@ -614,6 +632,7 @@ class inicio:
                 tabela_matriz = [dado for dado in tabela_desorganizada if dado is not None] # Separa os valores da lista, excluindo os valores Nulos, para matriz
                 if not isinstance(tabela, DataFrame):
                     resetTables()
+                    bloquear_entrys()
                     return
             else:
                 tabela_matriz = tabela.to_numpy().tolist()
@@ -696,6 +715,8 @@ class inicio:
             tabela_medidas_tdf.load_table_data()
             em.tabela_atual_var.set(value=edit_config.getTabela())
             edit_config.setIsSaved(False)
+            bloquear_entrys()
+            
         #Notebok tabelas
         notebook = ttk.Notebook(tela, style='custom.TNotebook')
         notebook.place(relx=0.405,rely=0.45, anchor=CENTER, relheight=0.75, relwidth=0.815)
@@ -817,6 +838,7 @@ class inicio:
         tabela_medidas_formatada()
         tabela_de_medidas()
         tabela_tdf()
+        bloquear_entrys()
         
         return tabelas_medidas
 
