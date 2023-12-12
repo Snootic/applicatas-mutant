@@ -16,6 +16,8 @@ class Tela:
         if self.scale == None:
             try:
                 self.scale = ctypes.windll.shcore.GetScaleFactorForDevice (0) / 100
+                if janela.winfo_screenwidth() >= 1600 and self.scale == 1.0:
+                    self.scale += 0.5
             except:
                 self.scale = 1
         ttk.utility.enable_high_dpi_awareness(root=janela,scaling=self.scale)
