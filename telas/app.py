@@ -373,17 +373,28 @@ class Tela:
             
             def visual_programa():
                 def salvar():
-                    if trocar_tema_var.get() != '':
+                    if trocar_tema_var.get() not in style.theme_names():
+                        trocar_tema.configure(bootstyle="Danger")
+                        master.after(3000,lambda: trocar_tema.configure(bootstyle="default"))
+                        return
+                    elif trocar_tema_var.get() != '':
                         self.trocar_tema(trocar_tema_var.get())
+
                     if escala_programa_var.get() != '':
-                        edit_config.set_scale(escala_programa_var.get())
-                        confirmar = ErrorScreen.error(titulo='Reinicialização pendente',
-                                                      text='O programa precisa ser reiniciado para que as alterações sejam feitas. Deseja continuar? Nenhuma alteração será perdida.',
-                          buttons=['Sim:info', 'Não:info'], y=120)
-                        if confirmar == 'Não':
-                            return
-                        elif confirmar == 'Sim':
-                            self.restart()
+                        try:
+                            float(escala_programa_var.get())
+                        except:
+                            escala_programa.configure(bootstyle="Danger")
+                            master.after(3000,lambda: escala_programa.configure(bootstyle='default'))
+                        else:
+                            edit_config.set_scale(escala_programa_var.get())
+                            confirmar = ErrorScreen.error(titulo='Reinicialização pendente',
+                                                        text='O programa precisa ser reiniciado para que as alterações sejam feitas. Deseja continuar? Nenhuma alteração será perdida.',
+                            buttons=['Sim:info', 'Não:info'], y=120)
+                            if confirmar == 'Não':
+                                return
+                            elif confirmar == 'Sim':
+                                self.restart()
                     
                 trocar_tema_label = ttk.Label(visual_frame, text='Tema', style='Comum3.TLabel')
                 trocar_tema_var = ttk.StringVar(value=Estilo.tema)
