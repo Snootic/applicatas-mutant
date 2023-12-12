@@ -7,15 +7,14 @@ from data.edit_config import getUser, getSenha
 import os
 from data.users import UsuariosFunc
 
-#TODO:
-# melhorar a segurança do login automatico
-
 class telalogin:
     def __init__(self):
         self.login = ttk.Window()
         tela = Tela(self.login, 'Peraeque - Login')
         tela.centralizarTela(600,600)
         self.login.resizable(False,False)
+        
+        self.login.bind("<Map>", lambda event: self.size_change())
         
         self.estilo = tela.estilo
 
@@ -128,6 +127,17 @@ class telalogin:
             retorno.configure(text=e)
         
         self.login.mainloop()
+    
+    def size_change(self):
+        self.login.update()
+        self.login.update_idletasks()
+        
+        tela_largura = self.login.winfo_width()
+        tela_altura = self.login.winfo_height()
+        
+        # Define o tamanho da fonte
+        self.estilo.font_size(tela_largura, tela_altura)
+        self.estilo.refresh()
              
     def registro(self):
         registro = ttk.Toplevel(self.login)
@@ -227,7 +237,9 @@ class telalogin:
         esconder_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/hide_password.png'))
         ver_senha_imagem = PhotoImage(file = os.path.abspath('data/assets/show_password.png'))
         
-        ver_senha=ttk.Button(senha_frame,padding=1, image = esconder_senha_imagem, command=lambda: esconder_senha(ver='ver',entry=senha_entry,entry1=confirmar_senha_entry))
+        ver_senha=ttk.Button(senha_frame,padding=1, image = esconder_senha_imagem, command=lambda: esconder_senha(ver='ver',
+                                                                                                                  entry=senha_entry,
+                                                                                                                  entry1=confirmar_senha_entry))
         ver_senha.place(anchor='nw', relx=0.83, rely=0.13)
         
         
