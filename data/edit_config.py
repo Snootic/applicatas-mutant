@@ -2,7 +2,7 @@ import glob
 from bd.sqlite import *
 
 def criar_config():
-    config = ["tema=cyborg",
+    config = ["tema=darkly",
               "ultimo_schema=",
               "ultima_tabela=",
               "schema_caminho=",
@@ -188,7 +188,7 @@ def apagar_dados():
     with open(CAMINHO_CONFIG, 'w', encoding='utf-8') as configuracoes:
         for index, item in enumerate(itens):
             if item[0] == 'tema':
-                item[1] = 'cyborg'
+                item[1] = 'darkly'
             elif item[1] == 'True' or item[1] == 'False':
                 if item[0] == 'manter_logado':
                     item[1] = 'False'

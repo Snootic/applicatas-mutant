@@ -1,6 +1,5 @@
 import ttkbootstrap as ttk
 import os, asyncio, ctypes, sys
-from ttkbootstrap.style import StyleBuilderTTK
 from tkinter import filedialog
 from data import edit_config
 from data.users import UsuariosFunc
@@ -52,9 +51,9 @@ class Tela:
                 edit_config.editTema('litera')
                 self.estilo.tema = 'litera'
             else:
-                tela_login.style.theme_use("cyborg")
-                edit_config.editTema('cyborg')
-                self.estilo.tema = 'cyborg'
+                tela_login.style.theme_use("darkly")
+                edit_config.editTema('darkly')
+                self.estilo.tema = 'darkly'
         self.estilo.refresh()
 
     def menu(self):
