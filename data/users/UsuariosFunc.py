@@ -17,7 +17,7 @@ class InserirDados:
     def add(self):
         try:
             usuarios.user_table()
-            self.cursor.execute(f"INSERT INTO credenciais (usuario,email,senha) VALUES(?,?,?)", (self.usuario, self.email, self.senha))
+            self.cursor.execute(f"INSERT INTO credenciais (usuario,email,senha) VALUES(?,?,?)", (self.usuario.lower(), self.email.lower(), self.senha))
             self.usuarios.commit()
             return True
         except Exception as e:
@@ -29,7 +29,7 @@ class InserirDados:
         if user == None:
             return user
         else:
-            self.cursor.execute(f'UPDATE credenciais SET usuario="{self.usuario}"')
+            self.cursor.execute(f'UPDATE credenciais SET usuario="{self.usuario}" WHERE usuario="{self.old_user}"')
             self.usuarios.commit()
             return 'Usuário alterado com sucesso'
             
@@ -38,7 +38,7 @@ class InserirDados:
         if Email == None:
             return Email
         else:
-            self.cursor.execute(f'UPDATE credenciais SET email="{self.email}"')
+            self.cursor.execute(f'UPDATE credenciais SET email="{self.email}" WHERE email="{self.old_email}"')
             self.usuarios.commit()
             return 'E-mail Alterado com sucesso'
             
@@ -48,6 +48,7 @@ class InserirDados:
         self.cursor.execute(f'UPDATE credenciais SET senha="{senha}" WHERE usuario="{self.usuario}" AND email="{self.email}"')
         self.usuarios.commit()
         return 'Senha alterada com suceso'
+    
     def rename_database(self):
         old_user_path = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}')
         old_user_pareto = os.path.abspath(f'data/users/sqlite_databases/{self.old_user}/{self.old_user}_pareto.db')
@@ -64,8 +65,6 @@ class InserirDados:
         except Exception as e:
             print(e)
             print(os.path.exists(old_user_path), os.path.exists(old_user_pareto), os.path.exists(old_user_medidas))
-        else:
-            print('PINTO PINTO')
     
 class getDados:
     def __init__(self,usuario=''):
