@@ -428,6 +428,7 @@ class inicio:
         em.abrir_tabela['value'] = tabelas.getTabelas('medidas')
         
         def bloquear_entrys():
+            print(em.tabela_atual_var.get())
             if em.tabela_atual_var.get() == 'SELECIONE UMA TABELA':
                 inserir.config(state='disabled')
                 inserir_coluna.config(state='disabled')
@@ -832,7 +833,7 @@ class inicio:
         em.criar_tabela_botao.configure(command= lambda: em.criar_tabela(tabelas_medidas))
         em.gerar_grafico.configure(command=grafico)
         em.abrir_tabela_btn.configure(command=lambda: em.abrir_tabela_selecionada(tabelas_medidas))
-        em.delete_tabela_botao.configure(command= lambda: em.delete_tabela(resetTables))
+        em.delete_tabela_botao.configure(command= lambda: em.delete_tabela(resetTables, bloquear_entrys))
 
         tabela_medidas_matriz()
         tabela_medidas_formatada()
@@ -1037,6 +1038,8 @@ class TbEsqueleto():
                 self.delete_tabela_entry.configure(bootstyle = 'Danger')
                 self.home.after(3000, lambda: self.delete_tabela_entry.configure(bootstyle = 'Default'))
             else:
+                if self.tabela_atual_var.get() == self.delete_tabela_var.get():
+                    self.tabela_atual_var.set(value='SELECIONE UMA TABELA')
                 for i in args:
                     i()
                 for x in kwargs:
