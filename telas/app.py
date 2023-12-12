@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from tkinter import filedialog
 from data import edit_config
 from data.users import UsuariosFunc
+from data.auth import cadastro
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.inicio import inicio
 import os, asyncio, ctypes, sys
@@ -409,36 +410,106 @@ class Tela:
             def editar_usuario():
                 def salvar():
                     if edit_user_var.get() == '':
-                        usuario = edit_config.getUser()
-                        old_user = usuario
+                        user = edit_config.getUser()
+                        old_user = user
                     else:
                         old_user = edit_config.getUser()
-                        usuario = edit_user_var.get()
+                        user = edit_user_var.get()
+                        if not usuario():
+                            user_error()
+                            return
                     users = UsuariosFunc.getDados(edit_config.getUser())
                     if edit_email_var.get() == '':
-                        email = users.get_email()[0]
-                        old_email = email
+                        new_email = users.get_email()[0]
+                        old_email = new_email
                     else:
                         old_email = users.get_email()[0]
-                        email = edit_email_var.get()
+                        new_email = edit_email_var.get()
+                        if not email():
+                            email_error()
+                            return
+
+                    if edit_senha_var.get().strip() != "" or confirm_senha_var.get().strip() != "":
+                        if not senha():
+                            print('a')
+                            senha_error()
+                            return
+                        elif not confirmar_senha():
+                            print('b')
+                            senha_error(same=True)
+                            return
                         
-                    users = UsuariosFunc.InserirDados(usuario, email, edit_senha_var.get(), old_user, old_email)
-                        
+                    users = UsuariosFunc.InserirDados(user, new_email, edit_senha_var.get(), old_user, old_email) 
                     users.alterarUser()
                     users.alterarEmail()
-                    
                     if edit_senha_var.get() != '':
                         users.alterarSenha()
-                    
-                    edit_config.editUser(usuario)
+                
+                    edit_config.editUser(user)
                     confirmar = ErrorScreen.error(titulo='Reinicialização pendente',
                         text='O programa precisa ser reiniciado para que as alterações sejam feitas. Deseja continuar? Nenhuma alteração será perdida.',
-                        buttons=['Sim:info', 'Não:info'], y=120)
-                    if confirmar == 'Não':
-                        return
-                    elif confirmar == 'Sim':
-                        self.restart(users.rename_database)
+                        buttons=['OK:info'], y=120)
+                    self.restart(users.rename_database)
                 
+                def user_error():
+                    edit_user.configure(bootstyle="Danger")
+                    master.after(3000,lambda: edit_user.configure(bootstyle="default"))
+                def email_error():
+                    edit_email.configure(bootstyle="Danger")
+                    master.after(3000,lambda: edit_email.configure(bootstyle="default"))
+                def senha_error(same=False):
+                    if same == True:
+                        confirm_senha.configure(bootstyle="Danger")
+                        master.after(3000,lambda: confirm_senha.configure(bootstyle="default"))
+                        edit_senha.configure(bootstyle="Danger")
+                        master.after(3000,lambda: edit_senha.configure(bootstyle="default"))
+                    else:
+                        edit_senha.configure(bootstyle="Danger")
+                        master.after(3000,lambda: edit_senha.configure(bootstyle="default"))
+                
+                def usuario():
+                    usuario = cadastro.credenciais(usuario=edit_user.get())
+                    usuario = usuario.user()
+                    if usuario != True:
+                        retorno.configure(text=usuario)
+                        user_error()
+                        return False
+                    else:
+                        retorno.configure(text='usuario')
+                        return True
+                
+                def email():
+                    email = cadastro.credenciais(email=edit_email.get())
+                    email = email.Email()
+                    if email != True:
+                        retorno.configure(text=email)
+                        email_error()
+                        return False
+                    else:
+                        retorno.configure(text='')
+                        return True
+                
+                def senha(*args):
+                    senha = cadastro.credenciais(senha=edit_senha_var.get())
+                    senha = senha.passw()
+                    if senha != True:
+                        retorno.configure(text=senha)
+                        senha_error()
+                        return False
+                    else:
+                        retorno.configure(text='')
+                        return True
+                
+                def confirmar_senha(*args):
+                    confirmar_senha = confirm_senha_var.get()
+                    senha = edit_senha_var.get()
+                    if confirmar_senha != senha:
+                        retorno.configure(text='As senhas não coincidem')
+                        return False
+                    else:
+                        retorno.configure(text='')
+                        return True
+                        
                 edit_user_var = ttk.StringVar()
                 edit_email_var = ttk.StringVar()
                 edit_senha_var = ttk.StringVar()
@@ -466,11 +537,14 @@ class Tela:
                 confirm_senha_label.place(relx=0.05, rely=0.62, relwidth=0.75)
                 confirm_senha.place(relx=0.05, rely=0.67, relwidth=0.75)
                 
+                retorno = ttk.Label(edit_user_frame, style='Comum3.TLabel', text='')
+                retorno.place(relx=0.05, rely=0.79)
+                
                 salvar_botao = ttk.Button(edit_user_frame, text='Salvar', style='Estilo1.TButton', command=salvar)
-                salvar_botao.place(relx=0.05, rely=0.8, relwidth=0.25, relheight=0.1)
+                salvar_botao.place(relx=0.05, rely=0.88, relwidth=0.25, relheight=0.1)
                 
                 deletar_conta = ttk.Button(edit_user_frame, text='Deletar Conta', style='Estilo1.danger.Button')
-                deletar_conta.place(relx=0.35, rely=0.8, relwidth=0.45, relheight=0.1)
+                deletar_conta.place(relx=0.35, rely=0.88, relwidth=0.45, relheight=0.1)
 
             about_screen(about_frame)
             
