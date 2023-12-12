@@ -1,11 +1,12 @@
 import ttkbootstrap as ttk
+import os, asyncio, ctypes, sys
+from ttkbootstrap.style import StyleBuilderTTK
 from tkinter import filedialog
 from data import edit_config
 from data.users import UsuariosFunc
 from data.auth import cadastro
 from bd import tabela_pareto, medidas, sqlite, save
 from telas.inicio import inicio
-import os, asyncio, ctypes, sys
 from functools import partial
 
 class Tela:
@@ -42,6 +43,7 @@ class Tela:
                 
     def trocar_tema(self, tema=''):
         if tema != '':
+            tela_login.style.theme_use(tema)
             edit_config.editTema(tema)
             self.estilo.tema = tema
         else:
@@ -796,8 +798,8 @@ class Estilo:
         self.tema = edit_config.getTema()
         self.style = ttk.Style(self.tema)
         self.cores = self.style._theme_definitions.get(self.tema)
-        self.background_2 = '#E3E5E8' if self.tema == 'litera' else '#1E1E21'
-        self.background_1 = '#D7D9DC' if self.tema == 'litera' else '#111214'
-        self.tab_background_1 = '#FFFFFF' if self.tema == 'litera' else '#191919'
+        self.background_2 = '#E3E5E8' if self.style.theme.type == 'light' else '#1E1E21'
+        self.background_1 = '#D7D9DC' if self.style.theme.type == 'light'else '#111214'
+        self.tab_background_1 = '#FFFFFF' if self.style.theme.type == 'light' else '#191919'
         
         self.load_styles()
