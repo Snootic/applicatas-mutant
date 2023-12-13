@@ -56,6 +56,7 @@ Para fazer sua própria Build, siga os seguintes passos
 - Abra `Build.py`
 
 - Insira a versão do programa (obrigatório)
+
 ![Building](data/assets/screenshots/demo/building.png)
 
 - Clique em `Gerar executável`
