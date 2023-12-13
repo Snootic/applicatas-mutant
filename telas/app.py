@@ -1,5 +1,5 @@
 import ttkbootstrap as ttk
-import os, asyncio, ctypes, sys, subprocess
+import os, asyncio, ctypes, sys, subprocess, webbrowser
 from tkinter import filedialog
 from data import edit_config
 from data.users import UsuariosFunc
@@ -316,10 +316,14 @@ class Tela:
             self.python_v = versao[2]
         programa_menu.add_command(label=f'Versão: {self.versao}')
         
-        how_to = os.path.abspath('data/como-usar.md')
-        programa_menu.add_command(label='Como usar', command=lambda: subprocess.Popen(["xdg-open",how_to]))
         license = os.path.abspath('LICENSE')
-        programa_menu.add_command(label='Licensa', command=lambda: subprocess.Popen(["xdg-open",license]))
+        if os.name == 'nt':    
+            programa_menu.add_command(label='Licensa', command=lambda: subprocess.Popen(["notepad",license]))
+            
+        else:
+            programa_menu.add_command(label='Licensa', command=lambda: subprocess.Popen(["xdg-open",license]))
+        
+        programa_menu.add_command(label='Como usar', command=lambda: webbrowser.open('https://github.com/Snootic/Applicatas-Mutant/blob/main/data/como-usar.md'))
         
         def about_screen(master):
             master.update()
