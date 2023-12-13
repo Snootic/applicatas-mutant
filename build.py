@@ -55,7 +55,10 @@ def run():
             try:
                 shutil.rmtree(item)
             except:
-                os.remove(item)
+                try:
+                    os.remove(item)
+                except:
+                    pass
         
         versao.config(state='normal')
         label.config(text='Processo concluído')
