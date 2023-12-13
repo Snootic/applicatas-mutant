@@ -1,35 +1,69 @@
-
 # APPLICATAS MUTANT
 
-Projeto de estatística aplicada, feito para inserir, atualizar e deletar dados para a criação de uma Tabela e um Gráfico de Análise de Pareto, utilizando SQLite, CSV e Tabelas do Excel.
+Projeto de estatística. Feito para inserir, atualizar e deletar dados para a criação de tabelas de **Análise de Pareto, Medidas de Tendência Central e Distribuição de Frequência** utilizando SQLite, CSV, tabelas do Excel e arquivos SQL.
+
+Permite a criação de **gráficos de pareto, histogramas, boxplot e distribuição binomial** de forma simples e dinâmica para perfeita análise dos dados obtidos.
+
+## Screenshots
+<p float="left">
+  <img src="data/assets/screenshots/demo/login.png" width="320" />
+  <img src="data/assets/screenshots/demo/pareto.png" width="520" /> 
+</p>
+<p float="left">
+  <img src="data/assets/screenshots/demo/medidas_1.png" width="440" />
+  <img src="data/assets/screenshots/demo/medidas_2.png" width="440" /> 
+</p>
+<p float="left">
+  <img src="data/assets/screenshots/demo/binomial.png" width="440" />
+  <img src="data/assets/screenshots/demo/pareto_grafico.png" width="440" /> 
+</p>
+
 
 ## Principais Bibliotecas utilizadas e instalação
 - tkinter
 - ttkbootstrap
 - pandas
+- numpy
 - matplotlib
 - sqlite3
+- scipy
 
-Para Rodar o código, clone este repositório `https://github.com/snootic/applicatas-mutant.git` e instale as dependências que estão no arquivo requirements.txt
+Os executáveis desse programa podem ser encontrados na aba [releases](https://github.com/snootic/applicatas-mutant/releases). Disponível para Windows e Linux
+
+Para Rodar o código, clone este repositório `https://github.com/Snootic/applicatas-mutant.git` e instale as dependências que estão no arquivo requirements.txt
+
+**Altamente recomendado a utilização de um virtual env**
 
 ### Windows
 Powershell / Terminal: 
 
         py -m pip install -r requirements.txt
 
+        python -m pip install -r requirements.txt
+
 ### Linux
-O seguinte comando deve funcionar:
 
         pip3 install -r requirements.txt
+        pip install -r requirements.txt
 
-Em algumas distribuições com mecanismo de proteção aos pacotes do sistema (ex: OpenSUSE Tumbleweed), o comando acima pode dar erro. Se acontecer utilize este:
+Em algumas distribuições com mecanismo de proteção aos pacotes do sistema (ex: OpenSUSE Tumbleweed), o comando acima pode dar erro. Para resolver adicione o parâmetro `--break-system-packages`.
 
-        pip3 install -r requirements.txt --break-system-packages
+## Build
+O projeto foi empacotado utilizando **PyInstaller**.
+Para fazer sua própria Build, siga os seguintes passos
+(**Altamente recomendado a utilização de um virtual env**):
 
-tente trocar pip3 por pip caso nenhum dos dois funcione.
+- Abra `Build.py`
 
-## Bug report
+- Insira a versão do programa (obrigatório)
+![Building](data/assets/screenshots/demo/building.png)
 
-Caso encontre algum bug no programa, por favor crie um "Issue". Faremos o que pudermos para resolver o mais rápido possível.
+- Clique em `Gerar executável`
 
-Você também pode criar um Fork, corrigir por si e abrir uma Pull Request. Analisaremos o código e o implementaremos, obrigado!
+Em poucos minutos o executável estará completo na pasta `dist` com todos os assets em seus repectivos diretórios.
+
+![Build concluída](data/assets/screenshots/demo/builded.png)
+
+## Bug report e sugestões
+
+Para, bugs, falhas e sugestões, abra um `Issue` ou `pull request`, que veremos e resolveremos o problema o mais rápido possível.
