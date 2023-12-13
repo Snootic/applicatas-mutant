@@ -6,7 +6,7 @@ from datetime import datetime
 import shutil
 
 python_path = sys.executable
-pyinstaller_path = python_path.replace("/python", "/pyinstaller")
+pyinstaller_path = python_path.replace("python", "pyinstaller")
 spec_path = os.path.abspath('build.spec')
 versao_path = os.path.abspath('VERSION')
 data_path = os.path.abspath('data')
@@ -30,6 +30,7 @@ def run():
     pyinstaller_venv = f"{pyinstaller_path} {spec_path}"
     
     try:
+        pyinstaller = subprocess.run(f"{sys.executable} -m pip install pyinstaller", shell=True)
         process = subprocess.Popen(pyinstaller_venv, shell=True)
         versao.config(state='disabled')
         progress_bar.config(mode='indeterminate')
