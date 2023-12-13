@@ -1,4 +1,4 @@
-tema=cyborg
+tema=darkly
 ultimo_schema=
 ultima_tabela=
 schema_caminho=
